@@ -8,15 +8,55 @@
   <link href="styles.css" rel="stylesheet">
 </head>
 <body>
-  <div id="nav-placeholder"></div>
-  <script>
-    fetch('shared/nav.html')
-      .then(response => response.text())
-      .then(data => {
-        document.getElementById('nav-placeholder').innerHTML = data;
-      });
-  </script>
-  <div class="container center">
+  <!-- Navigation (no logo) -->
+  <nav class="navbar navbar-expand-lg" style="background-color: #004d00;">
+    <div class="container">
+      <a class="navbar-brand text-white" href="index.html">Home</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon" style="filter: invert(1);"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle text-white" href="#" data-bs-toggle="dropdown">Local Government</a>
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-item" href="town-board.html">Town Board</a></li>
+              <li><a class="dropdown-item" href="minutes-agendas.html">Minutes & Agendas</a></li>
+              <li><a class="dropdown-item" href="town-ordinances.html">Town Ordinances</a></li>
+            </ul>
+          </li>
+          <li class="nav-item"><a class="nav-link text-white" href="town-utilities.html">Town Utilities</a></li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle text-white" href="#" data-bs-toggle="dropdown">Departments & Services</a>
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-item" href="police-department.html">Police Department</a></li>
+              <li><a class="dropdown-item" href="fire-department.html">Fire Department</a></li>
+            </ul>
+          </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle text-white" href="#" data-bs-toggle="dropdown">Community</a>
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-item" href="kennard.html">Kennard</a></li>
+              <li><a class="dropdown-item" href="local-schools.html">Local Schools</a></li>
+              <li><a class="dropdown-item" href="local-churches.html">Local Churches</a></li>
+              <li><a class="dropdown-item" href="local-business.html">Local Business</a></li>
+            </ul>
+          </li>
+          <li class="nav-item"><a class="nav-link text-white" href="contact.html">Contact</a></li>
+          <li class="nav-item"><a class="nav-link text-white" href="bids-info.html">Bids & Info</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Banner with title -->
+  <div class="banner">
+    <div class="container">
+      <h1 style="color: white; margin: 0;">Town Board</h1>
+    </div>
+  </div>
+
+  <div class="container section center">
     <h1><strong>Town Board</strong></h1>
     <h2><strong>Town Board Meetings</strong></h2>
     <p>Town Board Meetings are the second Wednesday of the month at 7:00 P.M.</p>
