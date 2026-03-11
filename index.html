@@ -1,43 +1,3 @@
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
-  <div class="container">
-    <a class="navbar-brand" href="/"><img src="images/tok-seal-photo-transparant_orig.png" alt="Town of Kennard Logo" width="100"></a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarNav">
-      <ul class="navbar-nav ms-auto">
-        <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
-        <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">Local Government</a>
-          <ul class="dropdown-menu">
-            <li><a class="dropdown-item" href="town-board.html">Town Board</a></li>
-            <li><a class="dropdown-item" href="minutes-agendas.html">Minutes & Agendas</a></li>
-            <li><a class="dropdown-item" href="town-ordinances.html">Town Ordinances</a></li>
-          </ul>
-        </li>
-        <li class="nav-item"><a class="nav-link" href="town-utilities.html">Town Utilities</a></li>
-        <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">Departments & Services</a>
-          <ul class="dropdown-menu">
-            <li><a class="dropdown-item" href="police-department.html">Police Department</a></li>
-            <li><a class="dropdown-item" href="fire-department.html">Fire Department</a></li>
-          </ul>
-        </li>
-        <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">Community</a>
-          <ul class="dropdown-menu">
-            <li><a class="dropdown-item" href="kennard.html">Kennard</a></li>
-            <li><a class="dropdown-item" href="local-schools.html">Local Schools</a></li>
-            <li><a class="dropdown-item" href="local-churches.html">Local Churches</a></li>
-            <li><a class="dropdown-item" href="local-business.html">Local Business</a></li>
-          </ul>
-        </li>
-        <li class="nav-item"><a class="nav-link" href="contact.html">Contact</a></li>
-        <li class="nav-item"><a class="nav-link" href="bids-info.html">Bids & Info</a></li>
-      </ul>
-    </div>
-  </div>
-</nav>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -48,15 +8,29 @@
   <link href="styles.css" rel="stylesheet">
 </head>
 <body>
-  <!-- Paste navigation code here -->
-  <div class="container">
-    <h1>Welcome to Kennard, IN</h1>
+  <div id="nav-placeholder"></div>
+  <script>
+    fetch('shared/nav.html')
+      .then(response => response.text())
+      .then(data => {
+        document.getElementById('nav-placeholder').innerHTML = data;
+      });
+  </script>
+  <div class="container center">
+    <h1><strong>Welcome to Kennard, IN</strong></h1>
     <p>Kennard is located in western Henry County and is a part of Greensboro Township.</p>
-    <h2>Public Meeting Livestreaming and Recording Notice</h2>
+    <a href="contact.html" class="green-button">Clerks Office</a>
+    <a href="town-ordinances.html" class="green-button">Ordinance Info</a>
+    <a href="bids-info.html" class="green-button">Town Bids</a>
+    <h2><strong>BIDS NEEDED!</strong></h2>
+    <p>Please see the attached for the current bids needed.</p>
+    <p>2026 Map for mowing: Bid Map</p>
+    <img src="images/ktral_1_orig.png" alt="Bid Map" style="width: 100%;">
+    <h2><strong>Public Meeting Livestreaming and Recording Notice</strong></h2>
     <p>The Town will livestream these meetings on its official YouTube channel at <a href="https://www.youtube.com/@Town_of_Kennard_Indiana">YouTube</a>.</p>
     <p>In the event of a technological failure that prevents livestreaming, the Town will attempt to record the audio of the meeting and make the recording available on the same YouTube channel for public access.</p>
     <p>Links to the meeting’s agenda, minutes, or memoranda, if applicable will be on this site <a href="minutes-agendas.html">Minutes & Agendas</a>.</p>
-    <h3>Public Comments Policy</h3>
+    <h3><strong>Public Notice: Public Comments Policy</strong></h3>
     <p>The Town of Kennard operates under an Open Door Policy, encouraging transparency and public participation. A public comment section is included on each month's agenda, where any member of the public may address the Board.</p>
     <p>While anyone is welcome to speak during the public comment period, the Town Board encourages citizens to contact the Clerk's office at least 72 hours before a meeting to ensure their comments can be properly included on the agenda.</p>
     <p>This policy complies with Indiana's Open Door Law (IC 5-14-1.5), ensuring that all meetings are open to public observation.</p>
