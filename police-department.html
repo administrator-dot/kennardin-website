@@ -8,15 +8,55 @@
   <link href="styles.css" rel="stylesheet">
 </head>
 <body>
-  <div id="nav-placeholder"></div>
-  <script>
-    fetch('shared/nav.html')
-      .then(response => response.text())
-      .then(data => {
-        document.getElementById('nav-placeholder').innerHTML = data;
-      });
-  </script>
-  <div class="container center">
+  <!-- Navigation (no logo) -->
+  <nav class="navbar navbar-expand-lg" style="background-color: #004d00;">
+    <div class="container">
+      <a class="navbar-brand text-white" href="index.html">Home</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon" style="filter: invert(1);"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle text-white" href="#" data-bs-toggle="dropdown">Local Government</a>
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-item" href="town-board.html">Town Board</a></li>
+              <li><a class="dropdown-item" href="minutes-agendas.html">Minutes & Agendas</a></li>
+              <li><a class="dropdown-item" href="town-ordinances.html">Town Ordinances</a></li>
+            </ul>
+          </li>
+          <li class="nav-item"><a class="nav-link text-white" href="town-utilities.html">Town Utilities</a></li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle text-white" href="#" data-bs-toggle="dropdown">Departments & Services</a>
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-item" href="police-department.html">Police Department</a></li>
+              <li><a class="dropdown-item" href="fire-department.html">Fire Department</a></li>
+            </ul>
+          </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle text-white" href="#" data-bs-toggle="dropdown">Community</a>
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-item" href="kennard.html">Kennard</a></li>
+              <li><a class="dropdown-item" href="local-schools.html">Local Schools</a></li>
+              <li><a class="dropdown-item" href="local-churches.html">Local Churches</a></li>
+              <li><a class="dropdown-item" href="local-business.html">Local Business</a></li>
+            </ul>
+          </li>
+          <li class="nav-item"><a class="nav-link text-white" href="contact.html">Contact</a></li>
+          <li class="nav-item"><a class="nav-link text-white" href="bids-info.html">Bids & Info</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Banner with title -->
+  <div class="banner">
+    <div class="container">
+      <h1 style="color: white; margin: 0;">Police Department</h1>
+    </div>
+  </div>
+
+  <div class="container section center">
     <h1><strong>Kennard’s Law Enforcement</strong></h1>
     <h2><strong>Contact Information</strong></h2>
     <p><strong>Emergency: Call 911</strong></p>
@@ -55,29 +95,4 @@
     <a href="https://pay.paygov.us/EndUser/PaymentAgency.aspx?ttid=19402" class="green-button">Pay Online</a>
     <h2><strong>Application to apply</strong></h2>
     <a href="https://drive.google.com/file/d/1XN6oo3dFCEhC16Gl_xIAmy58P9dm8T25/view?usp=sharing">Application to apply to be a reserve</a>
-    <p><strong>(Vehicle infractions are paid to the state. Check the ticket for information)</strong></p>
-    <p>Received an Ordinance Violation?</p>
-    <p>Ordinance Violations, Clerk Fees, Permit Fees and other Town related payments can be made by credit card at this link below:</p>
-    <p>Ordinance violations, not traffic violations, can be paid by check or money order at the Clerk's Office in the Town Hall. We will also accept Credit Card payments at <a href="https://pay.paygov.us/EndUser/PaymentAgency.aspx?ttid=19402">PayGov.us</a> (a small fee will be added to process the credit card which does not go to the Town)</p>
-    <p>Vehicle infraction tickets are handled through the state. Check the ticket for payment information.</p>
-    <p>The Clerks have ZERO knowledge of police matters. Traffic violations paid to the above link will be returned. The Town of Kennard does not collect payment for vehicle infractions. Read the citation for more details.</p>
-    <p>The Town will also accept payments through the mail (P.O. Box 167 Kennard, IN 47351)</p>
-    <h2><strong>Know information about a crime or ordinance violation?</strong></h2>
-    <p>Call the local office and let us investigate the complaint.</p>
-    <h2><strong>Spotlight on some specific services offered</strong></h2>
-    <ul>
-      <li>Golf Cart Check and Town Registration - any golf cart driving in town must be registered per ordinance, per year.</li>
-      <li>Vacation, Vacant, and For Sale Check. - officers will add the house to a list they check while patrolling. They will look for break ins and vandalism.</li>
-      <li>Notifying our officers of individuals that have mental handicap(s). This is in <strong>hopes</strong> that any contact will be dealt with appropriately. NOTE: This information will not be shared outside of the PD and officers.</li>
-      <li>Ordinance Violations - Everyone can't see everything all of the time but if you see a possible ordinance violation please report it. Our officers will visit the location and determine what, if any, action should be taken <a href="tel:7657370167">765-571-2640</a></li>
-    </ul>
-    <a href="https://sway.office.com/fV9iQdFiqeaRotpw?ref=Link">Active Shooting Training</a>
-    <h2><strong>Report Illegal Drug Activity Occurring in Your Area by Calling the Indiana State Police Drug Tip Line</strong></h2>
-    <p>1-800-453-4756</p>
-    <img src="images/JeffCard.jpg" alt="Jeff Card" width="200">
-    <img src="images/TravisLeeCard.jpg" alt="Travis Lee Card" width="200">
-  </div>
-  <footer>© 2026 Town of Kennard</footer>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-</body>
-</html>
+    <p><strong>(Vehicle infractions are paid to the state. Check the ticket for
