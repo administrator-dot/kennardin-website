@@ -1,43 +1,3 @@
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
-  <div class="container">
-    <a class="navbar-brand" href="/"><img src="images/tok-seal-photo-transparant_orig.png" alt="Town of Kennard Logo" width="100"></a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarNav">
-      <ul class="navbar-nav ms-auto">
-        <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
-        <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">Local Government</a>
-          <ul class="dropdown-menu">
-            <li><a class="dropdown-item" href="town-board.html">Town Board</a></li>
-            <li><a class="dropdown-item" href="minutes-agendas.html">Minutes & Agendas</a></li>
-            <li><a class="dropdown-item" href="town-ordinances.html">Town Ordinances</a></li>
-          </ul>
-        </li>
-        <li class="nav-item"><a class="nav-link" href="town-utilities.html">Town Utilities</a></li>
-        <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">Departments & Services</a>
-          <ul class="dropdown-menu">
-            <li><a class="dropdown-item" href="police-department.html">Police Department</a></li>
-            <li><a class="dropdown-item" href="fire-department.html">Fire Department</a></li>
-          </ul>
-        </li>
-        <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">Community</a>
-          <ul class="dropdown-menu">
-            <li><a class="dropdown-item" href="kennard.html">Kennard</a></li>
-            <li><a class="dropdown-item" href="local-schools.html">Local Schools</a></li>
-            <li><a class="dropdown-item" href="local-churches.html">Local Churches</a></li>
-            <li><a class="dropdown-item" href="local-business.html">Local Business</a></li>
-          </ul>
-        </li>
-        <li class="nav-item"><a class="nav-link" href="contact.html">Contact</a></li>
-        <li class="nav-item"><a class="nav-link" href="bids-info.html">Bids & Info</a></li>
-      </ul>
-    </div>
-  </div>
-</nav>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -48,34 +8,41 @@
   <link href="styles.css" rel="stylesheet">
 </head>
 <body>
-  <!-- Paste navigation code here -->
-  <div class="container">
-    <h1>Kennard Fire Department</h1>
-    <h2>Department Info</h2>
+  <div id="nav-placeholder"></div>
+  <script>
+    fetch('shared/nav.html')
+      .then(response => response.text())
+      .then(data => {
+        document.getElementById('nav-placeholder').innerHTML = data;
+      });
+  </script>
+  <div class="container center">
+    <h1><strong>Kennard Fire Department</strong></h1>
+    <h2><strong>Department Info</strong></h2>
     <p>Town of Kennard - Volunteer fire department</p>
-    <p>Seeking VOLUNTEERS: The Kennard Volunteer Fire Department are currently accepting applicants from Kennard and the surrounding area. For more information please contact the Chief at: <a href="mailto:FireChief@kennardin.com">FireChief@kennardin.com</a></p>
-    <h2>Events for 2025</h2>
+    <p><strong>Seeking VOLUNTEERS:</strong> The Kennard Volunteer Fire Department are currently accepting applicants from Kennard and the surrounding area. For more information please contact the Chief at: <a href="mailto:FireChief@kennardin.com">FireChief@kennardin.com</a></p>
+    <h2><strong>Events for 2025</strong></h2>
     <!-- Add events if any -->
-    <h2>Chief Bio</h2>
+    <h2><strong>Chief Bio</strong></h2>
     <p><strong>Ron Huffman</strong> Fire Chief</p>
     <p>Ronald (Ron) Huffman started his fire service career in 1985 as a volunteer firefighter with the Shirley Vol. Fire Department, when he moved he joined the Kennard Vol. Fire Department in 1986 and is still a member. From 1978 to 1986 he worked as a mechanic until the garage closed and was then hired at Paul Akers Inc., a propane and anhydrous ammonia engineering company. While there he worked as a service tech building, repairing and servicing propane and ammonia equipment. Then in 1989 he was hired as a career firefighter on the City of New Castle Fire Department. Ron has spent 30 years at New Castle serving in the following capacities: Firefighter, Mechanic, Engineer, Lieutenant, Battalion Chief, Fire Investigator and Hazardous Materials Advisor. Ron has been married to his wife Cindy for over 30 years, has two children and two grandkids. He’s a member of Browns Chapel Wesleyan Church and had served as a board member of the Henry County United Fund, Chairman of the Henry County Local Emergency Planning Committee (since 1999) and the Director of the Henry County Office of Emergency Management (since 2000). Ron is a strong advocate of training and responder safety, as the Counties Emergency Management Director he has been instrumental in the design and creation of the County’s Emergency Services Training Center. Mr. Huffman holds several certifications including Fire Investigator, Fire Inspector, Safety Officer, Hazmat Technician, EMT-B, Rope Rescue Technician, PIO and more.</p>
     <img src="images/Ron.jpg" alt="Ron Huffman" width="200">
-    <h2>Public Education</h2>
-    <h3>Heating Safety Flyer</h3>
+    <h2><strong>Public Education</strong></h2>
+    <h3><strong>Heating Safety Flyer</strong></h3>
     <p>Space heaters, whether portable or stationary, accounted for two of every five (40%) of home heating fires and four out of five (84%) of home heating fire deaths.</p>
     <a href="http://www.nfpa.org/public-education/by-topic/top-causes-of-fire/heating">MORE INFORMATION</a>
     <img src="images/tips-avoid-kitchen-fires_1_orig.png" alt="Heating Safety">
-    <h3>Cooking Safety Flyer</h3>
+    <h3><strong>Cooking Safety Flyer</strong></h3>
     <p>Above Average Number of Fires Per Day</p>
     <p>November 28 (Thanksgiving) 1,550 (230%)</p>
     <p>December 25(Christmas) 740 (58%)</p>
     <p>December 24 (Christmas Eve) 720 (54%)</p>
     <a href="http://www.nfpa.org/public-education/by-topic/top-causes-of-fire/cooking/safety-messages-about-cooking">MORE INFORMATION</a>
-    <h3>Youth Firestarters Flyer</h3>
+    <h3><strong>Youth Firestarters Flyer</strong></h3>
     <p>Younger children were more likely to set fires in homes, while older children and teenagers are more likely to set fires outside.</p>
     <a href="http://www.nfpa.org/public-education/by-topic/top-causes-of-fire/young-firesetters">MORE INFORMATION</a>
     <p>The Information below is provided by <a href="https://electrosawhq.com/">ElectroSawHQ.com</a>. They offer lots of reviews and information. <a href="https://electrosawhq.com/">Check them out.</a></p>
-    <h2>Become a KVFD Member</h2>
+    <h2><strong>Become a KVFD Member</strong></h2>
     <p>Contact Chief Ron Huffman at <a href="mailto:firechief@kennardin.com">firechief@kennardin.com</a></p>
     <p>We are also on Facebook, be sure to like us to keep up with all the latest at KVFD!</p>
   </div>
