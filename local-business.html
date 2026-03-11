@@ -1,43 +1,3 @@
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
-  <div class="container">
-    <a class="navbar-brand" href="/"><img src="images/tok-seal-photo-transparant_orig.png" alt="Town of Kennard Logo" width="100"></a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarNav">
-      <ul class="navbar-nav ms-auto">
-        <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
-        <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">Local Government</a>
-          <ul class="dropdown-menu">
-            <li><a class="dropdown-item" href="town-board.html">Town Board</a></li>
-            <li><a class="dropdown-item" href="minutes-agendas.html">Minutes & Agendas</a></li>
-            <li><a class="dropdown-item" href="town-ordinances.html">Town Ordinances</a></li>
-          </ul>
-        </li>
-        <li class="nav-item"><a class="nav-link" href="town-utilities.html">Town Utilities</a></li>
-        <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">Departments & Services</a>
-          <ul class="dropdown-menu">
-            <li><a class="dropdown-item" href="police-department.html">Police Department</a></li>
-            <li><a class="dropdown-item" href="fire-department.html">Fire Department</a></li>
-          </ul>
-        </li>
-        <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">Community</a>
-          <ul class="dropdown-menu">
-            <li><a class="dropdown-item" href="kennard.html">Kennard</a></li>
-            <li><a class="dropdown-item" href="local-schools.html">Local Schools</a></li>
-            <li><a class="dropdown-item" href="local-churches.html">Local Churches</a></li>
-            <li><a class="dropdown-item" href="local-business.html">Local Business</a></li>
-          </ul>
-        </li>
-        <li class="nav-item"><a class="nav-link" href="contact.html">Contact</a></li>
-        <li class="nav-item"><a class="nav-link" href="bids-info.html">Bids & Info</a></li>
-      </ul>
-    </div>
-  </div>
-</nav>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -48,26 +8,33 @@
   <link href="styles.css" rel="stylesheet">
 </head>
 <body>
-  <!-- Paste navigation code here -->
-  <div class="container">
-    <h1>Local Business</h1>
-    <h2>Town of Kennard - Local businesses</h2>
-    <h3>T. Lee Mobile Mechanic and Service LLC</h3>
+  <div id="nav-placeholder"></div>
+  <script>
+    fetch('shared/nav.html')
+      .then(response => response.text())
+      .then(data => {
+        document.getElementById('nav-placeholder').innerHTML = data;
+      });
+  </script>
+  <div class="container center">
+    <h1><strong>Local Business</strong></h1>
+    <h2><strong>Town of Kennard - Local businesses</strong></h2>
+    <h3><strong>T. Lee Mobile Mechanic and Service LLC</strong></h3>
     <p>Mobile Service</p>
     <p>P.O. Box 213</p>
     <p>Kennard, Indiana, 47351</p>
     <p>765-325-9330</p>
-    <h3>Minnick's Towing</h3>
+    <h3><strong>Minnick's Towing</strong></h3>
     <p>314 N MAIN ST,</p>
     <p>KENNARD, IN, 47351</p>
     <p><a href="tel:+1-765-520-9652">765-520-9652</a></p>
-    <h3>RBA Web Design and Technology</h3>
+    <h3><strong>RBA Web Design and Technology</strong></h3>
     <p><a href="https://www.rbawebdesign.com/email.html">Email RBA Web Design</a></p>
     <p><a href="https://www.rbawebdesign.com/">RBAWebDesign.com</a></p>
-    <h3>U.S. Post Office</h3>
+    <h3><strong>U.S. Post Office</strong></h3>
     <p>Located at: 100 N Main St Kennard, IN 47351</p>
     <p><a href="https://tools.usps.com/go/POLocatorDetailsAction!input.action?locationTypeQ=all&address=kennard%2C+In&radius=20&locationType=po&locationID=1368852&locationName=KENNARD&address2=&address1=100+N+MAIN+ST&city=KENNARD&state=IN&zip5=47351&zip4=9700&tollFree=800-ASK-USPS%26reg%3B%26nbsp%3B%28800-275-8777%29&fax=&tAddress=&tAddress1Ams=&tAddress2Ams=&tCityAms=&tStateAms=&tZipAms=&tCarrierRouteAms=&latitude=39.9037177&longitude=-85.519256&sWithin=20&&&&&&&&&&">USPS.Com</a></p>
-    <img src="images/usps.png" alt="USPS Logo">
+    <img src="images/usps.png" alt="USPS Logo" style="width: 100%;">
   </div>
   <footer>© 2026 Town of Kennard</footer>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
