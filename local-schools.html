@@ -8,7 +8,7 @@
   <link href="styles.css" rel="stylesheet">
 </head>
 <body>
-  <!-- Navigation with 160px logo in corner only - centered menu -->
+  <!-- Centered nav with 160px logo in nav only - matches index exactly -->
   <nav class="navbar navbar-expand-lg" style="background-color: #001f3f;">
     <div class="container">
       <a class="navbar-brand" href="index.html"><img src="images/final-web-seal.png" alt="Town of Kennard Logo" width="160"></a>
@@ -17,7 +17,34 @@
       </button>
       <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav mx-auto">
-          <!-- same centered nav links as above -->
+          <li class="nav-item"><a class="nav-link text-white" href="index.html">Home</a></li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle text-white" href="#" data-bs-toggle="dropdown">Local Government</a>
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-item" href="town-board.html">Town Board</a></li>
+              <li><a class="dropdown-item" href="minutes-agendas.html">Minutes & Agendas</a></li>
+              <li><a class="dropdown-item" href="town-ordinances.html">Town Ordinances</a></li>
+            </ul>
+          </li>
+          <li class="nav-item"><a class="nav-link text-white" href="town-utilities.html">Town Utilities</a></li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle text-white" href="#" data-bs-toggle="dropdown">Departments & Services</a>
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-item" href="police-department.html">Police Department</a></li>
+              <li><a class="dropdown-item" href="fire-department.html">Fire Department</a></li>
+            </ul>
+          </li>
+          <li class="nav-item dropdown show">
+            <a class="nav-link dropdown-toggle text-white" href="#" data-bs-toggle="dropdown">Community</a>
+            <ul class="dropdown-menu show">
+              <li><a class="dropdown-item" href="kennard.html">Kennard</a></li>
+              <li><a class="dropdown-item" href="local-schools.html">Local Schools</a></li>
+              <li><a class="dropdown-item" href="local-churches.html">Local Churches</a></li>
+              <li><a class="dropdown-item" href="local-business.html">Local Business</a></li>
+            </ul>
+          </li>
+          <li class="nav-item"><a class="nav-link text-white" href="contact.html">Contact</a></li>
+          <li class="nav-item"><a class="nav-link text-white" href="bids-info.html">Bids & Info</a></li>
         </ul>
       </div>
     </div>
@@ -32,8 +59,23 @@
 
   <div class="container section">
     <h2>Town of Kennard - Local Schools</h2>
-    <!-- full content as before, left-justified -->
+    <h3>Charles A. Beard Memorial School Corporation</h3>
+    <p>The Town itself is part of the <a href="http://www.cabeard.k12.in.us/">Charles A. Beard Memorial School Corporations district</a>.</p>
+    <p>Your students can catch a bus directly in Kennard.</p>
+    <p>All schools are located in Knightstown, Indiana (about 9 miles South of Kennard).</p>
+    <p>For more information and state ranking: <a href="https://www.schooldigger.com/go/IN/district/01060/search.aspx">CLICK HERE</a></p>
+
+    <h3>Shenandoah School Corporation</h3>
+    <p>Located about 7 miles North of Kennard.</p>
+    <p>Closest bus stop is 1 mile North at the Baptist Church parking lot.</p>
+    <p>For more information and state ranking: <a href="https://www.schooldigger.com/go/IN/district/08280/search.aspx">CLICK HERE</a></p>
+
+    <h3>Eastern Hancock Community School Corporation</h3>
+    <p>Located 15 miles Southwest of Kennard.</p>
+    <p>Closest bus stop is in Shirley, Indiana (3.5 miles West of Kennard).</p>
+    <p>For more information and state ranking: <a href="https://www.schooldigger.com/go/IN/district/03120/search.aspx">CLICK HERE</a></p>
   </div>
+
   <footer>© 2026 Town of Kennard</footer>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
