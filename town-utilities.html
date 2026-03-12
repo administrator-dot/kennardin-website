@@ -8,11 +8,45 @@
   <link href="styles.css" rel="stylesheet">
 </head>
 <body>
-  <!-- Navigation with 160px logo in corner only -->
+  <!-- Centered nav with 160px logo in nav only - exactly like index -->
   <nav class="navbar navbar-expand-lg" style="background-color: #001f3f;">
     <div class="container">
       <a class="navbar-brand" href="index.html"><img src="images/final-web-seal.png" alt="Town of Kennard Logo" width="160"></a>
-      <!-- same nav links as above -->
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon" style="filter: invert(1);"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav mx-auto">
+          <li class="nav-item"><a class="nav-link text-white" href="index.html">Home</a></li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle text-white" href="#" data-bs-toggle="dropdown">Local Government</a>
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-item" href="town-board.html">Town Board</a></li>
+              <li><a class="dropdown-item" href="minutes-agendas.html">Minutes & Agendas</a></li>
+              <li><a class="dropdown-item" href="town-ordinances.html">Town Ordinances</a></li>
+            </ul>
+          </li>
+          <li class="nav-item"><a class="nav-link text-white" href="town-utilities.html">Town Utilities</a></li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle text-white" href="#" data-bs-toggle="dropdown">Departments & Services</a>
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-item" href="police-department.html">Police Department</a></li>
+              <li><a class="dropdown-item" href="fire-department.html">Fire Department</a></li>
+            </ul>
+          </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle text-white" href="#" data-bs-toggle="dropdown">Community</a>
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-item" href="kennard.html">Kennard</a></li>
+              <li><a class="dropdown-item" href="local-schools.html">Local Schools</a></li>
+              <li><a class="dropdown-item" href="local-churches.html">Local Churches</a></li>
+              <li><a class="dropdown-item" href="local-business.html">Local Business</a></li>
+            </ul>
+          </li>
+          <li class="nav-item"><a class="nav-link text-white" href="contact.html">Contact</a></li>
+          <li class="nav-item"><a class="nav-link text-white" href="bids-info.html">Bids & Info</a></li>
+        </ul>
+      </div>
     </div>
   </nav>
 
@@ -26,10 +60,36 @@
   <div class="container section">
     <h2>New to Town?</h2>
     <p>Welcome to Kennard. If you have not done so, set up your wastewater and trash service within 7 days of arriving.</p>
-    <!-- full content from previous version, left-justified -->
   </div>
 
-  <!-- Clerk's Office, Pay Online, Local Utilities sections as before -->
+  <div class="container section">
+    <h2>Clerk's Office</h2>
+    <p>Clerk/Treasurer: Jan Lockridge<br>
+    Phone: (765) 785-2331<br>
+    Email: <a href="mailto:clerk@kennardin.com">clerk@kennardin.com</a></p>
+  </div>
+
+  <div class="container section">
+    <h2>Pay Online</h2>
+    <p>Wastewater & Trash Utility can now be paid online!</p>
+    <a href="https://pay.paygov.us/EndUser/PaymentAgency.aspx?ttid=16686" class="green-button">Pay Online Now</a>
+  </div>
+
+  <div class="container section">
+    <h2>Local Utilities</h2>
+    <h3>Fountain Town Gas Emergency</h3>
+    <p>800-379-1800 or 833-763-6393</p>
+    <h3>Duke Energy (Residential)</h3>
+    <p>800-777-9898</p>
+    <h3>Duke Energy (Business)</h3>
+    <p>800-653-5307</p>
+  </div>
+
+  <div class="container section">
+    <h2>State Law Requirement</h2>
+    <p>Indiana State Law (IC 36-9-25-11.5) requires all property owners to connect to the wastewater system. Failure to connect may result in penalties.</p>
+  </div>
+
   <footer>© 2026 Town of Kennard</footer>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
