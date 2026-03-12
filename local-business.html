@@ -8,11 +8,45 @@
   <link href="styles.css" rel="stylesheet">
 </head>
 <body>
-  <!-- Navigation with 160px logo in corner only -->
+  <!-- Centered nav with 160px logo in nav only - matches index exactly -->
   <nav class="navbar navbar-expand-lg" style="background-color: #001f3f;">
     <div class="container">
       <a class="navbar-brand" href="index.html"><img src="images/final-web-seal.png" alt="Town of Kennard Logo" width="160"></a>
-      <!-- same nav links as above -->
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon" style="filter: invert(1);"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav mx-auto">
+          <li class="nav-item"><a class="nav-link text-white" href="index.html">Home</a></li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle text-white" href="#" data-bs-toggle="dropdown">Local Government</a>
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-item" href="town-board.html">Town Board</a></li>
+              <li><a class="dropdown-item" href="minutes-agendas.html">Minutes & Agendas</a></li>
+              <li><a class="dropdown-item" href="town-ordinances.html">Town Ordinances</a></li>
+            </ul>
+          </li>
+          <li class="nav-item"><a class="nav-link text-white" href="town-utilities.html">Town Utilities</a></li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle text-white" href="#" data-bs-toggle="dropdown">Departments & Services</a>
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-item" href="police-department.html">Police Department</a></li>
+              <li><a class="dropdown-item" href="fire-department.html">Fire Department</a></li>
+            </ul>
+          </li>
+          <li class="nav-item dropdown show">
+            <a class="nav-link dropdown-toggle text-white" href="#" data-bs-toggle="dropdown">Community</a>
+            <ul class="dropdown-menu show">
+              <li><a class="dropdown-item" href="kennard.html">Kennard</a></li>
+              <li><a class="dropdown-item" href="local-schools.html">Local Schools</a></li>
+              <li><a class="dropdown-item" href="local-churches.html">Local Churches</a></li>
+              <li><a class="dropdown-item" href="local-business.html">Local Business</a></li>
+            </ul>
+          </li>
+          <li class="nav-item"><a class="nav-link text-white" href="contact.html">Contact</a></li>
+          <li class="nav-item"><a class="nav-link text-white" href="bids-info.html">Bids & Info</a></li>
+        </ul>
+      </div>
     </div>
   </nav>
 
@@ -24,24 +58,30 @@
   </div>
 
   <div class="container section">
-    <h2>Town of Kennard - Local businesses</h2>
+    <h2>Town of Kennard - Local Businesses</h2>
+    
     <h3>T. Lee Mobile Mechanic and Service LLC</h3>
-    <p>Mobile Service</p>
-    <p>P.O. Box 213</p>
-    <p>Kennard, Indiana, 47351</p>
-    <p>765-325-9330</p>
+    <p>Mobile Service<br>P.O. Box 213<br>Kennard, Indiana 47351<br>765-325-9330</p>
+    <div class="center">
+      <img src="images/TravisLeeCard.jpg" alt="Travis Lee Mobile Mechanic Business Card" style="max-width: 100%; border-radius: 8px;">
+    </div>
+
     <h3>Minnick's Towing</h3>
-    <p>314 N MAIN ST, KENNARD, IN, 47351</p>
-    <p><a href="tel:+1-765-520-9652">765-520-9652</a></p>
+    <p>314 N Main St, Kennard, IN 47351<br>765-520-9652</p>
+    <div class="center">
+      <img src="images/JeffCard.jpg" alt="Jeff Minnick Towing Business Card" style="max-width: 100%; border-radius: 8px;">
+    </div>
+
     <h3>RBA Web Design and Technology</h3>
-    <p><a href="https://www.rbawebdesign.com/email.html">Email RBA Web Design</a></p>
-    <p><a href="https://www.rbawebdesign.com/">RBAWebDesign.com</a></p>
+    <p><a href="https://www.rbawebdesign.com/">www.rbawebdesign.com</a></p>
+
     <h3>U.S. Post Office</h3>
-    <p>Located at: 100 N Main St Kennard, IN 47351</p>
+    <p>100 N Main St, Kennard, IN 47351</p>
     <div class="center">
       <img src="images/usps.png" alt="USPS Logo" style="width: 100%; max-width: 400px;">
     </div>
   </div>
+
   <footer>© 2026 Town of Kennard</footer>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
