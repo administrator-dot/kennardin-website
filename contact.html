@@ -1,130 +1,70 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Contact | Town of Kennard</title>
-
-<link rel="stylesheet" href="styles.css">
-
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contact - Town of Kennard</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="styles.css" rel="stylesheet">
 </head>
-
 <body>
+  <!-- Navigation with 160px logo in corner only - centered menu -->
+  <nav class="navbar navbar-expand-lg" style="background-color: #001f3f;">
+    <div class="container">
+      <a class="navbar-brand" href="index.html"><img src="images/final-web-seal.png" alt="Town of Kennard Logo" width="160"></a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon" style="filter: invert(1);"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav mx-auto">
+          <li class="nav-item"><a class="nav-link text-white" href="index.html">Home</a></li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle text-white" href="#" data-bs-toggle="dropdown">Local Government</a>
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-item" href="town-board.html">Town Board</a></li>
+              <li><a class="dropdown-item" href="minutes-agendas.html">Minutes & Agendas</a></li>
+              <li><a class="dropdown-item" href="town-ordinances.html">Town Ordinances</a></li>
+            </ul>
+          </li>
+          <li class="nav-item"><a class="nav-link text-white" href="town-utilities.html">Town Utilities</a></li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle text-white" href="#" data-bs-toggle="dropdown">Departments & Services</a>
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-item" href="police-department.html">Police Department</a></li>
+              <li><a class="dropdown-item" href="fire-department.html">Fire Department</a></li>
+            </ul>
+          </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle text-white" href="#" data-bs-toggle="dropdown">Community</a>
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-item" href="kennard.html">Kennard</a></li>
+              <li><a class="dropdown-item" href="local-schools.html">Local Schools</a></li>
+              <li><a class="dropdown-item" href="local-churches.html">Local Churches</a></li>
+              <li><a class="dropdown-item" href="local-business.html">Local Business</a></li>
+            </ul>
+          </li>
+          <li class="nav-item"><a class="nav-link text-white" href="contact.html">Contact</a></li>
+          <li class="nav-item"><a class="nav-link text-white" href="bids-info.html">Bids & Info</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
 
-<nav class="navbar navbar-expand-lg navbar-dark">
-<div class="container">
+  <!-- Thin blue banner with ONLY centered title -->
+  <div class="banner" style="padding: 8px 20px;">
+    <div class="container text-center">
+      <h1 style="color: white; margin: 0;">Contact</h1>
+    </div>
+  </div>
 
-<a class="navbar-brand" href="index.html">
-<img src="images/tok-seal-photo-transparent_orig.png" alt="Town of Kennard Seal" height="60">
-</a>
-
-<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav">
-<span class="navbar-toggler-icon"></span>
-</button>
-
-<div class="collapse navbar-collapse" id="mainNav">
-
-<ul class="navbar-nav ms-auto">
-
-<li class="nav-item">
-<a class="nav-link" href="index.html">Home</a>
-</li>
-
-<li class="nav-item dropdown">
-<a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
-Local Government
-</a>
-<ul class="dropdown-menu">
-<li><a class="dropdown-item" href="town-board.html">Town Board</a></li>
-<li><a class="dropdown-item" href="minutes-agenda.html">Minutes & Agendas</a></li>
-<li><a class="dropdown-item" href="town-ordinances.html">Town Ordinances</a></li>
-</ul>
-</li>
-
-<li class="nav-item">
-<a class="nav-link" href="town-utilities.html">Town Utilities</a>
-</li>
-
-<li class="nav-item dropdown">
-<a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
-Departments & Services
-</a>
-<ul class="dropdown-menu">
-<li><a class="dropdown-item" href="police.html">Police Department</a></li>
-<li><a class="dropdown-item" href="fire.html">Fire Department</a></li>
-</ul>
-</li>
-
-<li class="nav-item dropdown">
-<a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
-Community
-</a>
-<ul class="dropdown-menu">
-<li><a class="dropdown-item" href="kennard.html">Kennard</a></li>
-<li><a class="dropdown-item" href="local-schools.html">Local Schools</a></li>
-<li><a class="dropdown-item" href="local-churches.html">Local Churches</a></li>
-<li><a class="dropdown-item" href="local-business.html">Local Business</a></li>
-</ul>
-</li>
-
-<li class="nav-item">
-<a class="nav-link active" href="contact.html">Contact</a>
-</li>
-
-<li class="nav-item">
-<a class="nav-link" href="bids.html">Bids & Info</a>
-</li>
-
-</ul>
-
-</div>
-</div>
-</nav>
-
-<div class="container mt-4">
-
-<div class="section">
-
-<h1>Contact Town of Kennard</h1>
-
-<p>If you have a question for the Town of Kennard, please use the form below.</p>
-
-<form>
-
-<div class="mb-3">
-<label for="name" class="form-label">Name</label>
-<input type="text" class="form-control" id="name" name="name">
-</div>
-
-<div class="mb-3">
-<label for="email" class="form-label">Email</label>
-<input type="email" class="form-control" id="email" name="email">
-</div>
-
-<div class="mb-3">
-<label for="phone" class="form-label">Phone</label>
-<input type="text" class="form-control" id="phone" name="phone">
-</div>
-
-<div class="mb-3">
-<label for="message" class="form-label">Question</label>
-<textarea class="form-control" id="message" name="message" rows="5"></textarea>
-</div>
-
-<button type="submit" class="green-button">Send Message</button>
-
-</form>
-
-</div>
-
-</div>
-
-<footer>
-<p>Town of Kennard, Indiana</p>
-</footer>
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-
+  <div class="container section">
+    <p><strong>Clerk/Treasurer:</strong> <a href="mailto:clerk@kennardin.com">clerk@kennardin.com</a></p>
+    <p><strong>Phone:</strong> (765) 785-2331</p>
+    <p><strong>Police Non-Emergency:</strong> 765-571-2640</p>
+    <p><strong>Fire Chief:</strong> <a href="mailto:firechief@kennardin.com">firechief@kennardin.com</a></p>
+    <p><strong>Town Hall:</strong> P.O. Box 167, Kennard, IN 47351</p>
+  </div>
+  <footer>© 2026 Town of Kennard</footer>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
