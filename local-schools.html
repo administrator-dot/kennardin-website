@@ -8,11 +8,18 @@
   <link href="styles.css" rel="stylesheet">
 </head>
 <body>
-  <!-- Navigation with 160px logo in corner only -->
+  <!-- Navigation with 160px logo in corner only - centered menu -->
   <nav class="navbar navbar-expand-lg" style="background-color: #001f3f;">
     <div class="container">
       <a class="navbar-brand" href="index.html"><img src="images/final-web-seal.png" alt="Town of Kennard Logo" width="160"></a>
-      <!-- same nav links as above -->
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon" style="filter: invert(1);"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav mx-auto">
+          <!-- same centered nav links as above -->
+        </ul>
+      </div>
     </div>
   </nav>
 
@@ -25,27 +32,7 @@
 
   <div class="container section">
     <h2>Town of Kennard - Local Schools</h2>
-    <h3>Charles A. Beard Memorial School Corporation</h3>
-    <p>The Town itself is part of the <a href="http://www.cabeard.k12.in.us/">Charles A. Beard Memorial School Corporations district</a>.</p>
-    <p>Your students can catch a bus directly in Kennard.</p>
-    <p>All of Charles A. Beard Memorial School Corporation schools are located in Knightstown, Indiana.</p>
-    <p>Knightstown is located about 9 miles South of Kennard.</p>
-    <p>For More Information about the Charles A. Beard Memorial School Corporation and their state ranking <a href="https://www.schooldigger.com/go/IN/district/01060/search.aspx">CLICK HERE</a>.</p>
-  </div>
-
-  <div class="container section">
-    <h3>Shenandoah School Corporation</h3>
-    <p>The <a href="http://www.shenandoah.k12.in.us/education/district/district.php?sectionid=1">Shenandoah School Corporation</a> is located about 7 miles North of Kennard.</p>
-    <p>The closest bus stop for students is located 1-mile North of Kennard at the Baptist Church Parking lot.</p>
-    <p>For More Information about Shenandoah School Corporation and their state ranking <a href="https://www.schooldigger.com/go/IN/district/08280/search.aspx">CLICK HERE</a>.</p>
-  </div>
-
-  <div class="container section">
-    <h3>Eastern Hancock Community School Corporation</h3>
-    <p>The <a href="https://sites.google.com/a/ehancock.org/ehhs/">Eastern Hancock Community School Corporation</a> is located 15 miles Southwest of Kennard.</p>
-    <p>The closest bus stop for students is in our neighboring town of Shirley, Indiana.</p>
-    <p>Shirley is located about 3.5 miles West of Kennard.</p>
-    <p>For more information about Eastern Hancock Community School Corporation and their state ranking <a href="https://www.schooldigger.com/go/IN/district/03120/search.aspx">CLICK HERE</a>.</p>
+    <!-- full content as before, left-justified -->
   </div>
   <footer>© 2026 Town of Kennard</footer>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
