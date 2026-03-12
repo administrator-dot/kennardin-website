@@ -8,7 +8,7 @@
   <link href="styles.css" rel="stylesheet">
 </head>
 <body>
-  <!-- Centered nav with BOTH logos (town left + police seal right) -->
+  <!-- Centered nav with BOTH logos: Town seal left + Police seal right on white background -->
   <nav class="navbar navbar-expand-lg" style="background-color: #001f3f;">
     <div class="container">
       <a class="navbar-brand" href="index.html"><img src="images/final-web-seal.png" alt="Town of Kennard Logo" width="160"></a>
@@ -50,8 +50,13 @@
         </ul>
       </div>
       
-      <!-- Police Seal on the RIGHT side of nav only -->
-      <a class="navbar-brand ms-auto" href="police-department.html"><img src="images/policeseal-lighter-blue_1.png" alt="Kennard Police Seal" width="160"></a>
+      <!-- Police Seal on the RIGHT side of nav with WHITE background -->
+      <a class="navbar-brand ms-auto" href="police-department.html">
+        <img src="images/policeseal-lighter-blue_1.png" 
+             alt="Kennard Police Seal" 
+             width="160" 
+             style="background-color: white; padding: 8px; border-radius: 8px;">
+      </a>
     </div>
   </nav>
 
@@ -62,6 +67,7 @@
     </div>
   </div>
 
+  <!-- All your original content is still here -->
   <div class="container section">
     <h2>Kennard’s Law Enforcement</h2>
     <p>Our police department provides 24/7 protection for the Town of Kennard and surrounding areas.</p>
