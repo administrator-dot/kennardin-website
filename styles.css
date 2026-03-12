@@ -1,16 +1,15 @@
 body { font-family: Arial, sans-serif; margin: 0; padding: 0; }
 .container { max-width: 1200px; margin: auto; padding: 20px; }
-h1, h2 { color: #333; font-weight: bold; }
-h3 { font-weight: bold; }
+h1, h2 { color: #333; font-weight: bold; text-align: center; }
+h3 { font-weight: bold; text-align: left; }
 footer { background: #f8f9fa; text-align: center; padding: 10px; margin-top: 40px; }
-.green-button { background-color: #001f3f; color: white; padding: 10px 20px; margin: 10px; border: none; text-decoration: none; display: inline-block; border-radius: 5px; }
+.green-button { background-color: #001f3f; color: white; padding: 10px 20px; margin: 10px; border: none; text-decoration: none; display: inline-block; border-radius: 5px; transition: background-color 0.3s; }
 .green-button:hover { background-color: #004d80; }
 .center { text-align: center; }
 .section { margin-bottom: 40px; background: #f9f9f9; padding: 20px; border-radius: 5px; text-align: left; }
 .banner { background: linear-gradient(to right, #001f3f, #004d80); color: white; padding: 20px; text-align: center; }
-.bid-heading { color: red; font-weight: bold; }
+.bid-heading { color: red; font-weight: bold; text-align: center; }
 .alert-info { background-color: #d1ecf1; border-color: #bee5eb; color: #0c5460; padding: 10px; border-radius: 5px; margin-bottom: 20px; text-align: left; }
 .nav-link { color: white !important; }
 .navbar-toggler-icon { filter: invert(1); }
-.section { animation: fadeIn 1s; }
-@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+.navbar { background: linear-gradient(to right, #001f3f, #004d80) !important; }
