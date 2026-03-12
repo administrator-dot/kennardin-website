@@ -8,15 +8,15 @@
   <link href="styles.css" rel="stylesheet">
 </head>
 <body>
-  <!-- Navigation with logo in corner -->
-  <nav class="navbar navbar-expand-lg" style="background-color: #004d00;">
+  <!-- Centered nav with 160px logo in nav only - matches index exactly -->
+  <nav class="navbar navbar-expand-lg" style="background-color: #001f3f;">
     <div class="container">
-      <a class="navbar-brand" href="index.html"><img src="images/final-web-seal.png" alt="Town of Kennard Logo" width="80"></a>
+      <a class="navbar-brand" href="index.html"><img src="images/final-web-seal.png" alt="Town of Kennard Logo" width="160"></a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
         <span class="navbar-toggler-icon" style="filter: invert(1);"></span>
       </button>
       <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav ms-auto">
+        <ul class="navbar-nav mx-auto">
           <li class="nav-item"><a class="nav-link text-white" href="index.html">Home</a></li>
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle text-white" href="#" data-bs-toggle="dropdown">Local Government</a>
@@ -34,9 +34,9 @@
               <li><a class="dropdown-item" href="fire-department.html">Fire Department</a></li>
             </ul>
           </li>
-          <li class="nav-item dropdown show"> <!-- Added 'show' to open dropdown -->
+          <li class="nav-item dropdown show">
             <a class="nav-link dropdown-toggle text-white" href="#" data-bs-toggle="dropdown">Community</a>
-            <ul class="dropdown-menu show"> <!-- Added 'show' to open dropdown -->
+            <ul class="dropdown-menu show">
               <li><a class="dropdown-item" href="kennard.html">Kennard</a></li>
               <li><a class="dropdown-item" href="local-schools.html">Local Schools</a></li>
               <li><a class="dropdown-item" href="local-churches.html">Local Churches</a></li>
@@ -50,9 +50,9 @@
     </div>
   </nav>
 
-  <!-- Banner with title -->
-  <div class="banner">
-    <div class="container">
+  <!-- Thin blue banner with ONLY centered title -->
+  <div class="banner" style="padding: 8px 20px;">
+    <div class="container text-center">
       <h1 style="color: white; margin: 0;">Kennard Community</h1>
     </div>
   </div>
@@ -60,48 +60,31 @@
   <div class="container section">
     <h2>Emergency Contacts - Town of Kennard, Indiana</h2>
     <p><strong>For all emergencies: Dial 911</strong></p>
+    
     <h3>Law Enforcement</h3>
     <ul>
       <li>Kennard Police (Non-Emergency): 765-571-2640</li>
-      <li>Henry County Sheriff: Main Office: 765-521-7032, Dispatch: 765-529-4901, Investigations: 765-529-5669</li>
-      <li>Hancock County Sheriff: Administration: 317-477-1147, Investigations: 317-477-1199, Jail Division: 317-477-1158</li>
-      <li>New Castle Police: 765-529-4890</li>
-      <li>Knightstown Police: 765-345-2785</li>
-      <li>Middletown Police: 765-354-2281</li>
+      <li>Henry County Sheriff: Main Office 765-521-7032 • Dispatch 765-529-4901</li>
     </ul>
+
     <h3>Fire Departments</h3>
     <ul>
       <li>Kennard Fire Department: 911</li>
-      <li>New Castle Fire Department: 765-521-6815</li>
-      <li>Knightstown Fire Department: 765-345-2121</li>
-      <li>Middletown Fire Department: 765-354-2268</li>
     </ul>
+    <p><strong>General Fire Department questions:</strong> <a href="mailto:VFD@kennardin.com">VFD@kennardin.com</a></p>
+
     <h3>EMS Services</h3>
     <ul>
       <li>New Castle-Henry County EMS: 765-521-6860</li>
-      <li>Henry County EMS (Sheriff Ambulance): 765-545-0330</li>
     </ul>
+
     <h3>Utility Contacts</h3>
     <ul>
       <li>Fountain Town Gas Emergency: 800-379-1800 or 833-763-6393</li>
       <li>Duke Energy (Residential): 800-777-9898</li>
-      <li>Duke Energy (Business): 800-653-5307</li>
     </ul>
-    <h3>Town of Kennard Officials</h3>
-    <ul>
-      <li>Clerk/Treasurer: <a href="mailto:clerk@kennardin.com">clerk@kennardin.com</a></li>
-      <li>Council President: <a href="mailto:steve@kennardin.com">steve@kennardin.com</a></li>
-      <li>Council Member: <a href="mailto:holly@kennardin.com">holly@kennardin.com</a></li>
-      <li>Council Member: <a href="mailto:jason@kennardin.com">jason@kennardin.com</a></li>
-      <li>Police Chief: <a href="mailto:bill@kennardin.com">bill@kennardin.com</a></li>
-      <li>Deputy Marshal: <a href="mailto:deputymarshal@kennardin.com">deputymarshal@kennardin.com</a></li>
-      <li>Fire Chief: <a href="mailto:firechief@kennardin.com">firechief@kennardin.com</a></li>
-    </ul>
-    <h3>Additional Contacts</h3>
-    <ul>
-      <li>Indiana Department of Environmental Management (Spills): 888-233-7745</li>
-      <li>National Weather Service (Storm Info): 317-856-0664</li>
-    </ul>
+
+    <p><strong>Note to Citizens:</strong> Board members are to be addressed only during public meetings. Please direct any council-related comments to the public comment period on the agenda.</p>
   </div>
 
   <div class="container section">
@@ -119,40 +102,14 @@
     <p>The Kennard Trail (Woolly Bear Parkway) is part of The Raintree Trails and Greenways Systems. For more information on this trail and additional area trails in Henry County please visit <a href="http://www.hchcin.org/">www.hchcin.org</a>.</p>
     <h3>Trail Gallery</h3>
     <div class="row">
-      <div class="col-md-3">
-        <a href="images/Trail1.jpg" target="_blank">
-          <img src="images/Trail1.jpg" alt="Trail 1" style="width: 100%;">
-        </a>
-      </div>
-      <div class="col-md-3">
-        <a href="images/Trail2.jpg" target="_blank">
-          <img src="images/Trail2.jpg" alt="Trail 2" style="width: 100%;">
-        </a>
-      </div>
-      <div class="col-md-3">
-        <a href="images/Trail3.jpg" target="_blank">
-          <img src="images/Trail3.jpg" alt="Trail 3" style="width: 100%;">
-        </a>
-      </div>
-      <div class="col-md-3">
-        <a href="images/Trailrules.jpg" target="_blank">
-          <img src="images/Trailrules.jpg" alt="Trail Rules" style="width: 100%;">
-        </a>
-      </div>
+      <div class="col-md-3"><a href="images/Trail1.jpg" target="_blank"><img src="images/Trail1.jpg" alt="Trail 1" style="width: 100%;"></a></div>
+      <div class="col-md-3"><a href="images/Trail2.jpg" target="_blank"><img src="images/Trail2.jpg" alt="Trail 2" style="width: 100%;"></a></div>
+      <div class="col-md-3"><a href="images/Trail3.jpg" target="_blank"><img src="images/Trail3.jpg" alt="Trail 3" style="width: 100%;"></a></div>
+      <div class="col-md-3"><a href="images/Trailrules.jpg" target="_blank"><img src="images/Trailrules.jpg" alt="Trail Rules" style="width: 100%;"></a></div>
     </div>
   </div>
+
   <footer>© 2026 Town of Kennard</footer>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-  <script>
-    // Open Community dropdown on page load
-    document.addEventListener('DOMContentLoaded', function() {
-      var communityDropdown = document.querySelector('.dropdown-toggle[href="#"][aria-expanded="false"]');
-      if (communityDropdown && communityDropdown.textContent.trim() === 'Community') {
-        var dropdownMenu = communityDropdown.nextElementSibling;
-        communityDropdown.classList.add('show');
-        dropdownMenu.classList.add('show');
-      }
-    });
-  </script>
 </body>
 </html>
