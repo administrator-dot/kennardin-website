@@ -8,7 +8,6 @@
   <link href="styles.css" rel="stylesheet">
 </head>
 <body>
-  <!-- Nav -->
   <nav class="navbar navbar-expand-lg" style="background-color: #001f3f;">
     <div class="container">
       <a class="navbar-brand" href="index.html"><img src="images/final-web-seal.png" alt="Town of Kennard Logo" width="160"></a>
@@ -54,18 +53,15 @@
     </div>
   </nav>
 
-  <!-- Thin blue banner -->
   <div class="banner" style="padding: 8px 20px;">
     <div class="container text-center">
       <h1 style="color: white; margin: 0;">Town of Kennard</h1>
     </div>
   </div>
 
-  <!-- Welcome section - centered -->
   <div class="container section text-center">
     <h2>Welcome to Kennard, IN</h2>
     <p>Kennard is located in western Henry County and is a part of Greensboro Township.</p>
-    
     <div class="d-flex justify-content-center gap-3 flex-wrap">
       <a href="contact.html" class="green-button">Clerks Office</a>
       <a href="town-utilities.html" class="green-button">Town Utilities</a>
@@ -73,28 +69,20 @@
     </div>
   </div>
 
-  <!-- Bids summary -->
   <div class="container section">
-    <h2 class="bid-heading">Current Bids Needed</h2>
+    <h2>Current Bids Needed</h2>
     <p>The Town of Kennard is accepting sealed bids for Post Office and Town Hall maintenance work.</p>
-    <a href="bids-info.html" class="green-button">View Full Bid Details & Submit</a>
+    <a href="bids-info.html" class="green-button">View Full Bid Details</a>
   </div>
 
-  <!-- Livestream -->
   <div class="container section">
     <h2>Watch Town Meetings Live</h2>
     <p>Meetings are streamed live on our <a href="https://www.youtube.com/@Town_of_Kennard_Indiana" class="green-button">YouTube Channel</a></p>
   </div>
 
-  <!-- Public comments -->
-  <div class="container section">
-    <h2>Public Comments Policy</h2>
-    <p>The Town of Kennard operates under an Open Door Policy. Board members are to be addressed only during public meetings. Please direct any council-related comments to the public comment period on the agenda.</p>
-  </div>
-
   <footer>© 2026 Town of Kennard</footer>
 
-  <!-- Improved Fuse.js search -->
+  <!-- Exact same working search script as Police page -->
   <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.6.2"></script>
   <script>
     document.addEventListener('DOMContentLoaded', function() {
@@ -104,7 +92,8 @@
       fetch('search.json')
         .then(r => r.json())
         .then(data => {
-          const fuse = new Fuse(data, { keys: ['title', 'content'], threshold: 0.2 });
+          console.log('✅ search.json loaded with', data.length, 'entries');
+          const fuse = new Fuse(data, { keys: ['title', 'content'], threshold: 0.35 });
 
           searchInput.addEventListener('input', function() {
             const query = searchInput.value.trim();
@@ -127,11 +116,8 @@
             }
             resultsContainer.style.display = 'block';
           });
-
-          document.addEventListener('click', function(e) {
-            if (!searchInput.contains(e.target)) resultsContainer.style.display = 'none';
-          });
-        });
+        })
+        .catch(err => console.error('❌ search.json fetch failed', err));
     });
   </script>
 
