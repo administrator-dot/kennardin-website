@@ -42,7 +42,7 @@
 
   <div class="container section">
     <h2>How to Report a Crime or Suspicious Activity</h2>
-    <p><strong>Emergency:</strong> Call 911</p>
+    <p><strong>Emergency (life or property in immediate danger):</strong> Call 911</p>
     <p><strong>Non-Emergency:</strong> Call 765-571-2640 or Henry County Sheriff at 765-521-7032</p>
   </div>
 
@@ -71,20 +71,20 @@
   <div id="footer"></div>
 
   <script>
-    // Load header and footer + fix dropdowns
+    // Load header and footer + FIXED dropdown initialization
     fetch('header.html')
       .then(r => r.text())
       .then(html => {
         document.getElementById('header').innerHTML = html;
-        
-        // Re-initialize Bootstrap dropdowns after dynamic load
+
+        // Re-initialize Bootstrap dropdowns after header loads
         setTimeout(() => {
-          const dropdowns = document.querySelectorAll('.dropdown-toggle');
-          dropdowns.forEach(dropdown => {
-            new bootstrap.Dropdown(dropdown);
+          const dropdownElements = document.querySelectorAll('.dropdown-toggle');
+          dropdownElements.forEach(el => {
+            new bootstrap.Dropdown(el);
           });
 
-          // Auto-collapse dropdown after clicking a link (exactly like last night)
+          // Auto-collapse dropdown after clicking any link inside it
           document.querySelectorAll('.dropdown-menu a').forEach(link => {
             link.addEventListener('click', () => {
               const openDropdowns = document.querySelectorAll('.dropdown.show');
@@ -93,7 +93,7 @@
               });
             });
           });
-        }, 100);
+        }, 150);
       });
 
     fetch('footer.html')
