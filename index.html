@@ -3,11 +3,26 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Town of Kennard</title>
+  <title>Town of Kennard, Indiana</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="styles.css" rel="stylesheet">
+  <style>
+    .weather-card {
+      background: linear-gradient(135deg, #001f3f, #004080);
+      color: white;
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    }
+    .weather-card .temp {
+      font-size: 3.2rem;
+      font-weight: 700;
+      line-height: 1;
+    }
+  </style>
 </head>
 <body>
+  <!-- NAVIGATION - same as all other pages -->
   <nav class="navbar navbar-expand-lg" style="background-color: #001f3f;">
     <div class="container">
       <a class="navbar-brand" href="index.html"><img src="images/final-web-seal.png" alt="Town of Kennard Logo" width="160"></a>
@@ -53,44 +68,105 @@
     </div>
   </nav>
 
+  <!-- THIN BLUE BANNER -->
   <div class="banner" style="padding: 8px 20px;">
     <div class="container text-center">
-      <h1 style="color: white; margin: 0;">Town of Kennard</h1>
+      <h1 style="color: white; margin: 0;">Welcome to Kennard, Indiana</h1>
     </div>
   </div>
 
-  <div class="container section text-center">
-    <h2>Welcome to Kennard, IN</h2>
-    <p>Kennard is located in western Henry County and is a part of Greensboro Township.</p>
+  <!-- LIVE WEATHER – placed right here (best spot on home page) -->
+  <div class="container my-4">
+    <div class="weather-card mx-auto" style="max-width: 420px;">
+      <div class="d-flex justify-content-between align-items-center">
+        <div>
+          <h5 class="mb-1" id="weather-location">Kennard, IN</h5>
+          <div id="weather-desc" class="text-white-50 fs-5">—</div>
+        </div>
+        <div class="text-end">
+          <div id="weather-temp" class="temp">—°F</div>
+          <div id="weather-highlow" class="small text-white-50">H: —° L: —°</div>
+        </div>
+      </div>
+      <div class="d-flex justify-content-between mt-3">
+        <div class="text-center">
+          <div class="small text-white-50">Feels Like</div>
+          <div id="weather-feels" class="fw-bold">—°F</div>
+        </div>
+        <div class="text-center">
+          <div class="small text-white-50">Wind</div>
+          <div id="weather-wind" class="fw-bold">— mph</div>
+        </div>
+        <div class="text-center">
+          <div class="small text-white-50">Humidity</div>
+          <div id="weather-humidity" class="fw-bold">—%</div>
+        </div>
+      </div>
+      <div class="text-center mt-3 small text-white-50">
+        Updated just now • Refreshes automatically
+      </div>
+    </div>
+  </div>
+
+  <!-- WELCOME SECTION -->
+  <div class="container section">
+    <p class="lead text-center">Kennard is located in western Henry County and is a part of Greensboro Township.</p>
+
+    <!-- Three centered buttons -->
     <div class="d-flex justify-content-center gap-3 flex-wrap mt-4">
-      <a href="contact.html" class="green-button">Clerks Office</a>
-      <a href="town-utilities.html" class="green-button">Town Utilities</a>
-      <a href="bids-info.html" class="green-button">Bids & Info</a>
+      <a href="town-board.html" class="green-button btn btn-lg px-4">Town Board</a>
+      <a href="police-department.html" class="green-button btn btn-lg px-4">Police Department</a>
+      <a href="fire-department.html" class="green-button btn btn-lg px-4">Fire Department</a>
     </div>
   </div>
 
+  <!-- YouTube & Public Comments (kept from previous version) -->
   <div class="container section">
-    <h2>Current Bids Needed</h2>
-    <p>The Town of Kennard is accepting sealed bids for Post Office and Town Hall maintenance work.</p>
-    <p>The project includes the following items: Replace two interior light fixtures in the Kennard Post Office with LED fixtures using the same footprint so that repainting is not required. Repair the Post Office door closer. Repair two Town Hall door closers.</p>
-    <p>The previous dusk-to-dawn light has been removed from the scope.</p>
-    <a href="bids-info.html" class="green-button">View Full Bid Details & Submit</a>
+    <h2>Watch Town Council Meetings</h2>
+    <p>Live and archived meetings are available on our YouTube channel.</p>
+    <a href="https://www.youtube.com/@Town_of_Kennard_Indiana" target="_blank" class="green-button btn btn-lg px-4">View YouTube Channel</a>
   </div>
 
   <div class="container section">
-    <h2>Watch Town Meetings Live</h2>
-    <p>Meetings are streamed live on our YouTube channel.</p>
-    <a href="https://www.youtube.com/@Town_of_Kennard_Indiana" class="green-button">YouTube Channel</a>
-  </div>
-
-  <div class="container section">
-    <h2>Public Comments Policy</h2>
-    <p>The Town of Kennard operates under an Open Door Policy. Board members are to be addressed only during public meetings. Please direct any council-related comments to the public comment period on the agenda.</p>
+    <h2>Public Comments</h2>
+    <p>Citizens are encouraged to address the Town Council during the public comment portion of each regular meeting.</p>
   </div>
 
   <footer>© 2026 Town of Kennard</footer>
 
-  <!-- Working search script (same as Police page) -->
+  <!-- Open-Meteo Live Weather Script -->
+  <script>
+    async function loadWeather() {
+      try {
+        const res = await fetch('https://api.open-meteo.com/v1/forecast?latitude=39.9039&longitude=-85.5194&current=temperature_2m,relative_humidity_2m,apparent_temperature,weather_code,wind_speed_10m&temperature_unit=fahrenheit&wind_speed_unit=mph&timezone=America/Indiana/Indianapolis');
+        const data = await res.json();
+        const current = data.current;
+
+        // Simple weather code to description (Open-Meteo codes)
+        const weatherDesc = {
+          0: "Clear sky", 1: "Mainly clear", 2: "Partly cloudy", 3: "Overcast",
+          45: "Fog", 48: "Depositing rime fog", 51: "Light drizzle", 53: "Moderate drizzle",
+          55: "Dense drizzle", 61: "Light rain", 63: "Moderate rain", 65: "Heavy rain",
+          71: "Light snow", 73: "Moderate snow", 75: "Heavy snow", 95: "Thunderstorm"
+        }[current.weather_code] || "—";
+
+        document.getElementById('weather-temp').textContent = Math.round(current.temperature_2m) + '°F';
+        document.getElementById('weather-desc').textContent = weatherDesc;
+        document.getElementById('weather-feels').textContent = Math.round(current.apparent_temperature) + '°F';
+        document.getElementById('weather-wind').textContent = Math.round(current.wind_speed_10m) + ' mph';
+        document.getElementById('weather-humidity').textContent = current.relative_humidity_2m + '%';
+      } catch (e) {
+        console.error('Weather fetch failed', e);
+        document.querySelector('.weather-card').innerHTML = `<div class="text-center p-3">Weather temporarily unavailable</div>`;
+      }
+    }
+
+    // Load weather when page opens + refresh every 15 minutes
+    window.onload = loadWeather;
+    setInterval(loadWeather, 15 * 60 * 1000);
+  </script>
+
+  <!-- Exact same working search script as all other pages -->
   <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.6.2"></script>
   <script>
     document.addEventListener('DOMContentLoaded', function() {
