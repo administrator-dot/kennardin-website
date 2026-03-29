@@ -54,14 +54,14 @@
     </div>
   </nav>
 
-  <!-- Banner -->
+  <!-- Thin blue banner -->
   <div class="banner" style="padding: 8px 20px;">
     <div class="container text-center">
       <h1 style="color: white; margin: 0;">Police Department</h1>
     </div>
   </div>
 
-  <!-- Rest of your Police content (unchanged) -->
+  <!-- Content (same as before) -->
   <div class="container section">
     <div class="row align-items-center">
       <div class="col-md-4 text-center">
@@ -85,7 +85,7 @@
 
   <div class="container section">
     <h2>How to Report a Crime or Suspicious Activity</h2>
-    <p><strong>Emergency:</strong> Call 911</p>
+    <p><strong>Emergency (life or property in immediate danger):</strong> Call 911</p>
     <p><strong>Non-Emergency:</strong> Call 765-571-2640 or Henry County Sheriff at 765-521-7032</p>
   </div>
 
@@ -112,14 +112,12 @@
 
   <footer>© 2026 Town of Kennard</footer>
 
-  <!-- Fuse.js + improved multi-result dropdown -->
+  <!-- Improved Fuse.js search with dropdown results -->
   <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.6.2"></script>
   <script>
     document.addEventListener('DOMContentLoaded', function() {
       const searchInput = document.getElementById('search-input');
       const resultsContainer = document.getElementById('search-results');
-
-      if (!searchInput) return;
 
       fetch('search.json')
         .then(r => r.json())
@@ -152,11 +150,9 @@
             resultsContainer.style.display = 'block';
           });
 
-          // Hide dropdown when clicking elsewhere
+          // Hide dropdown when clicking outside
           document.addEventListener('click', function(e) {
-            if (!searchInput.contains(e.target)) {
-              resultsContainer.style.display = 'none';
-            }
+            if (!searchInput.contains(e.target)) resultsContainer.style.display = 'none';
           });
         });
     });
