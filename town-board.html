@@ -60,39 +60,16 @@
   </div>
 
   <div class="container section">
-    <h2>Town Board Meetings</h2>
-    <p>Town Board Meetings are the second Wednesday of the month at 7:00 P.M.</p>
-  </div>
-
-  <div class="container section">
-    <h2>Town Meetings - Videos</h2>
-    <p>Watch on YouTube Here: <a href="https://www.youtube.com/@Town_of_Kennard_Indiana">YouTube Channel</a></p>
-  </div>
-
-  <div class="container section">
     <h2>Town Board Members</h2>
-    <ul>
-      <li>Steve Worsham - Board President</li>
-      <li>Holly Lee - Board Member</li>
-      <li>Jason Groce - Board Member</li>
-    </ul>
-  </div>
-
-  <div class="container section">
-    <h2>Clerk / Treasurer</h2>
-    <p>Jan Lockridge<br>
-    Phone: (765) 785-2331 or TEXT 765-524-0646<br>
-    Email: <a href="mailto:clerk@kennardin.com">clerk@kennardin.com</a></p>
-  </div>
-
-  <div class="container section">
-    <h2>Public Comments Policy</h2>
-    <p>The Town of Kennard operates under an Open Door Policy. Board members are to be addressed only during public meetings.</p>
+    <p>Steve Worsham – President<br>
+    Holly Lee – Vice President<br>
+    Jason Groce – Member</p>
+    <p>Citizens are directed to address the council in a public meeting. Board members are not to be contacted outside of meetings.</p>
   </div>
 
   <footer>© 2026 Town of Kennard</footer>
 
-  <!-- Improved Fuse.js search -->
+  <!-- Exact same working search script as Police page -->
   <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.6.2"></script>
   <script>
     document.addEventListener('DOMContentLoaded', function() {
@@ -102,7 +79,8 @@
       fetch('search.json')
         .then(r => r.json())
         .then(data => {
-          const fuse = new Fuse(data, { keys: ['title', 'content'], threshold: 0.2 });
+          console.log('✅ search.json loaded with', data.length, 'entries');
+          const fuse = new Fuse(data, { keys: ['title', 'content'], threshold: 0.35 });
 
           searchInput.addEventListener('input', function() {
             const query = searchInput.value.trim();
@@ -125,11 +103,8 @@
             }
             resultsContainer.style.display = 'block';
           });
-
-          document.addEventListener('click', function(e) {
-            if (!searchInput.contains(e.target)) resultsContainer.style.display = 'none';
-          });
-        });
+        })
+        .catch(err => console.error('❌ search.json fetch failed', err));
     });
   </script>
 
