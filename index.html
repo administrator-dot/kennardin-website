@@ -21,15 +21,15 @@
       line-height: 1;
     }
     .banner {
-      padding: 6px 20px;        /* much smaller blue section */
-      margin-top: -4px;         /* pulls it tight under the logo */
+      padding: 6px 20px;        /* keeps the blue banner tight and small */
+      margin-top: -4px;
     }
     .banner h1 {
       font-size: 2.4rem;
       font-weight: 700;
       text-shadow: 0 2px 8px rgba(0,0,0,0.3);
       letter-spacing: -0.5px;
-      margin: 0;                /* ensures it sits at the bottom of the banner */
+      margin: 0;
     }
   </style>
 </head>
@@ -72,7 +72,8 @@
           <li class="nav-item"><a class="nav-link text-white" href="contact.html">Contact</a></li>
           <li class="nav-item"><a class="nav-link text-white" href="bids-info.html">Bids & Info</a></li>
         </ul>
-        <div class="ms-4 position-relative">
+        <!-- Search bar returned to original tight position (no extra ms-4 space) -->
+        <div class="ms-auto position-relative">
           <input type="text" id="search-input" placeholder="Search the site..." class="form-control" style="width: 260px; background: rgba(255,255,255,0.95); border-radius: 9999px;">
           <div id="search-results" class="position-absolute bg-white shadow rounded mt-1" style="width: 260px; max-height: 300px; overflow-y:auto; display:none; z-index: 1000;"></div>
         </div>
@@ -80,14 +81,14 @@
     </div>
   </nav>
 
-  <!-- SMALLER BLUE BANNER – text now aligned at the bottom of the logo -->
+  <!-- SMALL BLUE BANNER – tight under logo, text aligned at bottom of logo -->
   <div class="banner">
     <div class="container text-center">
       <h1 style="color: white; margin: 0;">Welcome to Kennard, Indiana</h1>
     </div>
   </div>
 
-  <!-- WELCOME SECTION WITH WEATHER (1/3 left) + EXPANDED INFO (2/3 right) -->
+  <!-- WELCOME SECTION WITH WEATHER + INFO -->
   <div class="container section">
     <div class="row align-items-center g-4">
       <div class="col-md-4">
