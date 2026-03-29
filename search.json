@@ -1,8 +1,13 @@
 [
   {
+    "title": "Home",
+    "url": "index.html",
+    "content": "welcome kennard bids info utilities clerk office town board"
+  },
+  {
     "title": "Police Department",
     "url": "police-department.html",
-    "content": "police department law enforcement emergency non-emergency 911 765-571-2640 henry county sheriff safety tips traffic 25 mph 35 mph pd clock suspicious activity"
+    "content": "police department law enforcement emergency 911 non-emergency 765-571-2640 henry county sheriff 765-521-7032 drug activity safety tips traffic 25 mph 35 mph pd clock suspicious activity"
   },
   {
     "title": "Contact Us",
@@ -10,14 +15,9 @@
     "content": "clerk treasurer jan lockridge 765-785-2331 text 765-524-0646 vfd fire department police emergency contact"
   },
   {
-    "title": "Home",
-    "url": "index.html",
-    "content": "welcome to kennard bids info utilities town board clerk office"
-  },
-  {
     "title": "Kennard Community",
     "url": "kennard.html",
-    "content": "history 1882 tornado 1974 elementary school 2013 2015 charles a beard knightstown parks covid housing boom"
+    "content": "history 1882 tornado 1974 elementary school 2013 2015 charles a beard knightstown parks covid medical volunteer housing boom"
   },
   {
     "title": "Local Schools",
@@ -37,11 +37,31 @@
   {
     "title": "Town Board",
     "url": "town-board.html",
-    "content": "town board meetings clerk treasurer"
+    "content": "town board meetings clerk treasurer steve worsham board president holly lee board member jason groce board member"
+  },
+  {
+    "title": "Minutes & Agendas",
+    "url": "minutes-agendas.html",
+    "content": "minutes agendas 2025 2026 town council meetings youtube"
+  },
+  {
+    "title": "Town Utilities",
+    "url": "town-utilities.html",
+    "content": "utilities wastewater trash pay online clerk treasurer fountain town gas duke energy"
+  },
+  {
+    "title": "Town Ordinances",
+    "url": "town-ordinances.html",
+    "content": "ordinances pay violations"
   },
   {
     "title": "Bids & Info",
     "url": "bids-info.html",
     "content": "bids sealed bids post office town hall maintenance"
+  },
+  {
+    "title": "Fire Department",
+    "url": "fire-department.html",
+    "content": "fire department volunteer ron huffman fire chief vfd"
   }
 ]
