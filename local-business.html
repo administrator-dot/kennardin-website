@@ -67,7 +67,7 @@
 
   <footer>© 2026 Town of Kennard</footer>
 
-  <!-- Improved Fuse.js search -->
+  <!-- Exact same working search script as Police page -->
   <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.6.2"></script>
   <script>
     document.addEventListener('DOMContentLoaded', function() {
@@ -77,7 +77,8 @@
       fetch('search.json')
         .then(r => r.json())
         .then(data => {
-          const fuse = new Fuse(data, { keys: ['title', 'content'], threshold: 0.2 });
+          console.log('✅ search.json loaded with', data.length, 'entries');
+          const fuse = new Fuse(data, { keys: ['title', 'content'], threshold: 0.35 });
 
           searchInput.addEventListener('input', function() {
             const query = searchInput.value.trim();
@@ -100,11 +101,8 @@
             }
             resultsContainer.style.display = 'block';
           });
-
-          document.addEventListener('click', function(e) {
-            if (!searchInput.contains(e.target)) resultsContainer.style.display = 'none';
-          });
-        });
+        })
+        .catch(err => console.error('❌ search.json fetch failed', err));
     });
   </script>
 
