@@ -71,20 +71,25 @@
   <div id="footer"></div>
 
   <script>
-    // Load header and footer + FIXED dropdown initialization
-    fetch('header.html')
-      .then(r => r.text())
-      .then(html => {
-        document.getElementById('header').innerHTML = html;
+    // FIXED script - waits properly for Bootstrap and prevents # issue
+    Promise.all([
+      fetch('header.html').then(r => r.text()),
+      fetch('footer.html').then(r => r.text())
+    ]).then(([headerHTML, footerHTML]) => {
+      document.getElementById('header').innerHTML = headerHTML;
+      document.getElementById('footer').innerHTML = footerHTML;
 
-        // Re-initialize Bootstrap dropdowns after header loads
-        setTimeout(() => {
-          const dropdownElements = document.querySelectorAll('.dropdown-toggle');
-          dropdownElements.forEach(el => {
+      // Wait for Bootstrap to be ready
+      const waitForBootstrap = setInterval(() => {
+        if (typeof bootstrap !== 'undefined' && bootstrap.Dropdown) {
+          clearInterval(waitForBootstrap);
+
+          // Initialize all dropdowns
+          document.querySelectorAll('.dropdown-toggle').forEach(el => {
             new bootstrap.Dropdown(el);
           });
 
-          // Auto-collapse dropdown after clicking any link inside it
+          // Prevent # and auto-collapse after clicking a link
           document.querySelectorAll('.dropdown-menu a').forEach(link => {
             link.addEventListener('click', () => {
               const openDropdowns = document.querySelectorAll('.dropdown.show');
@@ -93,12 +98,9 @@
               });
             });
           });
-        }, 150);
-      });
-
-    fetch('footer.html')
-      .then(r => r.text())
-      .then(html => document.getElementById('footer').innerHTML = html);
+        }
+      }, 50);
+    });
   </script>
 </body>
 </html>
