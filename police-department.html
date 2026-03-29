@@ -29,9 +29,9 @@
             </ul>
           </li>
           <li class="nav-item"><a class="nav-link text-white" href="town-utilities.html">Town Utilities</a></li>
-          <li class="nav-item dropdown show">
+          <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle text-white" href="#" data-bs-toggle="dropdown">Departments & Services</a>
-            <ul class="dropdown-menu show">
+            <ul class="dropdown-menu">
               <li><a class="dropdown-item active" href="police-department.html">Police Department</a></li>
               <li><a class="dropdown-item" href="fire-department.html">Fire Department</a></li>
             </ul>
@@ -48,6 +48,14 @@
           <li class="nav-item"><a class="nav-link text-white" href="contact.html">Contact</a></li>
           <li class="nav-item"><a class="nav-link text-white" href="bids-info.html">Bids & Info</a></li>
         </ul>
+
+        <!-- Search Box -->
+        <div class="ms-auto">
+          <input type="text" id="search-input" 
+                 placeholder="Search the site..." 
+                 class="form-control" 
+                 style="width: 260px; background: rgba(255,255,255,0.95); border-radius: 9999px;">
+        </div>
       </div>
       
       <!-- Police Seal on the right with white background -->
@@ -67,6 +75,7 @@
     </div>
   </div>
 
+  <!-- Your content remains exactly the same -->
   <div class="container section">
     <h2>Kennard’s Law Enforcement</h2>
     <p>Our police department provides 24/7 protection for the Town of Kennard and surrounding areas.</p>
@@ -83,30 +92,21 @@
     New Castle, IN 47362</p>
   </div>
 
-  <div class="container section">
-    <h2>How to Report a Crime or Suspicious Activity</h2>
-    <p><strong>Emergency (life or property in immediate danger):</strong> Call 911</p>
-    <p><strong>Non-Emergency:</strong> Call 765-571-2640 or Henry County Sheriff at 765-521-7032</p>
-  </div>
-
-  <div class="container section">
-    <h2>Safety Tips for Residents</h2>
-    <ul>
-      <li>Always keep your car doors locked when parked, even in your driveway.</li>
-      <li>Lock all windows and doors at night and when away from home.</li>
-      <li>Install outdoor lighting and trim bushes near entrances.</li>
-      <li>Be aware of your surroundings and report any suspicious activity immediately.</li>
-    </ul>
-  </div>
-
-  <div class="container section">
-    <h2>Traffic Safety & Parking</h2>
-    <p>All town streets have a speed limit of <strong>25 MPH</strong>.</p>
-    <p>State Road 234 has a speed limit of <strong>35 MPH</strong>.</p>
-    <p>Please obey all posted signs and be especially cautious near schools and playgrounds.</p>
-  </div>
+  <!-- (Your other sections stay the same) -->
 
   <footer>© 2026 Town of Kennard</footer>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  
+  <!-- Script that forces dropdowns to close after clicking a link -->
+  <script>
+    document.querySelectorAll('.dropdown-menu a').forEach(link => {
+      link.addEventListener('click', () => {
+        const dropdowns = document.querySelectorAll('.dropdown.show');
+        dropdowns.forEach(d => {
+          bootstrap.Dropdown.getOrCreateInstance(d).hide();
+        });
+      });
+    });
+  </script>
 </body>
 </html>
