@@ -8,7 +8,7 @@
   <link href="styles.css" rel="stylesheet">
 </head>
 <body>
-  <!-- Centered nav with BOTH logos: Town seal left + Police seal right on white background -->
+  <!-- Centered nav with Town logo + Police seal on right (white bg) -->
   <nav class="navbar navbar-expand-lg" style="background-color: #001f3f;">
     <div class="container">
       <a class="navbar-brand" href="index.html"><img src="images/final-web-seal.png" alt="Town of Kennard Logo" width="160"></a>
@@ -32,7 +32,7 @@
           <li class="nav-item dropdown show">
             <a class="nav-link dropdown-toggle text-white" href="#" data-bs-toggle="dropdown">Departments & Services</a>
             <ul class="dropdown-menu show">
-              <li><a class="dropdown-item" href="police-department.html">Police Department</a></li>
+              <li><a class="dropdown-item active" href="police-department.html">Police Department</a></li>
               <li><a class="dropdown-item" href="fire-department.html">Fire Department</a></li>
             </ul>
           </li>
@@ -48,9 +48,17 @@
           <li class="nav-item"><a class="nav-link text-white" href="contact.html">Contact</a></li>
           <li class="nav-item"><a class="nav-link text-white" href="bids-info.html">Bids & Info</a></li>
         </ul>
+
+        <!-- Search Box -->
+        <div class="ms-auto">
+          <input type="text" id="search-input" 
+                 placeholder="Search the site..." 
+                 class="form-control" 
+                 style="width: 260px; background: rgba(255,255,255,0.95); border-radius: 9999px;">
+        </div>
       </div>
       
-      <!-- Police Seal on the RIGHT side of nav with WHITE background -->
+      <!-- Police Seal on the right side of nav (white background) -->
       <a class="navbar-brand ms-auto" href="police-department.html">
         <img src="images/policeseal-lighter-blue_1.png" 
              alt="Kennard Police Seal" 
@@ -60,14 +68,13 @@
     </div>
   </nav>
 
-  <!-- Thin blue banner with ONLY centered title -->
+  <!-- Thin blue banner -->
   <div class="banner" style="padding: 8px 20px;">
     <div class="container text-center">
       <h1 style="color: white; margin: 0;">Police Department</h1>
     </div>
   </div>
 
-  <!-- All your original content is still here -->
   <div class="container section">
     <h2>Kennard’s Law Enforcement</h2>
     <p>Our police department provides 24/7 protection for the Town of Kennard and surrounding areas.</p>
@@ -78,7 +85,7 @@
     <p><strong>Emergency:</strong> Call 911</p>
     <p><strong>Non Emergency:</strong> Henry County Sheriff Office Non-Emergency number: 765-529-4901</p>
     <p><strong>To Report Drug Activity, call:</strong> 765-521-DRUG</p>
-    <p><strong>Non 24 hours a day - Call the Kennard PD office to also report ORDINANCE violations:</strong> 765-571-2640</p>
+    <p><strong>Non 24 hours a day:</strong> Call the Kennard PD office to also report ORDINANCE violations: 765-571-2640</p>
   </div>
 
   <div class="container section">
