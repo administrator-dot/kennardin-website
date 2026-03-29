@@ -71,7 +71,7 @@
   <div id="footer"></div>
 
   <script>
-    // FIXED script - waits properly for Bootstrap and prevents # issue
+    // FINAL ROBUST SCRIPT - waits for BOTH header + Bootstrap JS
     Promise.all([
       fetch('header.html').then(r => r.text()),
       fetch('footer.html').then(r => r.text())
@@ -79,19 +79,19 @@
       document.getElementById('header').innerHTML = headerHTML;
       document.getElementById('footer').innerHTML = footerHTML;
 
-      // Wait for Bootstrap to be ready
-      const waitForBootstrap = setInterval(() => {
+      // Wait until Bootstrap is fully loaded and ready
+      const initDropdowns = setInterval(() => {
         if (typeof bootstrap !== 'undefined' && bootstrap.Dropdown) {
-          clearInterval(waitForBootstrap);
+          clearInterval(initDropdowns);
 
-          // Initialize all dropdowns
-          document.querySelectorAll('.dropdown-toggle').forEach(el => {
-            new bootstrap.Dropdown(el);
+          // Initialize every dropdown
+          document.querySelectorAll('.dropdown-toggle').forEach(toggle => {
+            new bootstrap.Dropdown(toggle);
           });
 
-          // Prevent # and auto-collapse after clicking a link
+          // Auto-collapse after clicking any link inside a dropdown
           document.querySelectorAll('.dropdown-menu a').forEach(link => {
-            link.addEventListener('click', () => {
+            link.addEventListener('click', (e) => {
               const openDropdowns = document.querySelectorAll('.dropdown.show');
               openDropdowns.forEach(d => {
                 bootstrap.Dropdown.getOrCreateInstance(d).hide();
@@ -99,7 +99,7 @@
             });
           });
         }
-      }, 50);
+      }, 30); // checks every 30ms until Bootstrap is ready
     });
   </script>
 </body>
