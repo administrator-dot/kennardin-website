@@ -6,9 +6,25 @@
   <title>Police Department - Town of Kennard</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="styles.css" rel="stylesheet">
+  <style>
+    .blue-card {
+      background: linear-gradient(135deg, #e6f0ff, #d0e0f5);
+      border: none;
+      box-shadow: 0 4px 12px rgba(0, 31, 63, 0.15);
+      transition: all 0.3s ease;
+      height: 100%;
+    }
+    .blue-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 20px rgba(0, 31, 63, 0.25);
+    }
+    .banner {
+      padding: 8px 20px;
+    }
+  </style>
 </head>
 <body>
-  <!-- (exact same nav, banner, 1/3 seal layout, traffic safety, safety tips, non-emergency, PD Clock as before) -->
+  <!-- NAVIGATION -->
   <nav class="navbar navbar-expand-lg" style="background-color: #001f3f;">
     <div class="container">
       <a class="navbar-brand" href="index.html"><img src="images/final-web-seal.png" alt="Town of Kennard Logo" width="160"></a>
@@ -54,53 +70,71 @@
     </div>
   </nav>
 
-  <div class="banner" style="padding: 8px 20px;">
+  <!-- BANNER -->
+  <div class="banner">
     <div class="container text-center">
       <h1 style="color: white; margin: 0;">Police Department</h1>
     </div>
   </div>
 
+  <!-- TOP ROW: 1/3 White + 2/3 White -->
   <div class="container section">
-    <div class="row align-items-center">
-      <div class="col-md-4 text-center">
-        <img src="images/policeseal-lighter-blue_1.png" alt="Kennard Police Seal" style="width: 100%; max-width: 220px;">
+    <div class="row g-4">
+      <!-- 1/3 White Card -->
+      <div class="col-md-4">
+        <div class="card h-100 p-4 text-center" style="background: white; border: 1px solid #e0e0e0;">
+          <h4 class="mb-3">Non-Emergency</h4>
+          <p><strong>Henry County Sheriff</strong><br>
+             (765) 521-7032</p>
+          <p class="text-muted small">For all emergencies, dial 911</p>
+        </div>
       </div>
+
+      <!-- 2/3 White Card -->
       <div class="col-md-8">
-        <h2>Kennard’s Law Enforcement</h2>
-        <p>Our police department provides 24/7 protection and works closely with the Henry County Sheriff’s Office to keep our community safe.</p>
+        <p class="lead">The Kennard Police Department works in partnership with the Henry County Sheriff’s Office to keep our community safe.</p>
+        <p>Chief Jason Groce leads the department with Officer Holly and Officer Steve. They provide law enforcement, traffic safety, and community support for the Town of Kennard.</p>
+        <p><strong>Important Safety Reminders</strong></p>
+        <ul>
+          <li>All town streets are 25 mph; State Road 234 is 35 mph within town limits.</li>
+          <li>Keep vehicles locked when parked.</li>
+          <li>Report suspicious activity to the non-emergency line immediately.</li>
+        </ul>
+        <a href="https://www.opentimeclock.com/2008/free.html" target="_blank" class="green-button btn btn-sm">PD Time Clock</a>
       </div>
     </div>
   </div>
 
+  <!-- SECOND ROW: Two blue-shaded cards -->
   <div class="container section">
-    <h2>Traffic Safety & Parking</h2>
-    <p>All town streets have a speed limit of <strong>25 MPH</strong>.</p>
-    <p>State Road 234 has a speed limit of <strong>35 MPH within town limits</strong>.</p>
-    <p>Please obey all posted signs and be especially cautious near parks.</p>
-  </div>
+    <div class="row g-4">
+      <!-- Blue Card 1 -->
+      <div class="col-md-6">
+        <div class="blue-card card h-100 p-4">
+          <h3>Police Department Contact</h3>
+          <p>Chief Jason Groce<br>
+             Officer Holly<br>
+             Officer Steve</p>
+          <p>Non-emergency: (765) 521-7032</p>
+        </div>
+      </div>
 
-  <div class="container section">
-    <h2>Safety Tips</h2>
-    <ul>
-      <li>Keep cars locked when parked.</li>
-      <li>Report suspicious activity immediately.</li>
-      <li>Never leave valuables visible in your vehicle.</li>
-    </ul>
-  </div>
-
-  <div class="container section">
-    <h2>Non-Emergency Contact</h2>
-    <p><strong>Henry County Sheriff’s Office</strong><br>
-    1033 Ron Lampe Way, New Castle, IN 47362<br>
-    Phone: 765-521-7032</p>
-  </div>
-
-  <div class="container section">
-    <a href="https://www.opentimeclock.com/2008/free.html" class="green-button" target="_blank">PD Clock</a>
+      <!-- Blue Card 2 -->
+      <div class="col-md-6">
+        <div class="blue-card card h-100 p-4">
+          <h3>Community Safety Tips</h3>
+          <p>• Lock your vehicles and homes<br>
+             • Report suspicious activity right away<br>
+             • Drive safely – our town streets are 25 mph</p>
+          <p class="small text-muted">Your vigilance helps keep Kennard safe for everyone.</p>
+        </div>
+      </div>
+    </div>
   </div>
 
   <footer>© 2026 Town of Kennard</footer>
 
+  <!-- Search script -->
   <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.6.2"></script>
   <script>
     document.addEventListener('DOMContentLoaded', function() {
@@ -110,8 +144,8 @@
       fetch('search.json')
         .then(r => r.json())
         .then(data => {
-          console.log('✅ search.json loaded with', data.length, 'entries'); // debug line
-          const fuse = new Fuse(data, { keys: ['title', 'content'], threshold: 0.35 }); // looser match
+          console.log('✅ search.json loaded with', data.length, 'entries');
+          const fuse = new Fuse(data, { keys: ['title', 'content'], threshold: 0.35 });
 
           searchInput.addEventListener('input', function() {
             const query = searchInput.value.trim();
