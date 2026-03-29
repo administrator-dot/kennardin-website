@@ -8,22 +8,24 @@
   <link href="styles.css" rel="stylesheet">
 </head>
 <body>
-  <!-- Centered nav with 160px logo in nav only - matches index exactly -->
+  <!-- Full inline nav - same as Police page -->
   <nav class="navbar navbar-expand-lg" style="background-color: #001f3f;">
     <div class="container">
       <a class="navbar-brand" href="index.html"><img src="images/final-web-seal.png" alt="Town of Kennard Logo" width="160"></a>
+      
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
         <span class="navbar-toggler-icon" style="filter: invert(1);"></span>
       </button>
+      
       <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav mx-auto">
           <li class="nav-item"><a class="nav-link text-white" href="index.html">Home</a></li>
-          <li class="nav-item dropdown show">
+          <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle text-white" href="#" data-bs-toggle="dropdown">Local Government</a>
-            <ul class="dropdown-menu show">
+            <ul class="dropdown-menu">
               <li><a class="dropdown-item" href="town-board.html">Town Board</a></li>
               <li><a class="dropdown-item" href="minutes-agendas.html">Minutes & Agendas</a></li>
-              <li><a class="dropdown-item" href="town-ordinances.html">Town Ordinances</a></li>
+              <li><a class="dropdown-item active" href="town-ordinances.html">Town Ordinances</a></li>
             </ul>
           </li>
           <li class="nav-item"><a class="nav-link text-white" href="town-utilities.html">Town Utilities</a></li>
@@ -46,11 +48,16 @@
           <li class="nav-item"><a class="nav-link text-white" href="contact.html">Contact</a></li>
           <li class="nav-item"><a class="nav-link text-white" href="bids-info.html">Bids & Info</a></li>
         </ul>
+
+        <!-- Search Box -->
+        <div class="ms-auto">
+          <input type="text" id="search-input" placeholder="Search the site..." class="form-control" style="width: 260px; background: rgba(255,255,255,0.95); border-radius: 9999px;">
+        </div>
       </div>
     </div>
   </nav>
 
-  <!-- Thin blue banner with ONLY centered title -->
+  <!-- Thin blue banner -->
   <div class="banner" style="padding: 8px 20px;">
     <div class="container text-center">
       <h1 style="color: white; margin: 0;">Town Ordinances</h1>
@@ -58,16 +65,15 @@
   </div>
 
   <div class="container section">
-    <h2>Town of Kennard, IN - Ordinances and Payment Information</h2>
-    <p>For any questions or concerns regarding Town ordinances, please contact the Clerk's Office.</p>
-    
-    <!-- Buttons now left-aligned -->
-    <a href="https://drive.google.com/drive/folders/1VrIqbxW9oDfj3YhJe46djKoKNyzvUxyu?usp=sharing" class="green-button">VIEW ORDINANCES</a>
-    
-    <p>The Town of Kennard accepts payments for general donations, ordinance violations, Clerk fees, gun permit fees, and other Town-related payments. These payments can be conveniently made by credit card using the secure payment link below.</p>
-    
-    <!-- Button now left-aligned -->
-    <a href="https://pay.paygov.us/EndUser/PaymentAgency.aspx?ttid=19402" class="green-button">Pay Here</a>
+    <h2>Town Ordinances</h2>
+    <p>View the current Town of Kennard Ordinances below.</p>
+    <a href="https://drive.google.com/drive/folders/[your-ordinances-folder-link]" class="green-button">View All Ordinances</a>
+  </div>
+
+  <div class="container section">
+    <h2>Pay Ordinance Violations Online</h2>
+    <p>Click below to pay any outstanding fines or violations.</p>
+    <a href="https://pay.paygov.us/EndUser/PaymentAgency.aspx?ttid=16686" class="green-button">Pay Online Now</a>
   </div>
 
   <footer>© 2026 Town of Kennard</footer>
