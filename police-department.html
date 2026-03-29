@@ -8,7 +8,7 @@
   <link href="styles.css" rel="stylesheet">
 </head>
 <body>
-  <!-- Shared header loads here -->
+  <!-- Shared header -->
   <div id="header"></div>
 
   <!-- Thin blue banner -->
@@ -18,7 +18,7 @@
     </div>
   </div>
 
-  <!-- Split top section -->
+  <!-- Page content only -->
   <div class="container section">
     <div class="row align-items-center">
       <div class="col-md-4 text-center">
@@ -42,7 +42,7 @@
 
   <div class="container section">
     <h2>How to Report a Crime or Suspicious Activity</h2>
-    <p><strong>Emergency (life or property in immediate danger):</strong> Call 911</p>
+    <p><strong>Emergency:</strong> Call 911</p>
     <p><strong>Non-Emergency:</strong> Call 765-571-2640 or Henry County Sheriff at 765-521-7032</p>
   </div>
 
@@ -67,13 +67,38 @@
     <a href="https://www.opentimeclock.com/2008/free.html" class="green-button" target="_blank">PD Clock</a>
   </div>
 
-  <!-- Shared footer loads here -->
+  <!-- Shared footer -->
   <div id="footer"></div>
 
   <script>
-    // Load header and footer
-    fetch('header.html').then(r => r.text()).then(html => document.getElementById('header').innerHTML = html);
-    fetch('footer.html').then(r => r.text()).then(html => document.getElementById('footer').innerHTML = html);
+    // Load header and footer + fix dropdowns
+    fetch('header.html')
+      .then(r => r.text())
+      .then(html => {
+        document.getElementById('header').innerHTML = html;
+        
+        // Re-initialize Bootstrap dropdowns after dynamic load
+        setTimeout(() => {
+          const dropdowns = document.querySelectorAll('.dropdown-toggle');
+          dropdowns.forEach(dropdown => {
+            new bootstrap.Dropdown(dropdown);
+          });
+
+          // Auto-collapse dropdown after clicking a link (exactly like last night)
+          document.querySelectorAll('.dropdown-menu a').forEach(link => {
+            link.addEventListener('click', () => {
+              const openDropdowns = document.querySelectorAll('.dropdown.show');
+              openDropdowns.forEach(d => {
+                bootstrap.Dropdown.getOrCreateInstance(d).hide();
+              });
+            });
+          });
+        }, 100);
+      });
+
+    fetch('footer.html')
+      .then(r => r.text())
+      .then(html => document.getElementById('footer').innerHTML = html);
   </script>
 </body>
 </html>
