@@ -21,7 +21,13 @@
       line-height: 1;
     }
     .banner {
-      padding: 6px 20px; /* reduced padding so banner sits higher / more centered under logo */
+      padding: 28px 20px; /* taller blue space for better vertical centering under logo */
+    }
+    .banner h1 {
+      font-size: 2.6rem;
+      font-weight: 700;
+      text-shadow: 0 2px 8px rgba(0,0,0,0.3); /* fancy landing-page touch */
+      letter-spacing: -0.5px;
     }
   </style>
 </head>
@@ -73,7 +79,7 @@
     </div>
   </nav>
 
-  <!-- THIN BLUE BANNER - now sits higher / more centered under logo -->
+  <!-- TALLER, FANCY BLUE BANNER – now vertically centered under logo -->
   <div class="banner">
     <div class="container text-center">
       <h1 style="color: white; margin: 0;">Welcome to Kennard, Indiana</h1>
@@ -129,15 +135,15 @@
     </div>
   </div>
 
-  <!-- YOUTUBE + PUBLIC COMMENTS – 50/50 split -->
+  <!-- YOUTUBE + PUBLIC COMMENTS – 50/50 split with centered YouTube button -->
   <div class="container section">
     <div class="row g-4">
       
-      <!-- Left 1/2 – YouTube (button now centered) -->
-      <div class="col-md-6">
+      <!-- Left 1/2 – YouTube (fully centered) -->
+      <div class="col-md-6 text-center">
         <h2>Watch Town Council Meetings</h2>
         <p>Live and archived meetings are available on our YouTube channel.</p>
-        <div class="text-center mt-3">
+        <div class="mt-3">
           <a href="https://www.youtube.com/@Town_of_Kennard_Indiana" target="_blank" class="green-button btn btn-lg px-4">View YouTube Channel</a>
         </div>
       </div>
