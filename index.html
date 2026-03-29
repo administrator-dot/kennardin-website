@@ -13,9 +13,10 @@
       border-radius: 12px;
       padding: 20px;
       box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+      height: 100%;
     }
     .weather-card .temp {
-      font-size: 3.2rem;
+      font-size: 3rem;
       font-weight: 700;
       line-height: 1;
     }
@@ -75,52 +76,58 @@
     </div>
   </div>
 
-  <!-- LIVE WEATHER – placed right here (best spot on home page) -->
-  <div class="container my-4">
-    <div class="weather-card mx-auto" style="max-width: 420px;">
-      <div class="d-flex justify-content-between align-items-center">
-        <div>
-          <h5 class="mb-1" id="weather-location">Kennard, IN</h5>
-          <div id="weather-desc" class="text-white-50 fs-5">—</div>
-        </div>
-        <div class="text-end">
-          <div id="weather-temp" class="temp">—°F</div>
-          <div id="weather-highlow" class="small text-white-50">H: —° L: —°</div>
-        </div>
-      </div>
-      <div class="d-flex justify-content-between mt-3">
-        <div class="text-center">
-          <div class="small text-white-50">Feels Like</div>
-          <div id="weather-feels" class="fw-bold">—°F</div>
-        </div>
-        <div class="text-center">
-          <div class="small text-white-50">Wind</div>
-          <div id="weather-wind" class="fw-bold">— mph</div>
-        </div>
-        <div class="text-center">
-          <div class="small text-white-50">Humidity</div>
-          <div id="weather-humidity" class="fw-bold">—%</div>
-        </div>
-      </div>
-      <div class="text-center mt-3 small text-white-50">
-        Updated just now • Refreshes automatically
-      </div>
-    </div>
-  </div>
-
-  <!-- WELCOME SECTION -->
+  <!-- WELCOME SECTION WITH WEATHER (1/3 left) + TEXT & BUTTONS (2/3 right) -->
   <div class="container section">
-    <p class="lead text-center">Kennard is located in western Henry County and is a part of Greensboro Township.</p>
+    <div class="row align-items-start g-4">
+      
+      <!-- 1/3 — Weather box -->
+      <div class="col-md-4">
+        <div class="weather-card">
+          <div class="d-flex justify-content-between align-items-center">
+            <div>
+              <h5 class="mb-1" id="weather-location">Kennard, IN</h5>
+              <div id="weather-desc" class="text-white-50 fs-5">—</div>
+            </div>
+            <div class="text-end">
+              <div id="weather-temp" class="temp">—°F</div>
+              <div id="weather-highlow" class="small text-white-50">H: —° L: —°</div>
+            </div>
+          </div>
+          <div class="d-flex justify-content-between mt-3">
+            <div class="text-center">
+              <div class="small text-white-50">Feels Like</div>
+              <div id="weather-feels" class="fw-bold">—°F</div>
+            </div>
+            <div class="text-center">
+              <div class="small text-white-50">Wind</div>
+              <div id="weather-wind" class="fw-bold">— mph</div>
+            </div>
+            <div class="text-center">
+              <div class="small text-white-50">Humidity</div>
+              <div id="weather-humidity" class="fw-bold">—%</div>
+            </div>
+          </div>
+          <div class="text-center mt-3 small text-white-50">
+            Updated just now • Refreshes automatically
+          </div>
+        </div>
+      </div>
 
-    <!-- Three centered buttons -->
-    <div class="d-flex justify-content-center gap-3 flex-wrap mt-4">
-      <a href="town-board.html" class="green-button btn btn-lg px-4">Town Board</a>
-      <a href="police-department.html" class="green-button btn btn-lg px-4">Police Department</a>
-      <a href="fire-department.html" class="green-button btn btn-lg px-4">Fire Department</a>
+      <!-- 2/3 — Text + three centered buttons -->
+      <div class="col-md-8">
+        <p class="lead">Kennard is located in western Henry County and is a part of Greensboro Township.</p>
+        
+        <div class="d-flex justify-content-center gap-3 flex-wrap mt-4">
+          <a href="town-board.html" class="green-button btn btn-lg px-4">Town Board</a>
+          <a href="police-department.html" class="green-button btn btn-lg px-4">Police Department</a>
+          <a href="fire-department.html" class="green-button btn btn-lg px-4">Fire Department</a>
+        </div>
+      </div>
+
     </div>
   </div>
 
-  <!-- YouTube & Public Comments (kept from previous version) -->
+  <!-- YouTube & Public Comments -->
   <div class="container section">
     <h2>Watch Town Council Meetings</h2>
     <p>Live and archived meetings are available on our YouTube channel.</p>
@@ -142,7 +149,6 @@
         const data = await res.json();
         const current = data.current;
 
-        // Simple weather code to description (Open-Meteo codes)
         const weatherDesc = {
           0: "Clear sky", 1: "Mainly clear", 2: "Partly cloudy", 3: "Overcast",
           45: "Fog", 48: "Depositing rime fog", 51: "Light drizzle", 53: "Moderate drizzle",
@@ -161,7 +167,6 @@
       }
     }
 
-    // Load weather when page opens + refresh every 15 minutes
     window.onload = loadWeather;
     setInterval(loadWeather, 15 * 60 * 1000);
   </script>
