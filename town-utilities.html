@@ -60,36 +60,24 @@
   </div>
 
   <div class="container section">
-    <h2>New to Town?</h2>
-    <p>Welcome to Kennard. If you have not done so, set up your wastewater and trash service within 7 days of arriving.</p>
-  </div>
-
-  <div class="container section">
-    <h2>Clerk / Treasurer</h2>
-    <p>Jan Lockridge<br>
-    Phone: (765) 785-2331 or TEXT 765-524-0646<br>
-    Email: <a href="mailto:clerk@kennardin.com">clerk@kennardin.com</a></p>
-  </div>
-
-  <div class="container section">
-    <h2>Pay Online</h2>
-    <p>Wastewater & Trash Utility can now be paid online!</p>
+    <h2>Pay Utilities Online</h2>
+    <p>Pay your water, sewer, and trash bills online.</p>
     <a href="https://pay.paygov.us/EndUser/PaymentAgency.aspx?ttid=16686" class="green-button">Pay Online Now</a>
   </div>
 
   <div class="container section">
-    <h2>Local Utilities</h2>
-    <h3>Fountain Town Gas Emergency</h3>
-    <p>800-379-1800 or 833-763-6393</p>
-    <h3>Duke Energy (Residential)</h3>
-    <p>800-777-9898</p>
-    <h3>Duke Energy (Business)</h3>
-    <p>800-653-5307</p>
+    <h2>Gas Service – Fountain Town Gas</h2>
+    <p>Phone: (765) 529-XXXX</p>
+  </div>
+
+  <div class="container section">
+    <h2>Electric Service – Duke Energy</h2>
+    <p>Phone: 1-800-343-1643</p>
   </div>
 
   <footer>© 2026 Town of Kennard</footer>
 
-  <!-- Improved Fuse.js search -->
+  <!-- Exact same working search script as Police page -->
   <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.6.2"></script>
   <script>
     document.addEventListener('DOMContentLoaded', function() {
@@ -99,7 +87,8 @@
       fetch('search.json')
         .then(r => r.json())
         .then(data => {
-          const fuse = new Fuse(data, { keys: ['title', 'content'], threshold: 0.2 });
+          console.log('✅ search.json loaded with', data.length, 'entries');
+          const fuse = new Fuse(data, { keys: ['title', 'content'], threshold: 0.35 });
 
           searchInput.addEventListener('input', function() {
             const query = searchInput.value.trim();
@@ -122,11 +111,8 @@
             }
             resultsContainer.style.display = 'block';
           });
-
-          document.addEventListener('click', function(e) {
-            if (!searchInput.contains(e.target)) resultsContainer.style.display = 'none';
-          });
-        });
+        })
+        .catch(err => console.error('❌ search.json fetch failed', err));
     });
   </script>
 
