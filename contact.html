@@ -8,7 +8,6 @@
   <link href="styles.css" rel="stylesheet">
 </head>
 <body>
-  <!-- Full inline nav -->
   <nav class="navbar navbar-expand-lg" style="background-color: #001f3f;">
     <div class="container">
       <a class="navbar-brand" href="index.html"><img src="images/final-web-seal.png" alt="Town of Kennard Logo" width="160"></a>
@@ -46,16 +45,14 @@
           <li class="nav-item"><a class="nav-link text-white active" href="contact.html">Contact</a></li>
           <li class="nav-item"><a class="nav-link text-white" href="bids-info.html">Bids & Info</a></li>
         </ul>
-
-        <!-- Search Box -->
-        <div class="ms-auto">
+        <div class="ms-auto position-relative">
           <input type="text" id="search-input" placeholder="Search the site..." class="form-control" style="width: 260px; background: rgba(255,255,255,0.95); border-radius: 9999px;">
+          <div id="search-results" class="position-absolute bg-white shadow rounded mt-1" style="width: 260px; max-height: 300px; overflow-y:auto; display:none; z-index: 1000;"></div>
         </div>
       </div>
     </div>
   </nav>
 
-  <!-- Thin blue banner -->
   <div class="banner" style="padding: 8px 20px;">
     <div class="container text-center">
       <h1 style="color: white; margin: 0;">Contact Us</h1>
@@ -71,38 +68,57 @@
 
   <div class="container section">
     <h2>Volunteer Fire Department</h2>
-    <p>General Fire Dept questions: <a href="mailto:VFD@kennardin.com">VFD@kennardin.com</a></p>
+    <p>General questions: <a href="mailto:VFD@kennardin.com">VFD@kennardin.com</a></p>
   </div>
 
   <div class="container section">
-    <h2>Police Department</h2>
-    <p><strong>Emergency:</strong> 911<br>
-    <strong>Non-Emergency:</strong> 765-571-2640</p>
-  </div>
-
-  <div class="container section">
-    <h2>Emergency Contacts</h2>
-    <p><strong>For all emergencies: Dial 911</strong></p>
-    <p><strong>Henry County Sheriff Non-Emergency:</strong> 765-521-7032</p>
-    <p><strong>To Report Drug Activity:</strong> 765-521-DRUG</p>
+    <h2>Police / Sheriff</h2>
+    <p><strong>Henry County Sheriff’s Office (non-emergency)</strong><br>
+    1033 Ron Lampe Way, New Castle, IN 47362<br>
+    Phone: 765-521-7032</p>
+    <p>For emergencies always dial <strong>911</strong></p>
   </div>
 
   <footer>© 2026 Town of Kennard</footer>
 
-  <!-- Search script - makes the box work when you type and press Enter -->
+  <!-- Fuse.js search - now fully connected -->
+  <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.6.2"></script>
   <script>
     document.addEventListener('DOMContentLoaded', function() {
       const searchInput = document.getElementById('search-input');
-      if (searchInput) {
-        searchInput.addEventListener('keypress', function(e) {
-          if (e.key === 'Enter') {
+      const resultsContainer = document.getElementById('search-results');
+
+      fetch('search.json')
+        .then(r => r.json())
+        .then(data => {
+          const fuse = new Fuse(data, { keys: ['title', 'content'], threshold: 0.2 });
+
+          searchInput.addEventListener('input', function() {
             const query = searchInput.value.trim();
-            if (query) {
-              window.location.href = '/pagefind/?q=' + encodeURIComponent(query);
+            resultsContainer.innerHTML = '';
+
+            if (query.length < 2) {
+              resultsContainer.style.display = 'none';
+              return;
             }
-          }
+
+            const results = fuse.search(query);
+            if (results.length === 0) {
+              resultsContainer.innerHTML = `<div class="p-2 text-muted">No results found for "${query}"</div>`;
+            } else {
+              let html = '';
+              results.forEach(result => {
+                html += `<a href="${result.item.url}" class="d-block p-2 text-decoration-none border-bottom">${result.item.title}</a>`;
+              });
+              resultsContainer.innerHTML = html;
+            }
+            resultsContainer.style.display = 'block';
+          });
+
+          document.addEventListener('click', function(e) {
+            if (!searchInput.contains(e.target)) resultsContainer.style.display = 'none';
+          });
         });
-      }
     });
   </script>
 
