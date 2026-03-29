@@ -2,66 +2,66 @@
   {
     "title": "Home",
     "url": "index.html",
-    "content": "welcome kennard bids info utilities clerk office town board"
-  },
-  {
-    "title": "Police Department",
-    "url": "police-department.html",
-    "content": "police department law enforcement emergency 911 non-emergency 765-571-2640 henry county sheriff 765-521-7032 drug activity safety tips traffic 25 mph 35 mph pd clock suspicious activity"
-  },
-  {
-    "title": "Contact Us",
-    "url": "contact.html",
-    "content": "clerk treasurer jan lockridge 765-785-2331 text 765-524-0646 vfd fire department police emergency contact"
-  },
-  {
-    "title": "Kennard Community",
-    "url": "kennard.html",
-    "content": "history 1882 tornado 1974 elementary school 2013 2015 charles a beard knightstown parks covid medical volunteer housing boom"
-  },
-  {
-    "title": "Local Schools",
-    "url": "local-schools.html",
-    "content": "charles a beard memorial shenandoah new castle eastern hancock school district"
-  },
-  {
-    "title": "Local Churches",
-    "url": "local-churches.html",
-    "content": "kennard baptist church kennard friends church"
-  },
-  {
-    "title": "Local Business",
-    "url": "local-business.html",
-    "content": "united states post office usps"
+    "content": "welcome Kennard Indiana Henry County Greensboro Township bids clerk utilities livestream YouTube council"
   },
   {
     "title": "Town Board",
     "url": "town-board.html",
-    "content": "town board meetings clerk treasurer steve worsham board president holly lee board member jason groce board member"
+    "content": "Steve Worsham Holly Lee Jason Groce council members president vice president town board meeting public comment citizens address council"
   },
   {
     "title": "Minutes & Agendas",
     "url": "minutes-agendas.html",
-    "content": "minutes agendas 2025 2026 town council meetings youtube"
-  },
-  {
-    "title": "Town Utilities",
-    "url": "town-utilities.html",
-    "content": "utilities wastewater trash pay online clerk treasurer fountain town gas duke energy"
+    "content": "minutes agendas 2025 2026 YouTube videos Google Drive meeting records"
   },
   {
     "title": "Town Ordinances",
     "url": "town-ordinances.html",
-    "content": "ordinances pay violations"
+    "content": "ordinances violations pay online fines"
   },
   {
-    "title": "Bids & Info",
-    "url": "bids-info.html",
-    "content": "bids sealed bids post office town hall maintenance"
+    "title": "Town Utilities",
+    "url": "town-utilities.html",
+    "content": "utilities water sewer gas Duke Energy Fountain Town Gas pay online"
+  },
+  {
+    "title": "Police Department",
+    "url": "police-department.html",
+    "content": "sheriff Henry County Sheriff non-emergency 765-521-7032 police department law enforcement 911 emergency safety tips traffic speed limit parks"
   },
   {
     "title": "Fire Department",
     "url": "fire-department.html",
-    "content": "fire department volunteer ron huffman fire chief vfd"
+    "content": "Ron Huffman fire chief VFD volunteer fire department 911 emergency medical"
+  },
+  {
+    "title": "Contact",
+    "url": "contact.html",
+    "content": "clerk treasurer Jan Lockridge 765-785-2331 text 765-524-0646 clerk@kennardin.com VFD@kennardin.com fire department police sheriff"
+  },
+  {
+    "title": "Bids & Info",
+    "url": "bids-info.html",
+    "content": "bids sealed bids USPS repair bid Post Office Town Hall maintenance LED lights door closers"
+  },
+  {
+    "title": "Kennard Community",
+    "url": "kennard.html",
+    "content": "history tornado 1974 Kennard Elementary School Charles A Beard Knightstown parks housing boom COVID medical volunteer"
+  },
+  {
+    "title": "Local Schools",
+    "url": "local-schools.html",
+    "content": "Charles A Beard Memorial School Corporation Knightstown Shenandoah New Castle Eastern Hancock schools report cards"
+  },
+  {
+    "title": "Local Churches",
+    "url": "local-churches.html",
+    "content": "Kennard Baptist Church Kennard Friends Church"
+  },
+  {
+    "title": "Local Business",
+    "url": "local-business.html",
+    "content": "United States Post Office USPS 100 North Main Street"
   }
 ]
