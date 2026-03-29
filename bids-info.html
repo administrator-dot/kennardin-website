@@ -64,7 +64,6 @@
     <p>The Town of Kennard is accepting sealed bids for Post Office and Town Hall maintenance work.</p>
 
     <h3>Scope of Work</h3>
-    <p>The project includes the following items:</p>
     <ul>
       <li>Replace two interior light fixtures in the Kennard Post Office with LED fixtures using the same footprint so that repainting is not required.</li>
       <li>Repair the Post Office door closer.</li>
@@ -89,13 +88,11 @@
     <p>Town of Kennard<br>
     100 N. Main Street<br>
     Kennard, Indiana 47351</p>
-
-    <a href="bids-info.html" class="green-button">Download Bid Packet (PDF coming soon)</a>
   </div>
 
   <footer>© 2026 Town of Kennard</footer>
 
-  <!-- Fuse.js search (same as all other pages) -->
+  <!-- Exact same working search script as Police page -->
   <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.6.2"></script>
   <script>
     document.addEventListener('DOMContentLoaded', function() {
@@ -105,7 +102,8 @@
       fetch('search.json')
         .then(r => r.json())
         .then(data => {
-          const fuse = new Fuse(data, { keys: ['title', 'content'], threshold: 0.2 });
+          console.log('✅ search.json loaded with', data.length, 'entries');
+          const fuse = new Fuse(data, { keys: ['title', 'content'], threshold: 0.35 });
 
           searchInput.addEventListener('input', function() {
             const query = searchInput.value.trim();
@@ -128,11 +126,8 @@
             }
             resultsContainer.style.display = 'block';
           });
-
-          document.addEventListener('click', function(e) {
-            if (!searchInput.contains(e.target)) resultsContainer.style.display = 'none';
-          });
-        });
+        })
+        .catch(err => console.error('❌ search.json fetch failed', err));
     });
   </script>
 
