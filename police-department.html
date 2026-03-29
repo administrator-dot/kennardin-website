@@ -46,8 +46,9 @@
           <li class="nav-item"><a class="nav-link text-white" href="contact.html">Contact</a></li>
           <li class="nav-item"><a class="nav-link text-white" href="bids-info.html">Bids & Info</a></li>
         </ul>
-        <div class="ms-auto">
+        <div class="ms-auto position-relative">
           <input type="text" id="search-input" placeholder="Search the site..." class="form-control" style="width: 260px; background: rgba(255,255,255,0.95); border-radius: 9999px;">
+          <div id="search-results" class="position-absolute bg-white shadow rounded mt-1" style="width: 260px; max-height: 300px; overflow-y:auto; display:none; z-index: 1000;"></div>
         </div>
       </div>
     </div>
@@ -60,7 +61,7 @@
     </div>
   </div>
 
-  <!-- Content -->
+  <!-- Rest of your Police content (unchanged) -->
   <div class="container section">
     <div class="row align-items-center">
       <div class="col-md-4 text-center">
@@ -111,11 +112,13 @@
 
   <footer>© 2026 Town of Kennard</footer>
 
-  <!-- Fuse.js Search -->
+  <!-- Fuse.js + improved multi-result dropdown -->
   <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.6.2"></script>
   <script>
     document.addEventListener('DOMContentLoaded', function() {
       const searchInput = document.getElementById('search-input');
+      const resultsContainer = document.getElementById('search-results');
+
       if (!searchInput) return;
 
       fetch('search.json')
@@ -126,17 +129,33 @@
             threshold: 0.3
           });
 
-          searchInput.addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-              const query = searchInput.value.trim();
-              if (query) {
-                const results = fuse.search(query);
-                if (results.length > 0) {
-                  window.location.href = results[0].item.url;
-                } else {
-                  alert('No results found for "' + query + '"');
-                }
-              }
+          searchInput.addEventListener('input', function() {
+            const query = searchInput.value.trim();
+            resultsContainer.innerHTML = '';
+
+            if (query.length < 2) {
+              resultsContainer.style.display = 'none';
+              return;
+            }
+
+            const results = fuse.search(query);
+
+            if (results.length === 0) {
+              resultsContainer.innerHTML = `<div class="p-2 text-muted">No results found for "${query}"</div>`;
+            } else {
+              let html = '';
+              results.forEach(result => {
+                html += `<a href="${result.item.url}" class="d-block p-2 text-decoration-none border-bottom">${result.item.title}</a>`;
+              });
+              resultsContainer.innerHTML = html;
+            }
+            resultsContainer.style.display = 'block';
+          });
+
+          // Hide dropdown when clicking elsewhere
+          document.addEventListener('click', function(e) {
+            if (!searchInput.contains(e.target)) {
+              resultsContainer.style.display = 'none';
             }
           });
         });
