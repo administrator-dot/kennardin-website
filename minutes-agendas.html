@@ -8,6 +8,7 @@
   <link href="styles.css" rel="stylesheet">
 </head>
 <body>
+  <!-- NAVIGATION -->
   <nav class="navbar navbar-expand-lg" style="background-color: #001f3f;">
     <div class="container">
       <a class="navbar-brand" href="index.html"><img src="images/final-web-seal.png" alt="Town of Kennard Logo" width="160"></a>
@@ -53,37 +54,70 @@
     </div>
   </nav>
 
+  <!-- BANNER -->
   <div class="banner" style="padding: 8px 20px;">
     <div class="container text-center">
       <h1 style="color: white; margin: 0;">Minutes & Agendas</h1>
     </div>
   </div>
 
+  <!-- MEETING VIDEOS -->
   <div class="container section">
-    <h2>Meeting Videos</h2>
-    <p>Watch all Town Council meetings live or on demand.</p>
-    <a href="https://www.youtube.com/@Town_of_Kennard_Indiana" class="green-button">YouTube Channel</a>
+    <h2>Watch Town Council Meetings</h2>
+    <p>Live and archived meetings are available on our YouTube channel.</p>
+    <a href="https://www.youtube.com/@Town_of_Kennard_Indiana" target="_blank" class="green-button btn btn-lg px-4">View YouTube Channel</a>
   </div>
 
+  <!-- 1/2 + 1/2 LAYOUT FOR 2026 AND 2025 -->
   <div class="container section">
-    <h2>2026</h2>
-    <div class="d-flex flex-wrap gap-3">
-      <a href="https://drive.google.com/drive/folders/1ocfLRSYgALT4IAOz2NEUbwSADTiXWbmd?usp=sharing" class="green-button">Minutes</a>
-      <a href="https://drive.google.com/drive/folders/1U6CWFumAmuzYzaCsciXB1J0pNyUHaDMx?usp=sharing" class="green-button">Agendas</a>
+    <h2 class="text-center mb-4">Meeting Documents</h2>
+    <div class="row g-4">
+      
+      <!-- 2026 -->
+      <div class="col-md-6">
+        <div class="card h-100 text-center p-4" style="background: linear-gradient(135deg, #e6f0ff, #d0e0f5); border: none;">
+          <h3 class="mb-4">2026</h3>
+          <div class="d-grid gap-3">
+            <a href="https://drive.google.com/drive/folders/1U6CWFumAmuzYzaCsciXB1J0pNyUHaDMx?usp=sharing" target="_blank" class="green-button btn btn-lg">Agendas</a>
+            <a href="https://drive.google.com/drive/folders/1ocfLRSYgALT4IAOz2NEUbwSADTiXWbmd?usp=sharing" target="_blank" class="green-button btn btn-lg">Minutes</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2025 -->
+      <div class="col-md-6">
+        <div class="card h-100 text-center p-4" style="background: linear-gradient(135deg, #e6f0ff, #d0e0f5); border: none;">
+          <h3 class="mb-4">2025</h3>
+          <div class="d-grid gap-3">
+            <a href="https://drive.google.com/drive/folders/1opUUQOmno8QrKdtep7zHvS-HZDWN7gJw?usp=sharing" target="_blank" class="green-button btn btn-lg">Agendas</a>
+            <a href="https://drive.google.com/drive/folders/1UIavq0M5NyLATgU5L3zl9JJq_e8BSaFs?usp=sharing" target="_blank" class="green-button btn btn-lg">Minutes</a>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 
+  <!-- THREE 1/3 SECTIONS TO FILL OUT THE PAGE -->
   <div class="container section">
-    <h2>2025</h2>
-    <div class="d-flex flex-wrap gap-3">
-      <a href="https://drive.google.com/drive/folders/1UIavq0M5NyLATgU5L3zl9JJq_e8BSaFs?usp=sharing" class="green-button">Minutes</a>
-      <a href="https://drive.google.com/drive/folders/1opUUQOmno8QrKdtep7zHvS-HZDWN7gJw?usp=sharing" class="green-button">Agendas</a>
+    <div class="row g-4">
+      <div class="col-md-4">
+        <h3>Meeting Schedule</h3>
+        <p>Town Council meetings are held on the second Wednesday of every month at 7:00 PM at Town Hall. All meetings are open to the public.</p>
+      </div>
+      <div class="col-md-4">
+        <h3>How to Use These Documents</h3>
+        <p>Agendas are posted before each meeting and show what will be discussed. Minutes are posted after the meeting and provide an official record of what was decided.</p>
+      </div>
+      <div class="col-md-4">
+        <h3>Request Older Records</h3>
+        <p>Documents from prior years are available upon request. Please contact the Clerk/Treasurer at clerk@kennardin.com or (765) 785-2331.</p>
+      </div>
     </div>
   </div>
 
   <footer>© 2026 Town of Kennard</footer>
 
-  <!-- Exact same working search script as Police page -->
+  <!-- Search script (identical to all other pages) -->
   <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.6.2"></script>
   <script>
     document.addEventListener('DOMContentLoaded', function() {
