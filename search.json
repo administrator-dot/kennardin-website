@@ -2,21 +2,46 @@
   {
     "title": "Police Department",
     "url": "police-department.html",
-    "content": "police department law enforcement emergency non-emergency 911 765-571-2640 safety tips traffic 25 mph 35 mph"
+    "content": "police department law enforcement emergency non-emergency 911 765-571-2640 henry county sheriff safety tips traffic 25 mph 35 mph pd clock suspicious activity"
   },
   {
     "title": "Contact Us",
     "url": "contact.html",
-    "content": "clerk treasurer jan lockridge 765-785-2331 text 765-524-0646 vfd fire department police emergency"
+    "content": "clerk treasurer jan lockridge 765-785-2331 text 765-524-0646 vfd fire department police emergency contact"
   },
   {
     "title": "Home",
     "url": "index.html",
-    "content": "welcome to kennard bids utilities town board"
+    "content": "welcome to kennard bids info utilities town board clerk office"
   },
   {
     "title": "Kennard Community",
     "url": "kennard.html",
-    "content": "history tornado 1974 school elementary 2015"
+    "content": "history 1882 tornado 1974 elementary school 2013 2015 charles a beard knightstown parks covid housing boom"
+  },
+  {
+    "title": "Local Schools",
+    "url": "local-schools.html",
+    "content": "charles a beard memorial shenandoah new castle eastern hancock school district"
+  },
+  {
+    "title": "Local Churches",
+    "url": "local-churches.html",
+    "content": "kennard baptist church kennard friends church"
+  },
+  {
+    "title": "Local Business",
+    "url": "local-business.html",
+    "content": "united states post office usps"
+  },
+  {
+    "title": "Town Board",
+    "url": "town-board.html",
+    "content": "town board meetings clerk treasurer"
+  },
+  {
+    "title": "Bids & Info",
+    "url": "bids-info.html",
+    "content": "bids sealed bids post office town hall maintenance"
   }
 ]
