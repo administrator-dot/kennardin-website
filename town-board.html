@@ -11,7 +11,7 @@
       transition: all 0.3s ease;
       border: none;
       box-shadow: 0 4px 12px rgba(0, 31, 63, 0.15);
-      background: linear-gradient(135deg, #e6f0ff, #d0e0f5); /* nice shade of blue */
+      background: linear-gradient(135deg, #e6f0ff, #d0e0f5);
     }
     .member-card:hover {
       transform: translateY(-4px);
@@ -31,7 +31,7 @@
   </style>
 </head>
 <body>
-  <!-- NAVIGATION - identical to all other pages -->
+  <!-- NAVIGATION -->
   <nav class="navbar navbar-expand-lg" style="background-color: #001f3f;">
     <div class="container">
       <a class="navbar-brand" href="index.html"><img src="images/final-web-seal.png" alt="Town of Kennard Logo" width="160"></a>
@@ -90,8 +90,6 @@
     <!-- FANCY BLUE-SHADED COUNCIL MEMBER CARDS -->
     <h2 class="text-center mb-4">Current Council Members</h2>
     <div class="row g-4">
-      
-      <!-- Steve Worsham - President -->
       <div class="col-md-4">
         <div class="member-card card h-100 position-relative">
           <div class="president-badge">PRESIDENT</div>
@@ -102,8 +100,6 @@
           </div>
         </div>
       </div>
-
-      <!-- Holly Lee -->
       <div class="col-md-4">
         <div class="member-card card h-100">
           <div class="card-body text-center pt-5">
@@ -113,8 +109,6 @@
           </div>
         </div>
       </div>
-
-      <!-- Jason Groce -->
       <div class="col-md-4">
         <div class="member-card card h-100">
           <div class="card-body text-center pt-5">
@@ -146,14 +140,16 @@
       <div class="col-md-4">
         <h3>Public Participation</h3>
         <p>Citizens are encouraged to address the Town Board during the public comment portion of each meeting. Board members are to be addressed only during public meetings, not outside of them.</p>
-        <p><a href="minutes-agendas.html" class="green-button btn btn-sm">View Agendas & Minutes</a></p>
+        <div class="text-center mt-3">
+          <a href="minutes-agendas.html" class="green-button btn btn-sm">View Agendas & Minutes</a>
+        </div>
       </div>
     </div>
   </div>
 
   <footer>© 2026 Town of Kennard</footer>
 
-  <!-- Search script (identical to all other pages) -->
+  <!-- Search script -->
   <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.6.2"></script>
   <script>
     document.addEventListener('DOMContentLoaded', function() {
