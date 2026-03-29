@@ -8,15 +8,13 @@
   <link href="styles.css" rel="stylesheet">
 </head>
 <body>
-  <!-- Full inline nav - exactly the version that worked last night -->
+  <!-- Full inline nav -->
   <nav class="navbar navbar-expand-lg" style="background-color: #001f3f;">
     <div class="container">
       <a class="navbar-brand" href="index.html"><img src="images/final-web-seal.png" alt="Town of Kennard Logo" width="160"></a>
-      
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
         <span class="navbar-toggler-icon" style="filter: invert(1);"></span>
       </button>
-      
       <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav mx-auto">
           <li class="nav-item"><a class="nav-link text-white" href="index.html">Home</a></li>
@@ -48,8 +46,6 @@
           <li class="nav-item"><a class="nav-link text-white" href="contact.html">Contact</a></li>
           <li class="nav-item"><a class="nav-link text-white" href="bids-info.html">Bids & Info</a></li>
         </ul>
-
-        <!-- Search Box -->
         <div class="ms-auto">
           <input type="text" id="search-input" placeholder="Search the site..." class="form-control" style="width: 260px; background: rgba(255,255,255,0.95); border-radius: 9999px;">
         </div>
@@ -64,7 +60,7 @@
     </div>
   </div>
 
-  <!-- Your page content -->
+  <!-- Split top section -->
   <div class="container section">
     <div class="row align-items-center">
       <div class="col-md-4 text-center">
@@ -114,6 +110,24 @@
   </div>
 
   <footer>© 2026 Town of Kennard</footer>
+
+  <!-- Search script - makes the search box work when you press Enter -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const searchInput = document.getElementById('search-input');
+      if (searchInput) {
+        searchInput.addEventListener('keypress', function(e) {
+          if (e.key === 'Enter') {
+            const query = searchInput.value.trim();
+            if (query) {
+              window.location.href = '/pagefind/?q=' + encodeURIComponent(query);
+            }
+          }
+        });
+      }
+    });
+  </script>
+
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
