@@ -8,7 +8,7 @@
   <link href="styles.css" rel="stylesheet">
 </head>
 <body>
-  <!-- Centered nav with 160px logo in nav only - exactly like index.html -->
+  <!-- Centered nav with search box and active highlighting -->
   <nav class="navbar navbar-expand-lg" style="background-color: #001f3f;">
     <div class="container">
       <a class="navbar-brand" href="index.html"><img src="images/final-web-seal.png" alt="Town of Kennard Logo" width="160"></a>
@@ -21,7 +21,7 @@
           <li class="nav-item dropdown show">
             <a class="nav-link dropdown-toggle text-white" href="#" data-bs-toggle="dropdown">Local Government</a>
             <ul class="dropdown-menu show">
-              <li><a class="dropdown-item" href="town-board.html">Town Board</a></li>
+              <li><a class="dropdown-item active" href="town-board.html">Town Board</a></li>
               <li><a class="dropdown-item" href="minutes-agendas.html">Minutes & Agendas</a></li>
               <li><a class="dropdown-item" href="town-ordinances.html">Town Ordinances</a></li>
             </ul>
@@ -46,11 +46,19 @@
           <li class="nav-item"><a class="nav-link text-white" href="contact.html">Contact</a></li>
           <li class="nav-item"><a class="nav-link text-white" href="bids-info.html">Bids & Info</a></li>
         </ul>
+
+        <!-- Search Box -->
+        <div class="ms-auto">
+          <input type="text" id="search-input" 
+                 placeholder="Search the site..." 
+                 class="form-control" 
+                 style="width: 260px; background: rgba(255,255,255,0.95); border-radius: 9999px;">
+        </div>
       </div>
     </div>
   </nav>
 
-  <!-- Thin blue banner with ONLY centered title -->
+  <!-- Thin blue banner -->
   <div class="banner" style="padding: 8px 20px;">
     <div class="container text-center">
       <h1 style="color: white; margin: 0;">Town Board</h1>
@@ -64,7 +72,7 @@
 
   <div class="container section">
     <h2>Town Meetings - Videos</h2>
-    <p>Watch on YouTube Here: <a href="https://www.youtube.com/@Town_of_Kennard_Indiana">https://www.youtube.com/@Town_of_Kennard_Indiana</a></p>
+    <p>Watch on YouTube Here: <a href="https://www.youtube.com/@Town_of_Kennard_Indiana">YouTube Channel</a></p>
   </div>
 
   <div class="container section">
@@ -85,7 +93,7 @@
     <h2>Clerk / Treasurer</h2>
     <p>Jan Lockridge<br>
     <a href="mailto:clerk@kennardin.com">Email the Clerk Treasurer</a><br>
-    Phone: (765) 785-2331 or TEXT (765) 524-0646</p>
+    Phone: (765) 785-2331</p>
   </div>
 
   <div class="container section">
