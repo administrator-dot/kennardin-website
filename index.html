@@ -21,18 +21,20 @@
       line-height: 1;
     }
     .banner {
-      padding: 28px 20px; /* taller blue space for better vertical centering under logo */
+      padding: 6px 20px;        /* much smaller blue section */
+      margin-top: -4px;         /* pulls it tight under the logo */
     }
     .banner h1 {
-      font-size: 2.6rem;
+      font-size: 2.4rem;
       font-weight: 700;
-      text-shadow: 0 2px 8px rgba(0,0,0,0.3); /* fancy landing-page touch */
+      text-shadow: 0 2px 8px rgba(0,0,0,0.3);
       letter-spacing: -0.5px;
+      margin: 0;                /* ensures it sits at the bottom of the banner */
     }
   </style>
 </head>
 <body>
-  <!-- NAVIGATION - same as all other pages -->
+  <!-- NAVIGATION -->
   <nav class="navbar navbar-expand-lg" style="background-color: #001f3f;">
     <div class="container">
       <a class="navbar-brand" href="index.html"><img src="images/final-web-seal.png" alt="Town of Kennard Logo" width="160"></a>
@@ -70,7 +72,6 @@
           <li class="nav-item"><a class="nav-link text-white" href="contact.html">Contact</a></li>
           <li class="nav-item"><a class="nav-link text-white" href="bids-info.html">Bids & Info</a></li>
         </ul>
-        <!-- extra breathing room after "Bids & Info" -->
         <div class="ms-4 position-relative">
           <input type="text" id="search-input" placeholder="Search the site..." class="form-control" style="width: 260px; background: rgba(255,255,255,0.95); border-radius: 9999px;">
           <div id="search-results" class="position-absolute bg-white shadow rounded mt-1" style="width: 260px; max-height: 300px; overflow-y:auto; display:none; z-index: 1000;"></div>
@@ -79,7 +80,7 @@
     </div>
   </nav>
 
-  <!-- TALLER, FANCY BLUE BANNER – now vertically centered under logo -->
+  <!-- SMALLER BLUE BANNER – text now aligned at the bottom of the logo -->
   <div class="banner">
     <div class="container text-center">
       <h1 style="color: white; margin: 0;">Welcome to Kennard, Indiana</h1>
@@ -89,8 +90,6 @@
   <!-- WELCOME SECTION WITH WEATHER (1/3 left) + EXPANDED INFO (2/3 right) -->
   <div class="container section">
     <div class="row align-items-center g-4">
-      
-      <!-- 1/3 — Weather box (vertically centered) -->
       <div class="col-md-4">
         <div class="weather-card">
           <div class="d-flex justify-content-between align-items-center">
@@ -123,23 +122,17 @@
         </div>
       </div>
 
-      <!-- 2/3 — Expanded Kennard information -->
       <div class="col-md-8">
         <p class="lead">Kennard is located in western Henry County and is a part of Greensboro Township.</p>
-        
         <p>Kennard covers just <strong>0.42 square miles</strong> of land and is surrounded by farmland and open countryside. According to the most recent estimates, the town is home to approximately <strong>446 residents</strong> (2025 estimate). The population has remained stable in recent years, reflecting the quiet, close-knit character of this rural community.</p>
-        
         <p>The town was officially platted in 1882 and has deep roots in Henry County history. Today it serves as a peaceful residential community with easy access to Knightstown (about 9 miles south) and New Castle (about 10 miles east). Residents enjoy a low-density lifestyle with strong community ties, three local parks developed in the past decade, and a growing interest in new housing.</p>
       </div>
-
     </div>
   </div>
 
-  <!-- YOUTUBE + PUBLIC COMMENTS – 50/50 split with centered YouTube button -->
+  <!-- YOUTUBE + PUBLIC COMMENTS -->
   <div class="container section">
     <div class="row g-4">
-      
-      <!-- Left 1/2 – YouTube (fully centered) -->
       <div class="col-md-6 text-center">
         <h2>Watch Town Council Meetings</h2>
         <p>Live and archived meetings are available on our YouTube channel.</p>
@@ -147,19 +140,16 @@
           <a href="https://www.youtube.com/@Town_of_Kennard_Indiana" target="_blank" class="green-button btn btn-lg px-4">View YouTube Channel</a>
         </div>
       </div>
-
-      <!-- Right 1/2 – Public Comments -->
       <div class="col-md-6">
         <h2>Public Comments</h2>
         <p>Citizens are always welcome to speak directly to the Town Council during the public comment portion of each regular meeting. Meetings are held on the second Wednesday of every month at Town Hall. We invite you to attend, share your thoughts, and be part of the decisions that shape our community.</p>
       </div>
-
     </div>
   </div>
 
   <footer>© 2026 Town of Kennard</footer>
 
-  <!-- Open-Meteo Live Weather Script -->
+  <!-- Open-Meteo Weather Script -->
   <script>
     async function loadWeather() {
       try {
@@ -184,12 +174,11 @@
         document.querySelector('.weather-card').innerHTML = `<div class="text-center p-3">Weather temporarily unavailable</div>`;
       }
     }
-
     window.onload = loadWeather;
     setInterval(loadWeather, 15 * 60 * 1000);
   </script>
 
-  <!-- Exact same working search script as all other pages -->
+  <!-- Fuse.js Search -->
   <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.6.2"></script>
   <script>
     document.addEventListener('DOMContentLoaded', function() {
