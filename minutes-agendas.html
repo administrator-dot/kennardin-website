@@ -8,7 +8,6 @@
   <link href="styles.css" rel="stylesheet">
 </head>
 <body>
-  <!-- Centered nav with 160px logo in nav only -->
   <nav class="navbar navbar-expand-lg" style="background-color: #001f3f;">
     <div class="container">
       <a class="navbar-brand" href="index.html"><img src="images/final-web-seal.png" alt="Town of Kennard Logo" width="160"></a>
@@ -22,7 +21,7 @@
             <a class="nav-link dropdown-toggle text-white" href="#" data-bs-toggle="dropdown">Local Government</a>
             <ul class="dropdown-menu show">
               <li><a class="dropdown-item" href="town-board.html">Town Board</a></li>
-              <li><a class="dropdown-item" href="minutes-agendas.html">Minutes & Agendas</a></li>
+              <li><a class="dropdown-item active" href="minutes-agendas.html">Minutes & Agendas</a></li>
               <li><a class="dropdown-item" href="town-ordinances.html">Town Ordinances</a></li>
             </ul>
           </li>
@@ -46,11 +45,15 @@
           <li class="nav-item"><a class="nav-link text-white" href="contact.html">Contact</a></li>
           <li class="nav-item"><a class="nav-link text-white" href="bids-info.html">Bids & Info</a></li>
         </ul>
+
+        <!-- Search Box -->
+        <div class="ms-auto">
+          <input type="text" id="search-input" placeholder="Search the site..." class="form-control" style="width: 260px; background: rgba(255,255,255,0.95); border-radius: 9999px;">
+        </div>
       </div>
     </div>
   </nav>
 
-  <!-- Thin blue banner with ONLY centered title -->
   <div class="banner" style="padding: 8px 20px;">
     <div class="container text-center">
       <h1 style="color: white; margin: 0;">Minutes & Agendas</h1>
