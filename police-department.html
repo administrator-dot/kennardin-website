@@ -8,6 +8,7 @@
   <link href="styles.css" rel="stylesheet">
 </head>
 <body>
+  <!-- (exact same nav, banner, 1/3 seal layout, traffic safety, safety tips, non-emergency, PD Clock as before) -->
   <nav class="navbar navbar-expand-lg" style="background-color: #001f3f;">
     <div class="container">
       <a class="navbar-brand" href="index.html"><img src="images/final-web-seal.png" alt="Town of Kennard Logo" width="160"></a>
@@ -100,7 +101,6 @@
 
   <footer>© 2026 Town of Kennard</footer>
 
-  <!-- Fuse.js search - connected to search.json -->
   <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.6.2"></script>
   <script>
     document.addEventListener('DOMContentLoaded', function() {
@@ -110,7 +110,8 @@
       fetch('search.json')
         .then(r => r.json())
         .then(data => {
-          const fuse = new Fuse(data, { keys: ['title', 'content'], threshold: 0.2 });
+          console.log('✅ search.json loaded with', data.length, 'entries'); // debug line
+          const fuse = new Fuse(data, { keys: ['title', 'content'], threshold: 0.35 }); // looser match
 
           searchInput.addEventListener('input', function() {
             const query = searchInput.value.trim();
@@ -133,11 +134,8 @@
             }
             resultsContainer.style.display = 'block';
           });
-
-          document.addEventListener('click', function(e) {
-            if (!searchInput.contains(e.target)) resultsContainer.style.display = 'none';
-          });
-        });
+        })
+        .catch(err => console.error('❌ search.json fetch failed', err));
     });
   </script>
 
