@@ -8,7 +8,6 @@
   <link href="styles.css" rel="stylesheet">
 </head>
 <body>
-  <!-- Nav -->
   <nav class="navbar navbar-expand-lg" style="background-color: #001f3f;">
     <div class="container">
       <a class="navbar-brand" href="index.html"><img src="images/final-web-seal.png" alt="Town of Kennard Logo" width="160"></a>
@@ -54,46 +53,32 @@
     </div>
   </nav>
 
-  <!-- Thin blue banner -->
   <div class="banner" style="padding: 8px 20px;">
     <div class="container text-center">
       <h1 style="color: white; margin: 0;">Fire Department</h1>
     </div>
   </div>
 
-  <!-- Content -->
   <div class="container section">
     <div class="row align-items-center">
       <div class="col-md-4 text-center">
-        <img src="images/Ron.jpg" alt="Ron Huffman Fire Chief" style="width: 100%; max-width: 220px; border-radius: 8px;">
+        <img src="images/fire-seal.png" alt="Kennard Fire Department Seal" style="width: 100%; max-width: 220px;">
       </div>
       <div class="col-md-8">
-        <h2>Fire Chief Bio</h2>
-        <p><strong>Ronald (Ron) Huffman</strong> Fire Chief</p>
-        <p>Ronald (Ron) Huffman began his fire service career in 1985 as a volunteer firefighter with the Shirley Volunteer Fire Department. He has been with the Kennard Volunteer Fire Department since 1986 and was appointed Fire Chief in 2019. Ron served as a career firefighter with the New Castle Fire Department starting in 1989, advancing to Battalion Chief. He retired as Director of the Henry County Emergency Management Agency and served as Chairman of the Henry County Local Emergency Planning Committee. He is President of Responder Training, Inc. and provides specialized training throughout the region.</p>
+        <h2>Kennard Volunteer Fire Department</h2>
+        <p>Ronald (Ron) Huffman has been Fire Chief since 2019. He began his fire service career in 1985 and has been with the Kennard VFD since 1995. He is certified in many areas of fire service and is retired from Henry County Emergency Management.</p>
       </div>
     </div>
   </div>
 
   <div class="container section">
-    <h2>Department Info</h2>
-    <p>Town of Kennard - Volunteer fire department</p>
-    <p><strong>Seeking VOLUNTEERS:</strong> The Kennard Volunteer Fire Department are currently accepting applicants. For more information please contact the Chief at: <a href="mailto:FireChief@kennardin.com">FireChief@kennardin.com</a></p>
-    <p>For general Fire Dept questions: <a href="mailto:VFD@kennardin.com">VFD@kennardin.com</a></p>
-  </div>
-
-  <div class="container section">
-    <h2>Public Education</h2>
-    <h3>Heating Safety Flyer</h3>
-    <p>Space heaters accounted for two of every five home heating fires...</p>
-    <div class="center">
-      <img src="images/tips-avoid-kitchen-fires_1_orig.png" alt="Heating Safety" style="width: 100%;">
-    </div>
+    <h2>General Fire Department Questions</h2>
+    <p><a href="mailto:VFD@kennardin.com">VFD@kennardin.com</a></p>
   </div>
 
   <footer>© 2026 Town of Kennard</footer>
 
-  <!-- Improved Fuse.js search -->
+  <!-- Exact same working search script as Police page -->
   <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.6.2"></script>
   <script>
     document.addEventListener('DOMContentLoaded', function() {
@@ -103,10 +88,8 @@
       fetch('search.json')
         .then(r => r.json())
         .then(data => {
-          const fuse = new Fuse(data, {
-            keys: ['title', 'content'],
-            threshold: 0.2
-          });
+          console.log('✅ search.json loaded with', data.length, 'entries');
+          const fuse = new Fuse(data, { keys: ['title', 'content'], threshold: 0.35 });
 
           searchInput.addEventListener('input', function() {
             const query = searchInput.value.trim();
@@ -118,7 +101,6 @@
             }
 
             const results = fuse.search(query);
-
             if (results.length === 0) {
               resultsContainer.innerHTML = `<div class="p-2 text-muted">No results found for "${query}"</div>`;
             } else {
@@ -130,11 +112,8 @@
             }
             resultsContainer.style.display = 'block';
           });
-
-          document.addEventListener('click', function(e) {
-            if (!searchInput.contains(e.target)) resultsContainer.style.display = 'none';
-          });
-        });
+        })
+        .catch(err => console.error('❌ search.json fetch failed', err));
     });
   </script>
 
