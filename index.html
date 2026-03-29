@@ -77,10 +77,11 @@
   </div>
 
   <!-- WELCOME SECTION WITH WEATHER (1/3 left) + EXPANDED INFO (2/3 right) -->
+  <!-- Weather is now vertically centered in the row -->
   <div class="container section">
-    <div class="row align-items-start g-4">
+    <div class="row align-items-center g-4">
       
-      <!-- 1/3 — Weather box -->
+      <!-- 1/3 — Weather box (vertically centered) -->
       <div class="col-md-4">
         <div class="weather-card">
           <div class="d-flex justify-content-between align-items-center">
@@ -113,9 +114,9 @@
         </div>
       </div>
 
-      <!-- 2/3 — Expanded Kennard information (no buttons) -->
+      <!-- 2/3 — Expanded Kennard information -->
       <div class="col-md-8">
-        <p class="lead">Kennard is a small, friendly town located in western Henry County, Indiana, and is part of Greensboro Township.</p>
+        <p class="lead">Kennard is located in western Henry County and is a part of Greensboro Township.</p>
         
         <p>Kennard covers just <strong>0.42 square miles</strong> of land and is surrounded by farmland and open countryside. According to the most recent estimates, the town is home to approximately <strong>446 residents</strong> (2025 estimate). The population has remained stable in recent years, reflecting the quiet, close-knit character of this rural community.</p>
         
@@ -125,16 +126,24 @@
     </div>
   </div>
 
-  <!-- YouTube & Public Comments -->
+  <!-- YOUTUBE + PUBLIC COMMENTS – now side-by-side 1/2 and 1/2 -->
   <div class="container section">
-    <h2>Watch Town Council Meetings</h2>
-    <p>Live and archived meetings are available on our YouTube channel.</p>
-    <a href="https://www.youtube.com/@Town_of_Kennard_Indiana" target="_blank" class="green-button btn btn-lg px-4">View YouTube Channel</a>
-  </div>
+    <div class="row g-4">
+      
+      <!-- Left 1/2 – YouTube -->
+      <div class="col-md-6">
+        <h2>Watch Town Council Meetings</h2>
+        <p>Live and archived meetings are available on our YouTube channel.</p>
+        <a href="https://www.youtube.com/@Town_of_Kennard_Indiana" target="_blank" class="green-button btn btn-lg px-4">View YouTube Channel</a>
+      </div>
 
-  <div class="container section">
-    <h2>Public Comments</h2>
-    <p>Citizens are encouraged to address the Town Council during the public comment portion of each regular meeting.</p>
+      <!-- Right 1/2 – Public Comments -->
+      <div class="col-md-6">
+        <h2>Public Comments</h2>
+        <p>Citizens are always welcome to speak directly to the Town Council during the public comment portion of each regular meeting. Meetings are held on the second Wednesday of every month at Town Hall. We invite you to attend, share your thoughts, and be part of the decisions that shape our community.</p>
+      </div>
+
+    </div>
   </div>
 
   <footer>© 2026 Town of Kennard</footer>
