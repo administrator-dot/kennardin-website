@@ -8,7 +8,6 @@
   <link href="styles.css" rel="stylesheet">
 </head>
 <body>
-  <!-- Nav -->
   <nav class="navbar navbar-expand-lg" style="background-color: #001f3f;">
     <div class="container">
       <a class="navbar-brand" href="index.html"><img src="images/final-web-seal.png" alt="Town of Kennard Logo" width="160"></a>
@@ -54,14 +53,12 @@
     </div>
   </nav>
 
-  <!-- Thin blue banner -->
   <div class="banner" style="padding: 8px 20px;">
     <div class="container text-center">
       <h1 style="color: white; margin: 0;">Police Department</h1>
     </div>
   </div>
 
-  <!-- Content (same as before) -->
   <div class="container section">
     <div class="row align-items-center">
       <div class="col-md-4 text-center">
@@ -85,7 +82,7 @@
 
   <div class="container section">
     <h2>How to Report a Crime or Suspicious Activity</h2>
-    <p><strong>Emergency (life or property in immediate danger):</strong> Call 911</p>
+    <p><strong>Emergency:</strong> Call 911</p>
     <p><strong>Non-Emergency:</strong> Call 765-571-2640 or Henry County Sheriff at 765-521-7032</p>
   </div>
 
@@ -112,7 +109,7 @@
 
   <footer>© 2026 Town of Kennard</footer>
 
-  <!-- Improved Fuse.js search with dropdown results -->
+  <!-- Improved Fuse.js search -->
   <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.6.2"></script>
   <script>
     document.addEventListener('DOMContentLoaded', function() {
@@ -124,7 +121,7 @@
         .then(data => {
           const fuse = new Fuse(data, {
             keys: ['title', 'content'],
-            threshold: 0.3
+            threshold: 0.2
           });
 
           searchInput.addEventListener('input', function() {
@@ -150,7 +147,6 @@
             resultsContainer.style.display = 'block';
           });
 
-          // Hide dropdown when clicking outside
           document.addEventListener('click', function(e) {
             if (!searchInput.contains(e.target)) resultsContainer.style.display = 'none';
           });
