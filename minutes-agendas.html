@@ -6,6 +6,18 @@
   <title>Minutes & Agendas - Town of Kennard</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="styles.css" rel="stylesheet">
+  <style>
+    .blue-card {
+      background: linear-gradient(135deg, #e6f0ff, #d0e0f5);
+      border: none;
+      box-shadow: 0 4px 12px rgba(0, 31, 63, 0.15);
+      transition: all 0.3s ease;
+    }
+    .blue-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 20px rgba(0, 31, 63, 0.25);
+    }
+  </style>
 </head>
 <body>
   <!-- NAVIGATION -->
@@ -61,63 +73,74 @@
     </div>
   </div>
 
-  <!-- MEETING VIDEOS -->
+  <!-- TOP ROW: 1/3 YouTube + 2/3 Year Documents -->
   <div class="container section">
-    <h2>Watch Town Council Meetings</h2>
-    <p>Live and archived meetings are available on our YouTube channel.</p>
-    <a href="https://www.youtube.com/@Town_of_Kennard_Indiana" target="_blank" class="green-button btn btn-lg px-4">View YouTube Channel</a>
-  </div>
-
-  <!-- 1/2 + 1/2 LAYOUT FOR 2026 AND 2025 -->
-  <div class="container section">
-    <h2 class="text-center mb-4">Meeting Documents</h2>
     <div class="row g-4">
       
-      <!-- 2026 -->
-      <div class="col-md-6">
-        <div class="card h-100 text-center p-4" style="background: linear-gradient(135deg, #e6f0ff, #d0e0f5); border: none;">
-          <h3 class="mb-4">2026</h3>
-          <div class="d-grid gap-3">
-            <a href="https://drive.google.com/drive/folders/1U6CWFumAmuzYzaCsciXB1J0pNyUHaDMx?usp=sharing" target="_blank" class="green-button btn btn-lg">Agendas</a>
-            <a href="https://drive.google.com/drive/folders/1ocfLRSYgALT4IAOz2NEUbwSADTiXWbmd?usp=sharing" target="_blank" class="green-button btn btn-lg">Minutes</a>
-          </div>
+      <!-- 1/3 YouTube Card -->
+      <div class="col-md-4">
+        <div class="blue-card card h-100 text-center p-4">
+          <h3>Watch Town Council Meetings</h3>
+          <p class="mb-4">Live and archived meetings are available on our YouTube channel.</p>
+          <a href="https://www.youtube.com/@Town_of_Kennard_Indiana" target="_blank" class="green-button btn btn-lg px-4">View YouTube Channel</a>
         </div>
       </div>
 
-      <!-- 2025 -->
-      <div class="col-md-6">
-        <div class="card h-100 text-center p-4" style="background: linear-gradient(135deg, #e6f0ff, #d0e0f5); border: none;">
-          <h3 class="mb-4">2025</h3>
-          <div class="d-grid gap-3">
-            <a href="https://drive.google.com/drive/folders/1opUUQOmno8QrKdtep7zHvS-HZDWN7gJw?usp=sharing" target="_blank" class="green-button btn btn-lg">Agendas</a>
-            <a href="https://drive.google.com/drive/folders/1UIavq0M5NyLATgU5L3zl9JJq_e8BSaFs?usp=sharing" target="_blank" class="green-button btn btn-lg">Minutes</a>
+      <!-- 2/3 Year Documents -->
+      <div class="col-md-8">
+        <div class="row g-4">
+          <!-- 2026 -->
+          <div class="col-md-6">
+            <div class="blue-card card h-100 text-center p-4">
+              <h3 class="mb-4">2026</h3>
+              <div class="d-grid gap-3">
+                <a href="https://drive.google.com/drive/folders/1U6CWFumAmuzYzaCsciXB1J0pNyUHaDMx?usp=sharing" target="_blank" class="green-button btn btn-lg">Agendas</a>
+                <a href="https://drive.google.com/drive/folders/1ocfLRSYgALT4IAOz2NEUbwSADTiXWbmd?usp=sharing" target="_blank" class="green-button btn btn-lg">Minutes</a>
+              </div>
+            </div>
+          </div>
+          <!-- 2025 -->
+          <div class="col-md-6">
+            <div class="blue-card card h-100 text-center p-4">
+              <h3 class="mb-4">2025</h3>
+              <div class="d-grid gap-3">
+                <a href="https://drive.google.com/drive/folders/1opUUQOmno8QrKdtep7zHvS-HZDWN7gJw?usp=sharing" target="_blank" class="green-button btn btn-lg">Agendas</a>
+                <a href="https://drive.google.com/drive/folders/1UIavq0M5NyLATgU5L3zl9JJq_e8BSaFs?usp=sharing" target="_blank" class="green-button btn btn-lg">Minutes</a>
+              </div>
+            </div>
           </div>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- THREE 1/3 SECTIONS TO FILL OUT THE PAGE -->
+  <!-- BOTTOM ROW: Three 1/3 blue-shaded cards -->
   <div class="container section">
     <div class="row g-4">
       <div class="col-md-4">
-        <h3>Meeting Schedule</h3>
-        <p>Town Council meetings are held on the second Wednesday of every month at 7:00 PM at Town Hall. All meetings are open to the public.</p>
+        <div class="blue-card card h-100 p-4">
+          <h3>Meeting Schedule</h3>
+          <p>Town Council meetings are held on the second Wednesday of every month at 7:00 PM at Town Hall. All meetings are open to the public.</p>
+        </div>
       </div>
       <div class="col-md-4">
-        <h3>How to Use These Documents</h3>
-        <p>Agendas are posted before each meeting and show what will be discussed. Minutes are posted after the meeting and provide an official record of what was decided.</p>
+        <div class="blue-card card h-100 p-4">
+          <h3>Understanding Agendas and Minutes</h3>
+          <p>Agendas outline the topics planned for discussion at each meeting. Agendas are available before the meetings. They are often not digitally uploaded prior to the meeting. Attendees can have a copy at the meetings. Minutes provide the official record of what was discussed and decided during the meeting.</p>
+        </div>
       </div>
       <div class="col-md-4">
-        <h3>Request Older Records</h3>
-        <p>Documents from prior years are available upon request. Please contact the Clerk/Treasurer at clerk@kennardin.com or (765) 785-2331.</p>
+        <div class="blue-card card h-100 p-4">
+          <h3>Viewing Documents</h3>
+          <p>Click the buttons above to view the latest agendas and minutes. Documents are stored in Google Drive folders and can be opened directly from your browser.</p>
+        </div>
       </div>
     </div>
   </div>
 
   <footer>© 2026 Town of Kennard</footer>
 
-  <!-- Search script (identical to all other pages) -->
+  <!-- Search script -->
   <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.6.2"></script>
   <script>
     document.addEventListener('DOMContentLoaded', function() {
