@@ -18,9 +18,6 @@
       transform: translateY(-4px);
       box-shadow: 0 8px 20px rgba(0, 31, 63, 0.25);
     }
-    .banner {
-      padding: 8px 20px;
-    }
   </style>
 </head>
 <body>
@@ -77,28 +74,37 @@
     </div>
   </div>
 
-  <!-- TOP ROW: 1/3 White (with PD Seal) + 2/3 White -->
+  <!-- TOP ROW: Three equal 1/3 cards -->
   <div class="container section">
     <div class="row g-4">
-      <!-- 1/3 White Card with PD Icon -->
+      <!-- 1/3: PD Icon ONLY -->
       <div class="col-md-4">
         <div class="card h-100 p-4 text-center" style="background: white; border: 1px solid #e0e0e0;">
-          <img src="images/policeseal-lighter-blue_1.png" alt="Kennard Police Seal" class="img-fluid mb-3" style="max-height: 180px; object-fit: contain;">
+          <img src="images/policeseal-lighter-blue_1.png" alt="Kennard Police Seal" class="img-fluid" style="max-height: 220px; object-fit: contain;">
+        </div>
+      </div>
+
+      <!-- Center 1/3: MPH & Safety Reminders -->
+      <div class="col-md-4">
+        <div class="card h-100 p-4" style="background: white; border: 1px solid #e0e0e0;">
+          <h4 class="mb-3">Important Safety Reminders</h4>
+          <ul>
+            <li>All town streets are 25 mph</li>
+            <li>State Road 234 is 35 mph within town limits</li>
+            <li>Keep vehicles locked when parked</li>
+            <li>Report suspicious activity immediately</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Third 1/3: Non-Emergency Info (moved here) -->
+      <div class="col-md-4">
+        <div class="card h-100 p-4 text-center" style="background: white; border: 1px solid #e0e0e0;">
           <h4 class="mb-3">Non-Emergency</h4>
           <p><strong>Henry County Sheriff</strong><br>
              (765) 521-7032</p>
           <p class="text-muted small">For all emergencies, always dial 911</p>
         </div>
-      </div>
-
-      <!-- 2/3 White Card -->
-      <div class="col-md-8">
-        <p class="lead">Important Safety Reminders for Kennard Residents</p>
-        <ul>
-          <li>All town streets are 25 mph; State Road 234 is 35 mph within town limits.</li>
-          <li>Keep vehicles locked when parked.</li>
-          <li>Report suspicious activity to the non-emergency line immediately.</li>
-        </ul>
       </div>
     </div>
   </div>
