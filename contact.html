@@ -18,9 +18,6 @@
       transform: translateY(-4px);
       box-shadow: 0 8px 20px rgba(0, 31, 63, 0.25);
     }
-    .banner {
-      padding: 8px 20px;
-    }
   </style>
 </head>
 <body>
@@ -80,7 +77,6 @@
   <!-- TOP ROW: 1/3 White Contact Info + 2/3 White Details -->
   <div class="container section">
     <div class="row g-4">
-      <!-- 1/3 White Contact Card -->
       <div class="col-md-4">
         <div class="card h-100 p-4 text-center" style="background: white; border: 1px solid #e0e0e0;">
           <h4 class="mb-3">Clerk / Treasurer</h4>
@@ -90,7 +86,6 @@
         </div>
       </div>
 
-      <!-- 2/3 White Details -->
       <div class="col-md-8">
         <p class="lead">Town Hall is located at 100 N. Main Street, Kennard, IN 47351.</p>
         <p>For general questions about the Town Board, utilities, or ordinances, please contact the Clerk/Treasurer during regular business hours.</p>
@@ -99,26 +94,34 @@
     </div>
   </div>
 
-  <!-- SECOND ROW: Two blue-shaded cards -->
+  <!-- SECOND ROW: Two blue-shaded cards (updated with separate departments) -->
   <div class="container section">
     <div class="row g-4">
-      <!-- Henry County Sheriff (blue) -->
       <div class="col-md-6">
         <div class="blue-card card h-100 p-4">
-          <h3>Henry County Sheriff (Non-Emergency)</h3>
-          <p>Phone: (765) 521-7032<br>
-             Address: 1033 Ron Lampe Way, New Castle, IN 47362</p>
-          <p class="text-muted small">For police emergencies, always dial 911.</p>
+          <h3>Henry County Planning Department</h3>
+          <p>Planning, zoning, and land use information.</p>
+          <a href="https://www.henrycounty.in.gov/280/Planning-Department" target="_blank" class="green-button btn btn-lg px-4">Visit Planning Department</a>
         </div>
       </div>
-
-      <!-- Henry County Planning (blue) -->
       <div class="col-md-6">
         <div class="blue-card card h-100 p-4">
-          <h3>Henry County Planning & Zoning</h3>
-          <p>Phone: (765) 529-7408<br>
-             Address: 1201 Race St, New Castle, IN 47362</p>
-          <p><a href="https://www.henrycounty.in.gov/Planning-Department" target="_blank" class="green-button btn btn-sm">Visit Planning Department Website</a></p>
+          <h3>Henry County Building Department</h3>
+          <p>Building permits and inspections.</p>
+          <a href="https://www.henrycounty.in.gov/166/Building-Department" target="_blank" class="green-button btn btn-lg px-4">Visit Building Department</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- THIRD ROW: Election Information (full-width white card) -->
+  <div class="container section">
+    <div class="row">
+      <div class="col-12">
+        <div class="card p-4 text-center" style="background: white; border: 1px solid #e0e0e0;">
+          <h3>Election & Voter Information</h3>
+          <p>Find voting information, polling locations, and election results for Henry County.</p>
+          <a href="https://www.henrycounty.in.gov/174/Election-Voter-Information" target="_blank" class="green-button btn btn-lg px-4">View Election Information</a>
         </div>
       </div>
     </div>
