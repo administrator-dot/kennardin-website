@@ -6,8 +6,22 @@
   <title>Local Schools - Town of Kennard</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="styles.css" rel="stylesheet">
+  <style>
+    .blue-card {
+      background: linear-gradient(135deg, #e6f0ff, #d0e0f5);
+      border: none;
+      box-shadow: 0 4px 12px rgba(0, 31, 63, 0.15);
+      transition: all 0.3s ease;
+      height: 100%;
+    }
+    .blue-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 20px rgba(0, 31, 63, 0.25);
+    }
+  </style>
 </head>
 <body>
+  <!-- NAVIGATION -->
   <nav class="navbar navbar-expand-lg" style="background-color: #001f3f;">
     <div class="container">
       <a class="navbar-brand" href="index.html"><img src="images/final-web-seal.png" alt="Town of Kennard Logo" width="160"></a>
@@ -53,78 +67,80 @@
     </div>
   </nav>
 
-  <div class="banner" style="padding: 8px 20px;">
+  <!-- BANNER -->
+  <div class="banner">
     <div class="container text-center">
       <h1 style="color: white; margin: 0;">Local Schools</h1>
     </div>
   </div>
 
+  <!-- TOP ROW: 1/3 White Overview + 2/3 White Districts -->
   <div class="container section">
-    <h2>School Districts Near Kennard, IN 47351</h2>
-    <p>The Town of Kennard is located within the <strong>Charles A. Beard Memorial School Corporation</strong> (approximately 9 miles south in Knightstown). Students can catch a bus directly in Kennard.</p>
+    <div class="row g-4">
+      <div class="col-md-4">
+        <div class="card h-100 p-4 text-center" style="background: white; border: 1px solid #e0e0e0;">
+          <h3>Education in Kennard</h3>
+          <p class="mb-4">Students from Kennard attend schools in nearby districts. Bus service is available directly in town for the primary district.</p>
+        </div>
+      </div>
+
+      <div class="col-md-8">
+        <div class="card h-100 p-4" style="background: white; border: 1px solid #e0e0e0;">
+          <h3>School Districts Near Kennard, IN 47351</h3>
+          
+          <p><strong>1. Charles A. Beard Memorial School Corporation (Primary District)</strong><br>
+             ~9 miles south (Knightstown) • Bus stop available directly in Kennard<br>
+             <a href="https://www.cabeard.k12.in.us/" target="_blank">Website</a> • <a href="https://indianagps.doe.in.gov/Summary/Corporation/264" target="_blank">Indiana GPS Report Card</a></p>
+          
+          <p><strong>2. Shenandoah School Corporation</strong><br>
+             ~7 miles north • Bus stop 1 mile north at Baptist Church parking lot<br>
+             <a href="https://sscraiders.org/" target="_blank">Website</a> • <a href="https://indianagps.doe.in.gov/Summary/Corporation/318" target="_blank">Indiana GPS Report Card</a></p>
+          
+          <p><strong>3. New Castle Community School Corporation</strong><br>
+             ~10 miles east<br>
+             <a href="https://www.nccsc.k12.in.us/" target="_blank">Website</a> • <a href="https://indianagps.doe.in.gov/Summary/Corporation/268" target="_blank">Indiana GPS Report Card</a></p>
+          
+          <p><strong>4. Eastern Hancock Community School Corporation</strong><br>
+             ~15 miles southwest • Bus stop in Shirley<br>
+             <a href="https://www.easternhancock.org/" target="_blank">Website</a> • <a href="https://indianagps.doe.in.gov/Summary/Corporation/312" target="_blank">Indiana GPS Report Card</a></p>
+        </div>
+      </div>
+    </div>
   </div>
 
+  <!-- SECOND ROW: Larger blue card for Sports Accomplishments -->
   <div class="container section">
-    <h3>1. Charles A. Beard Memorial School Corporation (Primary District)</h3>
-    <p><strong>Distance:</strong> ~9 miles south (Knightstown)<br>
-    Bus stop available directly in Kennard.<br>
-    Official Corporation Website: <a href="https://www.cabeard.k12.in.us/">www.cabeard.k12.in.us</a><br>
-    Official Indiana State Report Card & Rankings: <a href="https://indianagps.doe.in.gov/Summary/Corporation/264">View on Indiana GPS</a></p>
-  </div>
-
-  <div class="container section">
-    <h3>2. Shenandoah School Corporation</h3>
-    <p><strong>Distance:</strong> ~7 miles north<br>
-    Closest bus stop is 1 mile north of Kennard at the Baptist Church parking lot.<br>
-    Official Corporation Website: <a href="https://sscraiders.org/">www.sscraiders.org</a><br>
-    Official Indiana State Report Card & Rankings: <a href="https://indianagps.doe.in.gov/Summary/Corporation/318">View on Indiana GPS</a></p>
-  </div>
-
-  <div class="container section">
-    <h3>3. New Castle Community School Corporation</h3>
-    <p><strong>Distance:</strong> ~10 miles east (New Castle)<br>
-    Official Corporation Website: <a href="https://www.nccsc.k12.in.us/">www.nccsc.k12.in.us</a><br>
-    Official Indiana State Report Card & Rankings: <a href="https://indianagps.doe.in.gov/Summary/Corporation/268">View on Indiana GPS</a></p>
-  </div>
-
-  <div class="container section">
-    <h3>4. Eastern Hancock Community School Corporation</h3>
-    <p><strong>Distance:</strong> ~15 miles southwest<br>
-    Closest bus stop is in Shirley, Indiana (approximately 3.5 miles west of Kennard).<br>
-    Official Corporation Website: <a href="https://www.easternhancock.org/">www.easternhancock.org</a><br>
-    Official Indiana State Report Card & Rankings: <a href="https://indianagps.doe.in.gov/Summary/Corporation/312">View on Indiana GPS</a></p>
-  </div>
-
-  <div class="container section">
-    <h2>Notable Sports Accomplishments (IHSAA)</h2>
-    
-    <h3>New Castle Community School Corporation</h3>
-    <ul>
-      <li><strong>Boys Basketball</strong> – State Champions 1932 and 2006 (Class 3A)</li>
-      <li><strong>Girls Volleyball</strong> – State Champions 2007, 2017, 2018, 2019 (Class 4A)</li>
-    </ul>
-
-    <h3>Eastern Hancock Community School Corporation</h3>
-    <ul>
-      <li><strong>Football</strong> – State Champions 1985-86 (Class 1A)</li>
-    </ul>
-
-    <h3>Charles A. Beard Memorial School Corporation (Knightstown)</h3>
-    <ul>
-      <li><strong>Boys Basketball</strong> – Sectional Champions 1957-58, 1986-87, 2003-04 (2A), 2004-05 (2A), 2005-06 (2A)</li>
-    </ul>
-
-    <h3>Shenandoah School Corporation</h3>
-    <ul>
-      <li><strong>Girls Basketball</strong> – State Champions 2003 (Class 2A) and 2005 (Class 2A)</li>
-      <li><strong>Football</strong> – Sectional Champions 1986 (2A), 2001 (1A), 2004 (1A), 2012 (2A), 2014 (2A)</li>
-      <li><strong>Baseball</strong> – Sectional Champion 2025 (2A)</li>
-    </ul>
+    <div class="row">
+      <div class="col-12">
+        <div class="blue-card card h-100 p-4">
+          <h3>Notable Sports Accomplishments (IHSAA)</h3>
+          <h4>New Castle Community School Corporation</h4>
+          <ul>
+            <li>Boys Basketball – State Champions 1932 and 2006 (Class 3A)</li>
+            <li>Girls Volleyball – State Champions 2007, 2017, 2018, 2019 (Class 4A)</li>
+          </ul>
+          <h4>Eastern Hancock Community School Corporation</h4>
+          <ul>
+            <li>Football – State Champions 1985-86 (Class 1A)</li>
+          </ul>
+          <h4>Charles A. Beard Memorial School Corporation (Knightstown)</h4>
+          <ul>
+            <li>Boys Basketball – Sectional Champions 1957-58, 1986-87, 2003-04 (2A), 2004-05 (2A), 2005-06 (2A)</li>
+          </ul>
+          <h4>Shenandoah School Corporation</h4>
+          <ul>
+            <li>Girls Basketball – State Champions 2003 (Class 2A) and 2005 (Class 2A)</li>
+            <li>Football – Sectional Champions 1986 (2A), 2001 (1A), 2004 (1A), 2012 (2A), 2014 (2A)</li>
+            <li>Baseball – Sectional Champion 2025 (2A)</li>
+          </ul>
+        </div>
+      </div>
+    </div>
   </div>
 
   <footer>© 2026 Town of Kennard</footer>
 
-  <!-- Exact same working search script as Police page -->
+  <!-- Search script -->
   <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.6.2"></script>
   <script>
     document.addEventListener('DOMContentLoaded', function() {
