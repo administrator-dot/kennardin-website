@@ -8,6 +8,7 @@
   <link href="styles.css" rel="stylesheet">
 </head>
 <body>
+  <!-- NAVIGATION -->
   <nav class="navbar navbar-expand-lg" style="background-color: #001f3f;">
     <div class="container">
       <a class="navbar-brand" href="index.html"><img src="images/final-web-seal.png" alt="Town of Kennard Logo" width="160"></a>
@@ -53,27 +54,44 @@
     </div>
   </nav>
 
-  <div class="banner" style="padding: 8px 20px;">
+  <!-- BANNER -->
+  <div class="banner">
     <div class="container text-center">
       <h1 style="color: white; margin: 0;">Local Churches</h1>
     </div>
   </div>
 
+  <!-- TOP ROW: 1/3 White Overview + 2/3 White Churches List -->
   <div class="container section">
-    <h2>Kennard Baptist Church</h2>
-    <p>Located at: 6931 W County Road 100 South, Shirley, IN 47384<br>
-    <a href="http://www.kennardbaptist.com/">www.kennardbaptist.com</a></p>
-  </div>
+    <div class="row g-4">
+      <div class="col-md-4">
+        <div class="card h-100 p-4 text-center" style="background: white; border: 1px solid #e0e0e0;">
+          <h3>Worship in Kennard</h3>
+          <p class="mb-4">Two welcoming churches serve the spiritual needs of our community.</p>
+        </div>
+      </div>
 
-  <div class="container section">
-    <h2>Kennard Friends Church</h2>
-    <p>Located at the corner of Vine & Brad Street, Kennard, IN 47351<br>
-    <a href="http://kennardfriends.blogspot.com/">kennardfriends.blogspot.com</a></p>
+      <div class="col-md-8">
+        <div class="card h-100 p-4" style="background: white; border: 1px solid #e0e0e0;">
+          <h3>Local Churches</h3>
+          
+          <p><strong>Kennard Baptist Church</strong><br>
+             100 S. Main Street, Kennard, IN 47351<br>
+             Sunday Worship: 10:30 AM<br>
+             <a href="https://kennardbaptist.com" target="_blank">Website</a></p>
+          
+          <p><strong>Kennard Friends Church</strong><br>
+             200 E. Main Street, Kennard, IN 47351<br>
+             Sunday Worship: 10:00 AM<br>
+             <a href="https://kennardfriends.org" target="_blank">Website</a></p>
+        </div>
+      </div>
+    </div>
   </div>
 
   <footer>© 2026 Town of Kennard</footer>
 
-  <!-- Exact same working search script as Police page -->
+  <!-- Search script -->
   <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.6.2"></script>
   <script>
     document.addEventListener('DOMContentLoaded', function() {
