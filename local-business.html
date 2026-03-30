@@ -18,11 +18,6 @@
       transform: translateY(-4px);
       box-shadow: 0 8px 20px rgba(0, 31, 63, 0.25);
     }
-    .town-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 15px;
-    }
   </style>
 </head>
 <body>
@@ -96,30 +91,34 @@
 
       <div class="col-md-8">
         <div class="card h-100 p-4" style="background: white; border: 1px solid #e0e0e0;">
-          <h3>Local Business in Kennard</h3>
-          <p>Kennard is a small rural community. The United States Post Office is the main local service available within town limits. For additional shopping, dining, and services, residents often travel to nearby towns.</p>
+          <h3>Local Services in Kennard</h3>
+          <p>Kennard is a small rural community. The United States Post Office is the primary local service available within town limits. For additional shopping, dining, and services, residents often travel to nearby towns.</p>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- SECOND ROW: One larger blue card with nearby towns grid -->
+  <!-- SECOND ROW: Three blue-shaded cards (Post Office already covered, so we add Blessing Pantry prominently) -->
   <div class="container section">
-    <div class="row">
-      <div class="col-12">
-        <div class="blue-card card h-100 p-4">
+    <div class="row g-4">
+      <div class="col-md-6">
+        <div class="blue-card card h-100 p-4 text-center">
+          <h3>Blessing Pantry</h3>
+          <p class="mb-4">Operated by Kennard Krusaders for Greensboro Township</p>
+          <p>Provides food and basic necessities to families in need.</p>
+          <p class="small"><strong>Hours:</strong><br>
+             Wednesdays: 4:30 PM – 6:30 PM<br>
+             Sundays: 1:00 PM – 3:00 PM</p>
+          <a href="https://www.facebook.com/p/Kennard-Krusaders-for-Greensboro-Township-100087833502711/" target="_blank" class="green-button btn btn-lg px-4">Visit Facebook Page</a>
+        </div>
+      </div>
+
+      <div class="col-md-6">
+        <div class="blue-card card h-100 p-4 text-center">
           <h3>Nearby Towns for Shopping & Dining</h3>
-          <div class="town-grid">
-            <div><strong>Shirley</strong> – 4 mi<br>Food, gas, small shops</div>
-            <div><strong>Markleville</strong> – 12 mi<br>Food, gas, convenience</div>
-            <div><strong>Middletown</strong> – 12 mi<br>Food, gas, local dining</div>
-            <div><strong>Muncie</strong> – 22 mi<br>Restaurants, shopping, hotels, attractions</div>
-            <div><strong>Anderson</strong> – 28 mi<br>Restaurants, gas, hotels, Hoosier Park Casino & Racing</div>
-            <div><strong>Greenfield</strong> – 28 mi<br>Restaurants, shopping, hotels, attractions</div>
-            <div><strong>Fortville</strong> – 35 mi<br>Food, gas, local shops</div>
-            <div><strong>McCordsville</strong> – 38 mi<br>Restaurants, shopping, newer retail</div>
-            <div><strong>Indianapolis</strong> – 48 mi<br>Full range: restaurants, shopping, hotels, major attractions, casinos</div>
-          </div>
+          <p class="small text-start">
+            Shirley (4 mi) • Markleville (12 mi) • Middletown (12 mi) • Muncie (22 mi) • Anderson (28 mi) • Greenfield (28 mi) • Fortville (35 mi) • McCordsville (38 mi) • Indianapolis (48 mi)
+          </p>
         </div>
       </div>
     </div>
