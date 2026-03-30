@@ -8,13 +8,8 @@
   <link href="styles.css" rel="stylesheet">
   <style>
     .member-card {
-      transition: all 0.3s ease;
       border: none;
       box-shadow: 0 4px 12px rgba(0, 31, 63, 0.15);
-    }
-    .member-card:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 8px 20px rgba(0, 31, 63, 0.25);
     }
     .president-badge {
       position: absolute;
@@ -94,11 +89,10 @@
     </div>
   </div>
 
-  <!-- TOP ROW: White cards for the three members -->
+  <!-- TOP ROW: White cards for the three members (no bounce) -->
   <div class="container section">
     <h2 class="text-center mb-4">Current Town Board Members</h2>
     <div class="row g-4">
-      <!-- Steve Worsham - President -->
       <div class="col-md-4">
         <div class="member-card card h-100 position-relative">
           <div class="president-badge">PRESIDENT</div>
@@ -109,8 +103,6 @@
           </div>
         </div>
       </div>
-
-      <!-- Holly Lee -->
       <div class="col-md-4">
         <div class="member-card card h-100">
           <div class="card-body text-center pt-5">
@@ -120,8 +112,6 @@
           </div>
         </div>
       </div>
-
-      <!-- Jason Groce -->
       <div class="col-md-4">
         <div class="member-card card h-100">
           <div class="card-body text-center pt-5">
