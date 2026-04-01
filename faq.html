@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Frequently Asked Questions - Town of Kennard</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="styles.css" rel="stylesheet">
+  <style>
+    .blue-card {
+      background: linear-gradient(135deg, #e6f0ff, #d0e0f5);
+      border: none;
+      box-shadow: 0 4px 12px rgba(0, 31, 63, 0.15);
+      transition: all 0.3s ease;
+      height: 100%;
+    }
+    .blue-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 20px rgba(0, 31, 63, 0.25);
+    }
+  </style>
+</head>
+<body>
+  <!-- NAVIGATION -->
+  <nav class="navbar navbar-expand-lg" style="background-color: #001f3f;">
+    <div class="container">
+      <a class="navbar-brand" href="index.html"><img src="images/final-web-seal.png" alt="Town of Kennard Logo" width="160"></a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon" style="filter: invert(1);"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav mx-auto">
+          <li class="nav-item"><a class="nav-link text-white" href="index.html">Home</a></li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle text-white" href="#" data-bs-toggle="dropdown">Local Government</a>
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-item" href="town-board.html">Town Board</a></li>
+              <li><a class="dropdown-item" href="minutes-agendas.html">Minutes & Agendas</a></li>
+              <li><a class="dropdown-item" href="town-ordinances.html">Town Ordinances</a></li>
+            </ul>
+          </li>
+          <li class="nav-item"><a class="nav-link text-white" href="town-utilities.html">Town Utilities</a></li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle text-white" href="#" data-bs-toggle="dropdown">Departments & Services</a>
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-item" href="police-department.html">Police Department</a></li>
+              <li><a class="dropdown-item" href="fire-department.html">Fire Department</a></li>
+            </ul>
+          </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle text-white" href="#" data-bs-toggle="dropdown">Community</a>
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-item" href="kennard.html">Kennard</a></li>
+              <li><a class="dropdown-item" href="local-schools.html">Local Schools</a></li>
+              <li><a class="dropdown-item" href="local-churches.html">Local Churches</a></li>
+              <li><a class="dropdown-item" href="local-business.html">Local Business</a></li>
+            </ul>
+          </li>
+          <li class="nav-item"><a class="nav-link text-white" href="contact.html">Contact</a></li>
+          <li class="nav-item"><a class="nav-link text-white active" href="faq.html">FAQ</a></li>
+          <li class="nav-item"><a class="nav-link text-white" href="bids-info.html">Bids & Info</a></li>
+        </ul>
+        <div class="ms-auto position-relative">
+          <input type="text" id="search-input" placeholder="Search the site..." class="form-control" style="width: 260px; background: rgba(255,255,255,0.95); border-radius: 9999px;">
+          <div id="search-results" class="position-absolute bg-white shadow rounded mt-1" style="width: 260px; max-height: 300px; overflow-y:auto; display:none; z-index: 1000;"></div>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- BANNER -->
+  <div class="banner">
+    <div class="container text-center">
+      <h1 style="color: white; margin: 0;">Frequently Asked Questions</h1>
+    </div>
+  </div>
+
+  <!-- TOP ROW: 1/3 Intro + 2/3 How to Use -->
+  <div class="container section">
+    <div class="row g-4">
+      <div class="col-md-4">
+        <div class="card h-100 p-4 text-center" style="background: white; border: 1px solid #e0e0e0;">
+          <h3>Quick Help</h3>
+          <p class="mb-4">Answers to the most common questions about living and doing business in Kennard, Indiana.</p>
+        </div>
+      </div>
+      <div class="col-md-8">
+        <div class="card h-100 p-4" style="background: white; border: 1px solid #e0e0e0;">
+          <h3>How Kennard Works</h3>
+          <p>These FAQs are written specifically for how our small town operates — from wastewater payments and trash service to Sheriff and Volunteer Fire Department procedures.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FAQ CARDS (blue) -->
+  <div class="container section">
+    <div class="row g-4">
+      <div class="col-md-6">
+        <div class="blue-card card h-100 p-4">
+          <h4>How do I pay my wastewater bill?</h4>
+          <p>Wastewater payments can be made online using pay.gov. The Town does not accept payments for trash or other services through this link.</p>
+          <a href="https://pay.paygov.us/EndUser/PaymentAgency.aspx?ttid=16686" target="_blank" class="green-button btn btn-sm px-4">Pay Wastewater Online</a>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="blue-card card h-100 p-4">
+          <h4>How do I get a second trash tote?</h4>
+          <p>The first trash tote is included with your wastewater service. For a second tote, contact Best Way of Indiana directly at (765) 853-5714 or visit <a href="http://www.bestway-disposal.com" target="_blank">www.bestway-disposal.com</a>.</p>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="blue-card card h-100 p-4">
+          <h4>Who do I call for animal issues?</h4>
+          <p>Henry County Animal Control handles all animal-related concerns during business hours: (765) 529-8131.<br>After hours, contact the Henry County Sheriff non-emergency line: (765) 521-7032.</p>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="blue-card card h-100 p-4">
+          <h4>What are the speed limits in Kennard?</h4>
+          <p>All town streets are 25 mph. State Road 234 is 35 mph within town limits. Please drive safely.</p>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="blue-card card h-100 p-4">
+          <h4>When does the Town Council meet?</h4>
+          <p>The Town Board meets on the second Wednesday of every month at 7:00 PM at Town Hall. Agendas are posted on the Minutes & Agendas page.</p>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="blue-card card h-100 p-4">
+          <h4>How do I contact the Clerk/Treasurer?</h4>
+          <p>Clerk/Treasurer Jan Lockridge<br>Phone: (765) 785-2331<br>Text: (765) 524-0646<br>Email: clerk@kennardin.com</p>
+          <p>Please contact during regular business hours.</p>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="blue-card card h-100 p-4">
+          <h4>How do I submit a sealed bid?</h4>
+          <p>Bids must be sealed and clearly marked on the envelope. They can be hand-delivered to the Clerk or placed in the sewer payment drop box at Town Hall. Full instructions are on the Bids & Info page.</p>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="blue-card card h-100 p-4">
+          <h4>How do I contact the Volunteer Fire Department?</h4>
+          <p>For general (non-emergency) questions: vfd@kennardin.com<br>For all emergencies: Dial 911</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer>© 2026 Town of Kennard</footer>
+
+  <!-- Search script -->
+  <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.6.2"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const searchInput = document.getElementById('search-input');
+      const resultsContainer = document.getElementById('search-results');
+
+      fetch('search.json')
+        .then(r => r.json())
+        .then(data => {
+          console.log('✅ search.json loaded with', data.length, 'entries');
+          const fuse = new Fuse(data, { keys: ['title', 'content'], threshold: 0.35 });
+
+          searchInput.addEventListener('input', function() {
+            const query = searchInput.value.trim();
+            resultsContainer.innerHTML = '';
+
+            if (query.length < 2) {
+              resultsContainer.style.display = 'none';
+              return;
+            }
+
+            const results = fuse.search(query);
+            if (results.length === 0) {
+              resultsContainer.innerHTML = `<div class="p-2 text-muted">No results found for "${query}"</div>`;
+            } else {
+              let html = '';
+              results.forEach(result => {
+                html += `<a href="${result.item.url}" class="d-block p-2 text-decoration-none border-bottom">${result.item.title}</a>`;
+              });
+              resultsContainer.innerHTML = html;
+            }
+            resultsContainer.style.display = 'block';
+          });
+        })
+        .catch(err => console.error('❌ search.json fetch failed', err));
+    });
+  </script>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
