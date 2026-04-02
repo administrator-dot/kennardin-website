@@ -11,6 +11,16 @@
     .top-brand { padding: 6px 0; }
     .blue-card { background: linear-gradient(135deg, #e6f0ff, #d0e0f5); border: none; box-shadow: 0 4px 12px rgba(0, 31, 63, 0.15); transition: all 0.3s ease; height: 100%; }
     .blue-card:hover { transform: translateY(-4px); box-shadow: 0 8px 20px rgba(0, 31, 63, 0.25); }
+    .president-badge {
+      background: linear-gradient(90deg, #003366, #0055aa);
+      color: white;
+      font-size: 0.85rem;
+      padding: 4px 12px;
+      border-radius: 9999px;
+      display: inline-block;
+      margin-left: 8px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    }
   </style>
 </head>
 <body>
@@ -77,9 +87,15 @@
     </div>
   </header>
 
-  <!-- White top row - FULL board member cards with your exact personal details -->
+  <!-- White top row - Steve now on the left with cool blue President badge -->
   <div class="container section">
     <div class="row g-4">
+      <div class="col-md-4">
+        <div class="card h-100 p-4 text-center" style="background: white; border: 1px solid #e0e0e0;">
+          <h4>Steve Worsham <span class="president-badge">President</span></h4>
+          <p><strong>President</strong><br>President of the board since 2020. Steve is passionate about streets and utility infrastructure improvements and enhancing services for the entire community.</p>
+        </div>
+      </div>
       <div class="col-md-4">
         <div class="card h-100 p-4 text-center" style="background: white; border: 1px solid #e0e0e0;">
           <h4>Jason Groce</h4>
@@ -92,16 +108,10 @@
           <p><strong>Member</strong><br>Served since 2017. Holly is deeply dedicated to giving and helping citizens. She serves on the volunteer Fire Department and donates countless community hours for Greensboro Township while also working her full-time job.</p>
         </div>
       </div>
-      <div class="col-md-4">
-        <div class="card h-100 p-4 text-center" style="background: white; border: 1px solid #e0e0e0;">
-          <h4>Steve Worsham</h4>
-          <p><strong>President</strong><br>President of the board since 2020. Steve is passionate about streets and utility infrastructure improvements and enhancing services for the entire community.</p>
-        </div>
-      </div>
     </div>
   </div>
 
-  <!-- Blue second row - All original info cards -->
+  <!-- Blue second row - unchanged -->
   <div class="container section">
     <div class="row g-4">
       <div class="col-md-4">
