@@ -1,4 +1,20 @@
-<!-- TIGHT BLUE HEADER -->
+<!-- TIGHT BLUE HEADER - SELF-CONTAINED WITH STYLES -->
+<style>
+  .blue-header { background-color: #001f3f; }
+  .top-brand { padding: 6px 0; }
+  .title-row { padding: 8px 0; }
+  .title-row h1 {
+    font-size: 2.8rem;
+    font-weight: 700;
+    letter-spacing: -1px;
+    margin: 0;
+  }
+  .menu-bar {
+    background-color: #001f3f;
+    padding: 8px 0;
+  }
+</style>
+
 <header class="blue-header">
   <!-- Row 1: Logo left + Town name centered -->
   <div class="top-brand">
@@ -6,9 +22,9 @@
       <div class="d-flex align-items-center">
         <a href="index.html"><img src="images/final-web-seal.png" alt="Town of Kennard Logo" width="140"></a>
         <div class="flex-grow-1 text-center">
-          <h3 class="text-black mb-0">Town of Kennard, Indiana</h3>
+          <h3 class="text-white mb-0">Town of Kennard, Indiana</h3>
           <h4 class="text-white mb-0"></h4>
-          <h1 style="color: black;">Frequently Asked Questions</h1>
+          <h1 style="color: white;">Frequently Asked Questions</h1>
         </div>
         <div class="position-relative" style="width: 240px;">
           <input type="text" id="search-input" placeholder="Search the site..." class="form-control" style="background: rgba(255,255,255,0.95); border-radius: 9999px;">
@@ -19,7 +35,7 @@
   </div>
 
   <!-- Row 3: Menu bar -->
-  <div class="menu-bar" style="background-color: #001f3f; padding: 8px 0;">
+  <div class="menu-bar">
     <nav class="navbar navbar-expand-lg">
       <div class="container">
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
