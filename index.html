@@ -9,7 +9,15 @@
   <style>
     .blue-header { background-color: #001f3f; }
     .top-brand { padding: 6px 0; }
-    .weather-card { background: linear-gradient(135deg, #001f3f, #003366); color: white; }
+    .weather-card { 
+      background: linear-gradient(135deg, #001f3f, #003366); 
+      color: white; 
+    }
+    .weather-temp { 
+      font-size: 3.5rem; 
+      font-weight: bold; 
+      color: #ffffff; 
+    }
   </style>
 </head>
 <body>
@@ -113,19 +121,23 @@
 
   <footer>© 2026 Town of Kennard</footer>
 
-  <!-- Weather script -->
+  <!-- Fixed weather script: Celsius → Fahrenheit + bright white temp -->
   <script>
     async function loadWeather() {
       const info = document.getElementById('weather-info');
       try {
         const res = await fetch('https://api.open-meteo.com/v1/forecast?latitude=39.9039&longitude=-85.5194&current=temperature_2m,relative_humidity_2m,wind_speed_10m,weather_code&timezone=America/Indiana/Indianapolis');
         const data = await res.json();
+        const c = data.current.temperature_2m;
+        const f = Math.round(c * 9/5 + 32);
         const codeMap = { 0: 'Clear', 1: 'Mainly Clear', 2: 'Partly Cloudy', 3: 'Overcast', 45: 'Fog', 61: 'Light Rain', 63: 'Rain', 80: 'Showers' };
         info.innerHTML = `
-          <h2>${data.current.temperature_2m}°F</h2>
+          <h2 class="weather-temp">${f}°F</h2>
           <p>${codeMap[data.current.weather_code] || 'Unknown'} • ${data.current.relative_humidity_2m}% humidity<br>Wind: ${data.current.wind_speed_10m} mph</p>
         `;
-      } catch(e) { info.textContent = 'Weather unavailable'; }
+      } catch(e) { 
+        info.innerHTML = `<span style="color:#ffcc00;">Weather unavailable</span>`; 
+      }
     }
     window.onload = loadWeather;
   </script>
