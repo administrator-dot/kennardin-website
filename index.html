@@ -23,10 +23,8 @@
   </style>
 </head>
 <body>
-
-  <!-- Note to self: This is the exact compact blue header I liked from FAQ page - simplified for index -->
+  <!-- Note to self: This is the exact compact blue header I liked from FAQ page -->
   <header class="blue-header">
-    <!-- Row 1: Logo left + Welcome title centered (no "Town of Kennard, Indiana" line) -->
     <div class="top-brand">
       <div class="container">
         <div class="d-flex align-items-center">
@@ -41,8 +39,7 @@
         </div>
       </div>
     </div>
-
-    <!-- Row 2: Menu bar -->
+    <!-- Menu bar -->
     <div class="menu-bar" style="background-color: #001f3f; padding: 8px 0;">
       <nav class="navbar navbar-expand-lg">
         <div class="container">
@@ -86,8 +83,7 @@
       </nav>
     </div>
   </header>
-
-  <!-- Note to self: Weather + location section (keep this exactly as it was) -->
+  <!-- Weather + Location -->
   <div class="container section">
     <div class="row g-4">
       <div class="col-md-4">
@@ -106,8 +102,7 @@
       </div>
     </div>
   </div>
-
-  <!-- Note to self: YouTube + public comments section -->
+  <!-- YouTube + Public Comments -->
   <div class="container section">
     <div class="row g-4">
       <div class="col-md-6">
@@ -124,38 +119,57 @@
       </div>
     </div>
   </div>
-
-  <!-- Note to self: All other index cards and bids section go here (kept exactly as you had them) -->
+  <!-- Other cards / bids section -->
   <div class="container section">
     <div class="row g-4">
-      <!-- Paste any remaining cards/bids here exactly as they were on your live index page -->
+      <!-- Your other cards go here exactly as they were -->
     </div>
   </div>
-
   <footer>© 2026 Town of Kennard</footer>
-
-  <!-- Note to self: Search script and Bootstrap -->
-  <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.6.2"></script>
+  <!-- Full weather + search script -->
   <script>
+    async function loadWeather() {
+      const widget = document.getElementById('weather-widget');
+      try {
+        const response = await fetch('https://api.open-meteo.com/v1/forecast?latitude=39.9039&longitude=-85.5194&current=temperature_2m,relative_humidity_2m,apparent_temperature,wind_speed_10m,weather_code&timezone=America/Indiana/Indianapolis');
+        const data = await response.json();
+        const current = data.current;
+        let weatherDesc = 'Clear';
+        if (current.weather_code === 0) weatherDesc = 'Clear';
+        else if (current.weather_code === 1 || current.weather_code === 2 || current.weather_code === 3) weatherDesc = 'Partly Cloudy';
+        else if (current.weather_code === 45 || current.weather_code === 48) weatherDesc = 'Fog';
+        else if (current.weather_code >= 51 && current.weather_code <= 57) weatherDesc = 'Drizzle';
+        else if (current.weather_code >= 61 && current.weather_code <= 67) weatherDesc = 'Rain';
+        else if (current.weather_code >= 71 && current.weather_code <= 77) weatherDesc = 'Snow';
+        else if (current.weather_code >= 95) weatherDesc = 'Thunderstorm';
+        widget.innerHTML = `
+          <h4>${current.temperature_2m}°F</h4>
+          <p>${weatherDesc}</p>
+          <p>Feels like ${current.apparent_temperature}°F</p>
+          <p>Humidity: ${current.relative_humidity_2m}%</p>
+          <p>Wind: ${current.wind_speed_10m} mph</p>
+        `;
+      } catch (err) {
+        widget.innerHTML = `<p>Weather data temporarily unavailable</p>`;
+        console.error(err);
+      }
+    }
     document.addEventListener('DOMContentLoaded', function() {
+      loadWeather();  // This was missing before
       const searchInput = document.getElementById('search-input');
       const resultsContainer = document.getElementById('search-results');
-
       fetch('search.json')
         .then(r => r.json())
         .then(data => {
           console.log('✅ search.json loaded with', data.length, 'entries');
           const fuse = new Fuse(data, { keys: ['title', 'content'], threshold: 0.35 });
-
           searchInput.addEventListener('input', function() {
             const query = searchInput.value.trim();
             resultsContainer.innerHTML = '';
-
             if (query.length < 2) {
               resultsContainer.style.display = 'none';
               return;
             }
-
             const results = fuse.search(query);
             if (results.length === 0) {
               resultsContainer.innerHTML = `<div class="p-2 text-muted">No results found for "${query}"</div>`;
@@ -172,7 +186,6 @@
         .catch(err => console.error('❌ search.json fetch failed', err));
     });
   </script>
-
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
