@@ -9,22 +9,13 @@
   <style>
     .blue-header { background-color: #001f3f; }
     .top-brand { padding: 6px 0; }
-    .blue-card {
-      background: linear-gradient(135deg, #e6f0ff, #d0e0f5);
-      border: none;
-      box-shadow: 0 4px 12px rgba(0, 31, 63, 0.15);
-      transition: all 0.3s ease;
-      height: 100%;
-    }
-    .blue-card:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 8px 20px rgba(0, 31, 63, 0.25);
-    }
+    .blue-card { background: linear-gradient(135deg, #e6f0ff, #d0e0f5); border: none; box-shadow: 0 4px 12px rgba(0, 31, 63, 0.15); transition: all 0.3s ease; height: 100%; }
+    .blue-card:hover { transform: translateY(-4px); box-shadow: 0 8px 20px rgba(0, 31, 63, 0.25); }
   </style>
 </head>
 <body>
 
-  <!-- Note to self: Double-row header like FAQ - Town name on top, page title below -->
+  <!-- Note to self: Double-row header like FAQ -->
   <header class="blue-header">
     <div class="top-brand">
       <div class="container">
@@ -86,30 +77,31 @@
     </div>
   </header>
 
-  <!-- Note to self: Town Board member cards (white) + info cards (blue) -->
+  <!-- White top row - Full board member cards with exact service history -->
   <div class="container section">
     <div class="row g-4">
       <div class="col-md-4">
         <div class="card h-100 p-4 text-center" style="background: white; border: 1px solid #e0e0e0;">
-          <h4>Steve Worsham</h4>
-          <p><strong>President</strong><br>Served since 2019</p>
+          <h4>Jason Groce</h4>
+          <p><strong>Member & Former President</strong><br>Has held office since 2015</p>
         </div>
       </div>
       <div class="col-md-4">
         <div class="card h-100 p-4 text-center" style="background: white; border: 1px solid #e0e0e0;">
           <h4>Holly Lee</h4>
-          <p>Served since 2017</p>
+          <p><strong>Member</strong><br>Served since 2017</p>
         </div>
       </div>
       <div class="col-md-4">
         <div class="card h-100 p-4 text-center" style="background: white; border: 1px solid #e0e0e0;">
-          <h4>Jason Groce</h4>
-          <p>Served since 2015</p>
+          <h4>Steve Worsham</h4>
+          <p><strong>President</strong><br>Started in 2019 and became president of the board in 2021</p>
         </div>
       </div>
     </div>
   </div>
 
+  <!-- Blue second row - All original info cards -->
   <div class="container section">
     <div class="row g-4">
       <div class="col-md-4">
@@ -127,7 +119,7 @@
       <div class="col-md-4">
         <div class="blue-card card h-100 p-4">
           <h3>Public Participation</h3>
-          <p>Citizens are encouraged to address the Board during the public comment period at each meeting.</p>
+          <p>Citizens are encouraged to address the Board during the public comment period at each meeting. Board members are to be addressed only during public meetings.</p>
         </div>
       </div>
     </div>
