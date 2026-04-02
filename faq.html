@@ -13,10 +13,10 @@
     .top-brand {
       padding: 6px 0;
     }
-    .title-banner {
-      padding: 12px 0;
+    .title-row {
+      padding: 10px 0;
     }
-    .title-banner h1 {
+    .title-row h1 {
       font-size: 2.9rem;
       font-weight: 700;
       letter-spacing: -1px;
@@ -42,30 +42,32 @@
 <body>
   <!-- MINIMAL BLUE HEADER -->
   <header class="blue-header">
-    <!-- Row 1: Thin branding -->
+    <!-- Row 1: Thin top – Logo left, Town name centered -->
     <div class="top-brand">
       <div class="container">
         <div class="d-flex align-items-center justify-content-between">
           <a href="index.html"><img src="images/final-web-seal.png" alt="Town of Kennard Logo" width="140"></a>
-          <div class="text-end">
-            <h5 class="text-white mb-1">Town of Kennard, Indiana</h5>
-            <div class="position-relative" style="width: 260px; display: inline-block;">
-              <input type="text" id="search-input" placeholder="Search the site..." class="form-control" style="background: rgba(255,255,255,0.95); border-radius: 9999px;">
-              <div id="search-results" class="position-absolute bg-white shadow rounded mt-1" style="width: 260px; max-height: 300px; overflow-y:auto; display:none; z-index: 1000;"></div>
-            </div>
+          <h5 class="text-white mb-0">Town of Kennard, Indiana</h5>
+        </div>
+      </div>
+    </div>
+
+    <!-- Row 2: Page title centered + Search right-aligned on same line -->
+    <div class="title-row">
+      <div class="container">
+        <div class="d-flex align-items-center justify-content-between">
+          <div class="flex-grow-1 text-center">
+            <h1 style="color: white;">Frequently Asked Questions</h1>
+          </div>
+          <div class="position-relative" style="width: 240px;">
+            <input type="text" id="search-input" placeholder="Search the site..." class="form-control" style="background: rgba(255,255,255,0.95); border-radius: 9999px;">
+            <div id="search-results" class="position-absolute bg-white shadow rounded mt-1" style="width: 240px; max-height: 300px; overflow-y:auto; display:none; z-index: 1000;"></div>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- Row 2: Large centered title (very short blue) -->
-    <div class="title-banner">
-      <div class="container text-center">
-        <h1 style="color: white;">Frequently Asked Questions</h1>
-      </div>
-    </div>
-
-    <!-- Row 3: Menu bar (thin blue strip) -->
+    <!-- Row 3: Menu bar -->
     <div class="menu-bar">
       <nav class="navbar navbar-expand-lg">
         <div class="container">
