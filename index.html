@@ -3,238 +3,34 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Town of Kennard, Indiana</title>
+  <title>Home - Town of Kennard</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="styles.css" rel="stylesheet">
-  <style>
-    .weather-card {
-      background: linear-gradient(135deg, #001f3f, #004080);
-      color: white;
-      border-radius: 12px;
-      padding: 20px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-      height: 100%;
-    }
-    .weather-card .temp {
-      font-size: 3rem;
-      font-weight: 700;
-      line-height: 1;
-    }
-    .blue-card {
-      background: linear-gradient(135deg, #e6f0ff, #d0e0f5);
-      border: none;
-      box-shadow: 0 4px 12px rgba(0, 31, 63, 0.15);
-      transition: all 0.3s ease;
-      height: 100%;
-    }
-    .blue-card:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 8px 20px rgba(0, 31, 63, 0.25);
-    }
-    .banner {
-      padding: 6px 20px;
-      margin-top: -4px;
-    }
-    .banner h1 {
-      font-size: 2.4rem;
-      font-weight: 700;
-      text-shadow: 0 2px 8px rgba(0,0,0,0.3);
-      letter-spacing: -0.5px;
-      margin: 0;
-    }
-  </style>
 </head>
 <body>
-  <!-- NAVIGATION -->
-  <nav class="navbar navbar-expand-lg" style="background-color: #001f3f;">
-    <div class="container">
-      <a class="navbar-brand" href="index.html"><img src="images/final-web-seal.png" alt="Town of Kennard Logo" width="160"></a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-        <span class="navbar-toggler-icon" style="filter: invert(1);"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav mx-auto">
-          <li class="nav-item"><a class="nav-link text-white active" href="index.html">Home</a></li>
-          <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle text-white" href="#" data-bs-toggle="dropdown">Local Government</a>
-            <ul class="dropdown-menu">
-              <li><a class="dropdown-item" href="town-board.html">Town Board</a></li>
-              <li><a class="dropdown-item" href="minutes-agendas.html">Minutes & Agendas</a></li>
-              <li><a class="dropdown-item" href="town-ordinances.html">Town Ordinances</a></li>
-            </ul>
-          </li>
-          <li class="nav-item"><a class="nav-link text-white" href="town-utilities.html">Town Utilities</a></li>
-          <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle text-white" href="#" data-bs-toggle="dropdown">Departments & Services</a>
-            <ul class="dropdown-menu">
-              <li><a class="dropdown-item" href="police-department.html">Police Department</a></li>
-              <li><a class="dropdown-item" href="fire-department.html">Fire Department</a></li>
-            </ul>
-          </li>
-          <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle text-white" href="#" data-bs-toggle="dropdown">Community</a>
-            <ul class="dropdown-menu">
-              <li><a class="dropdown-item" href="kennard.html">Kennard</a></li>
-              <li><a class="dropdown-item" href="local-schools.html">Local Schools</a></li>
-              <li><a class="dropdown-item" href="local-churches.html">Local Churches</a></li>
-              <li><a class="dropdown-item" href="local-business.html">Local Business</a></li>
-            </ul>
-          </li>
-          <li class="nav-item"><a class="nav-link text-white" href="contact.html">Contact</a></li>
-          <li class="nav-item"><a class="nav-link text-white" href="bids-info.html">Bids & Info</a></li>
-        </ul>
-        <div class="ms-auto position-relative">
-          <input type="text" id="search-input" placeholder="Search the site..." class="form-control" style="width: 260px; background: rgba(255,255,255,0.95); border-radius: 9999px;">
-          <div id="search-results" class="position-absolute bg-white shadow rounded mt-1" style="width: 260px; max-height: 300px; overflow-y:auto; display:none; z-index: 1000;"></div>
-        </div>
-      </div>
-    </div>
-  </nav>
 
-  <!-- BANNER -->
-  <div class="banner">
-    <div class="container text-center">
-      <h1 style="color: white; margin: 0;">Welcome to Kennard, Indiana</h1>
-    </div>
-  </div>
+  <!-- === HEADER WILL LOAD HERE === -->
+  <div id="header-placeholder"></div>
 
-  <!-- TOP ROW: 1/3 White Weather + 2/3 White Info -->
-  <div class="container section">
-    <div class="row g-4">
-      <!-- 1/3 Weather (white card) -->
-      <div class="col-md-4">
-        <div class="weather-card">
-          <div class="d-flex justify-content-between align-items-center">
-            <div>
-              <h5 class="mb-1" id="weather-location">Kennard, IN</h5>
-              <div id="weather-desc" class="text-white-50 fs-5">—</div>
-            </div>
-            <div class="text-end">
-              <div id="weather-temp" class="temp">—°F</div>
-              <div id="weather-highlow" class="small text-white-50">H: —° L: —°</div>
-            </div>
-          </div>
-          <div class="d-flex justify-content-between mt-3">
-            <div class="text-center">
-              <div class="small text-white-50">Feels Like</div>
-              <div id="weather-feels" class="fw-bold">—°F</div>
-            </div>
-            <div class="text-center">
-              <div class="small text-white-50">Wind</div>
-              <div id="weather-wind" class="fw-bold">— mph</div>
-            </div>
-            <div class="text-center">
-              <div class="small text-white-50">Humidity</div>
-              <div id="weather-humidity" class="fw-bold">—%</div>
-            </div>
-          </div>
-          <div class="text-center mt-3 small text-white-50">
-            Updated just now • Refreshes automatically
-          </div>
-        </div>
-      </div>
+  <!-- === YOUR CURRENT INDEX CONTENT GOES HERE === -->
+  <!-- Paste everything that was between your old header and footer here -->
+  <!-- (weather widget, welcome text, location info, YouTube button, public comments, cards, bids summary, etc.) -->
+  <!-- Do NOT change anything inside this section yet -->
 
-      <!-- 2/3 Info (white card) -->
-      <div class="col-md-8">
-        <p class="lead">Kennard is located in western Henry County and is a part of Greensboro Township.</p>
-        <p>Kennard covers just <strong>0.42 square miles</strong> of land and is surrounded by farmland and open countryside. According to the most recent estimates, the town is home to approximately <strong>446 residents</strong> (2025 estimate). The population has remained stable in recent years, reflecting the quiet, close-knit character of this rural community.</p>
-        <p>The town was officially platted in 1882 and has deep roots in Henry County history. Today it serves as a peaceful residential community with easy access to Knightstown (about 9 miles south) and New Castle (about 10 miles east). Residents enjoy a low-density lifestyle with strong community ties, three local parks developed in the past decade, and a growing interest in new housing.</p>
-      </div>
-    </div>
-  </div>
+  <!-- === FOOTER WILL LOAD HERE === -->
+  <div id="footer-placeholder"></div>
 
-  <!-- SECOND ROW: Two blue-shaded cards -->
-  <div class="container section">
-    <div class="row g-4">
-      <!-- YouTube Card (blue) -->
-      <div class="col-md-6">
-        <div class="blue-card card h-100 text-center p-4">
-          <h3>Watch Town Council Meetings</h3>
-          <p class="mb-4">Live and archived meetings are available on our YouTube channel.</p>
-          <a href="https://www.youtube.com/@Town_of_Kennard_Indiana" target="_blank" class="green-button btn btn-lg px-4">View YouTube Channel</a>
-        </div>
-      </div>
-
-      <!-- Public Comments Card (blue) -->
-      <div class="col-md-6">
-        <div class="blue-card card h-100 p-4">
-          <h3>Public Comments</h3>
-          <p>Citizens are always welcome to speak directly to the Town Council during the public comment portion of each regular meeting. Meetings are held on the second Wednesday of every month at Town Hall. We invite you to attend, share your thoughts, and be part of the decisions that shape our community.</p>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <footer>© 2026 Town of Kennard</footer>
-
-  <!-- Weather Script -->
-  <script>
-    async function loadWeather() {
-      try {
-        const res = await fetch('https://api.open-meteo.com/v1/forecast?latitude=39.9039&longitude=-85.5194&current=temperature_2m,relative_humidity_2m,apparent_temperature,weather_code,wind_speed_10m&temperature_unit=fahrenheit&wind_speed_unit=mph&timezone=America/Indiana/Indianapolis');
-        const data = await res.json();
-        const current = data.current;
-
-        const weatherDesc = {
-          0: "Clear sky", 1: "Mainly clear", 2: "Partly cloudy", 3: "Overcast",
-          45: "Fog", 48: "Depositing rime fog", 51: "Light drizzle", 53: "Moderate drizzle",
-          55: "Dense drizzle", 61: "Light rain", 63: "Moderate rain", 65: "Heavy rain",
-          71: "Light snow", 73: "Moderate snow", 75: "Heavy snow", 95: "Thunderstorm"
-        }[current.weather_code] || "—";
-
-        document.getElementById('weather-temp').textContent = Math.round(current.temperature_2m) + '°F';
-        document.getElementById('weather-desc').textContent = weatherDesc;
-        document.getElementById('weather-feels').textContent = Math.round(current.apparent_temperature) + '°F';
-        document.getElementById('weather-wind').textContent = Math.round(current.wind_speed_10m) + ' mph';
-        document.getElementById('weather-humidity').textContent = current.relative_humidity_2m + '%';
-      } catch (e) {
-        console.error('Weather fetch failed', e);
-        document.querySelector('.weather-card').innerHTML = `<div class="text-center p-3">Weather temporarily unavailable</div>`;
-      }
-    }
-    window.onload = loadWeather;
-    setInterval(loadWeather, 15 * 60 * 1000);
-  </script>
-
-  <!-- Fuse.js Search -->
-  <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.6.2"></script>
+  <!-- Load header and footer -->
   <script>
     document.addEventListener('DOMContentLoaded', function() {
-      const searchInput = document.getElementById('search-input');
-      const resultsContainer = document.getElementById('search-results');
+      fetch('header.html')
+        .then(r => r.text())
+        .then(html => document.getElementById('header-placeholder').innerHTML = html);
 
-      fetch('search.json')
-        .then(r => r.json())
-        .then(data => {
-          console.log('✅ search.json loaded with', data.length, 'entries');
-          const fuse = new Fuse(data, { keys: ['title', 'content'], threshold: 0.35 });
-
-          searchInput.addEventListener('input', function() {
-            const query = searchInput.value.trim();
-            resultsContainer.innerHTML = '';
-
-            if (query.length < 2) {
-              resultsContainer.style.display = 'none';
-              return;
-            }
-
-            const results = fuse.search(query);
-            if (results.length === 0) {
-              resultsContainer.innerHTML = `<div class="p-2 text-muted">No results found for "${query}"</div>`;
-            } else {
-              let html = '';
-              results.forEach(result => {
-                html += `<a href="${result.item.url}" class="d-block p-2 text-decoration-none border-bottom">${result.item.title}</a>`;
-              });
-              resultsContainer.innerHTML = html;
-            }
-            resultsContainer.style.display = 'block';
-          });
-        })
-        .catch(err => console.error('❌ search.json fetch failed', err));
+      fetch('footer.html')
+        .then(r => r.text())
+        .then(html => document.getElementById('footer-placeholder').innerHTML = html);
     });
   </script>
-
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
