@@ -15,19 +15,25 @@
       box-shadow: 0 4px 12px rgba(0, 31, 63, 0.15);
       transition: all 0.3s ease;
       height: 100%;
-      animation: policeFlash 1.8s infinite alternate ease-in-out;
     }
     .blue-card:hover {
       transform: translateY(-4px);
       box-shadow: 0 8px 20px rgba(0, 31, 63, 0.25);
     }
-    @keyframes policeFlash {
+    /* Police light animation - faster and truly opposite */
+    .red-start {
+      animation: redToBlue 1.8s infinite alternate ease-in-out;
+    }
+    .blue-start {
+      animation: blueToRed 1.8s infinite alternate ease-in-out;
+    }
+    @keyframes redToBlue {
       0%   { border: 4px solid #ff0000; box-shadow: 0 0 12px #ff0000; }
       100% { border: 4px solid #0000ff; box-shadow: 0 0 12px #0000ff; }
     }
-    .blue-card:nth-child(2) {
-      animation-delay: 0.9s;
-      animation-direction: reverse;
+    @keyframes blueToRed {
+      0%   { border: 4px solid #0000ff; box-shadow: 0 0 12px #0000ff; }
+      100% { border: 4px solid #ff0000; box-shadow: 0 0 12px #ff0000; }
     }
   </style>
 </head>
@@ -124,17 +130,17 @@
     </div>
   </div>
 
-  <!-- Two blue cards with faster opposite red/blue flashing -->
+  <!-- Two blue cards with opposite red/blue flashing (one starts red, one starts blue) -->
   <div class="container section">
     <div class="row g-4">
       <div class="col-md-6">
-        <div class="blue-card card h-100 p-4">
+        <div class="blue-card red-start card h-100 p-4">
           <h3>Police Department Contact</h3>
           <p>Non-emergency: (765) 521-7032<br>For emergencies: Dial 911</p>
         </div>
       </div>
       <div class="col-md-6">
-        <div class="blue-card card h-100 p-4">
+        <div class="blue-card blue-start card h-100 p-4">
           <h3>Community Safety Tips</h3>
           <p>• Lock your vehicles and homes<br>• Report suspicious activity right away<br>• Drive safely – our town streets are 25 mph</p>
           <p><strong>Animal Issues</strong><br>Henry County Animal Control: (765) 529-8131 (business hours)<br>After hours: Henry County Sheriff (765) 521-7032</p>
