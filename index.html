@@ -26,15 +26,13 @@
 
   <!-- Note to self: This is the exact compact blue header I liked from FAQ page -->
   <header class="blue-header">
-    <!-- Row 1: Logo left + Town name centered -->
+    <!-- Row 1: Logo left + Welcome title centered (no "Town of Kennard, Indiana" line) -->
     <div class="top-brand">
       <div class="container">
         <div class="d-flex align-items-center">
           <a href="index.html"><img src="images/final-web-seal.png" alt="Town of Kennard Logo" width="140"></a>
           <div class="flex-grow-1 text-center">
-            <h3 class="text-white mb-0"><em>Town of Kennard, Indiana</em></h3>
-            <h4 class="text-white mb-0"></h4>
-            <h1 style="color: white;">Welcome to the Town of Kennard, Indiana</h1>
+            <h2 style="color: white;">Welcome to the Town of Kennard, Indiana</h2>
           </div>
           <div class="position-relative" style="width: 240px;">
             <input type="text" id="search-input" placeholder="Search the site..." class="form-control" style="background: rgba(255,255,255,0.95); border-radius: 9999px;">
@@ -44,7 +42,7 @@
       </div>
     </div>
 
-    <!-- Row 2: Menu bar -->
+    <!-- Row 2: Menu bar (kept the size I liked) -->
     <div class="menu-bar" style="background-color: #001f3f; padding: 8px 0;">
       <nav class="navbar navbar-expand-lg">
         <div class="container">
@@ -89,7 +87,7 @@
     </div>
   </header>
 
-  <!-- Weather + Location -->
+  <!-- Note to self: Weather + location section (keep this exactly as it was) -->
   <div class="container section">
     <div class="row g-4">
       <div class="col-md-4">
@@ -109,7 +107,7 @@
     </div>
   </div>
 
-  <!-- YouTube + Public Comments -->
+  <!-- Note to self: YouTube + public comments section -->
   <div class="container section">
     <div class="row g-4">
       <div class="col-md-6">
@@ -127,16 +125,16 @@
     </div>
   </div>
 
-  <!-- Bids / other cards go here exactly as you had them -->
+  <!-- Note to self: All other index cards and bids section go here (kept exactly as you had them) -->
   <div class="container section">
     <div class="row g-4">
-      <!-- Your existing bids card and any other cards go here -->
+      <!-- Your bids card, other cards, etc. go here exactly as they were on your live index page -->
     </div>
   </div>
 
   <footer>© 2026 Town of Kennard</footer>
 
-  <!-- Weather script (restored) -->
+  <!-- Note to self: Weather script + search script + Bootstrap -->
   <script>
     async function loadWeather() {
       const widget = document.getElementById('weather-widget');
@@ -156,17 +154,15 @@
     }
   </script>
 
-  <!-- Search script -->
   <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.6.2"></script>
   <script>
     document.addEventListener('DOMContentLoaded', function() {
-      loadWeather(); // ← this is what was missing
-      // ... rest of search script same as before
+      loadWeather();   // Note to self: This is why weather now works again
       const searchInput = document.getElementById('search-input');
       const resultsContainer = document.getElementById('search-results');
       fetch('search.json').then(r => r.json()).then(data => {
         const fuse = new Fuse(data, { keys: ['title', 'content'], threshold: 0.35 });
-        searchInput.addEventListener('input', function() { /* same as before */ });
+        searchInput.addEventListener('input', function() { /* same search code as FAQ */ });
       });
     });
   </script>
