@@ -11,13 +11,13 @@
       background-color: #001f3f;
     }
     .top-brand {
-      padding: 6px 0;
+      padding: 8px 0;
     }
     .title-banner {
-      padding: 18px 0;
+      padding: 14px 0;
     }
     .title-banner h1 {
-      font-size: 2.8rem;
+      font-size: 2.9rem;
       font-weight: 700;
       letter-spacing: -1px;
       margin: 0;
@@ -36,23 +36,26 @@
   </style>
 </head>
 <body>
-  <!-- TIGHTER BLUE HEADER (3-row grid concept) -->
+  <!-- SHORTER BLUE HEADER -->
   <header class="blue-header">
-    <!-- Row 1: Thin branding + search -->
+    <!-- Row 1: Logo + Town Name + Search -->
     <div class="top-brand">
       <div class="container">
         <div class="d-flex align-items-center justify-content-between">
           <a href="index.html"><img src="images/final-web-seal.png" alt="Town of Kennard Logo" width="140"></a>
-          <h5 class="text-white mb-0">Town of Kennard, Indiana</h5>
-          <div class="position-relative" style="width: 260px;">
-            <input type="text" id="search-input" placeholder="Search the site..." class="form-control" style="background: rgba(255,255,255,0.95); border-radius: 9999px;">
-            <div id="search-results" class="position-absolute bg-white shadow rounded mt-1" style="width: 260px; max-height: 300px; overflow-y:auto; display:none; z-index: 1000;"></div>
+          
+          <div class="text-end">
+            <h5 class="text-white mb-1">Town of Kennard, Indiana</h5>
+            <div class="position-relative" style="width: 260px; display: inline-block;">
+              <input type="text" id="search-input" placeholder="Search the site..." class="form-control" style="background: rgba(255,255,255,0.95); border-radius: 9999px;">
+              <div id="search-results" class="position-absolute bg-white shadow rounded mt-1" style="width: 260px; max-height: 300px; overflow-y:auto; display:none; z-index: 1000;"></div>
+            </div>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- Row 2: Large centered page title -->
+    <!-- Row 2: Large centered title -->
     <div class="title-banner">
       <div class="container text-center">
         <h1 style="color: white;">Frequently Asked Questions</h1>
@@ -102,7 +105,7 @@
     </nav>
   </header>
 
-  <!-- REST OF THE PAGE (same clean cards as before) -->
+  <!-- REST OF THE PAGE (same clean cards) -->
   <div class="container section">
     <div class="row g-4">
       <div class="col-md-4">
