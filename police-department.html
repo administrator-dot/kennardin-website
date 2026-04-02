@@ -20,20 +20,20 @@
       transform: translateY(-4px);
       box-shadow: 0 8px 20px rgba(0, 31, 63, 0.25);
     }
-    /* Police light animation - faster and truly opposite */
+    /* Faster, flashier police lights - quick sharp change */
     .red-start {
-      animation: redToBlue 1.8s infinite alternate ease-in-out;
+      animation: redToBlue 0.8s infinite alternate linear;
     }
     .blue-start {
-      animation: blueToRed 1.8s infinite alternate ease-in-out;
+      animation: blueToRed 0.8s infinite alternate linear;
     }
     @keyframes redToBlue {
-      0%   { border: 4px solid #ff0000; box-shadow: 0 0 12px #ff0000; }
-      100% { border: 4px solid #0000ff; box-shadow: 0 0 12px #0000ff; }
+      0%   { border: 4px solid #ff0000; box-shadow: 0 0 18px #ff0000; }
+      100% { border: 4px solid #0000ff; box-shadow: 0 0 18px #0000ff; }
     }
     @keyframes blueToRed {
-      0%   { border: 4px solid #0000ff; box-shadow: 0 0 12px #0000ff; }
-      100% { border: 4px solid #ff0000; box-shadow: 0 0 12px #ff0000; }
+      0%   { border: 4px solid #0000ff; box-shadow: 0 0 18px #0000ff; }
+      100% { border: 4px solid #ff0000; box-shadow: 0 0 18px #ff0000; }
     }
   </style>
 </head>
@@ -130,7 +130,7 @@
     </div>
   </div>
 
-  <!-- Two blue cards with opposite red/blue flashing (one starts red, one starts blue) -->
+  <!-- Two blue cards with faster, sharper opposite flashing -->
   <div class="container section">
     <div class="row g-4">
       <div class="col-md-6">
