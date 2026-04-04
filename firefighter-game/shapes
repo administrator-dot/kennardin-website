@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Shape Library - Kennard Fire Defender</title>
+<style>
+  body { margin:0; background:#111; font-family:Arial, sans-serif; color:#fff; padding:20px; }
+  h1 { text-align:center; color:#FF0; margin-bottom:10px; }
+  h2 { color:#0F0; margin:30px 0 10px; }
+  .gallery { display:grid; grid-template-columns: repeat(auto-fit, minmax(380px, 1fr)); gap:25px; max-width:1400px; margin:0 auto; }
+  .card {
+    background:#222; border-radius:12px; padding:12px; box-shadow:0 4px 15px rgba(0,0,0,0.6);
+    text-align:center;
+  }
+  canvas { border:3px solid #444; background:#3D8C40; border-radius:8px; }
+  .label { font-size:18px; margin:8px 0 4px; font-weight:bold; }
+  button {
+    background:#C00; color:white; border:none; padding:10px 20px; margin:8px 4px;
+    font-size:16px; border-radius:8px; cursor:pointer;
+  }
+  button:hover { background:#F00; }
+  #selectedList {
+    width:100%; max-width:1200px; margin:40px auto; padding:15px;
+    background:#1a1a1a; border:2px solid #FF0; border-radius:10px; font-family:monospace;
+    min-height:120px; white-space:pre-wrap;
+  }
+  .copy-btn { position:fixed; top:20px; right:20px; padding:12px 24px; font-size:18px; }
+</style>
+</head>
+<body>
+<h1>🔥 Kennard Fire Defender – Shape Library</h1>
+<p style="text-align:center; max-width:900px; margin:0 auto 30px;">
+  Click the buildings you like. A red <span style="color:#F33;">X</span> shows where fire will start.<br>
+  Selected shapes will appear in the box at the bottom — copy the list and send it back to me!
+</p>
+
+<div class="gallery">
+
+  <!-- 1 -->
+  <div class="card">
+    <canvas id="s1" width="360" height="260"></canvas>
+    <div class="label">Small Wooden Shed A</div>
+    <button onclick="selectShape('Small Wooden Shed A')">Select This Design</button>
+  </div>
+
+  <!-- 2 -->
+  <div class="card">
+    <canvas id="s2" width="360" height="260"></canvas>
+    <div class="label">Small Shed with Window</div>
+    <button onclick="selectShape('Small Shed with Window')">Select This Design</button>
+  </div>
+
+  <!-- 3 -->
+  <div class="card">
+    <canvas id="s3" width="360" height="260"></canvas>
+    <div class="label">Small Shed with Chimney</div>
+    <button onclick="selectShape('Small Shed with Chimney')">Select This Design</button>
+  </div>
+
+  <!-- 4 -->
+  <div class="card">
+    <canvas id="g1" width="360" height="260"></canvas>
+    <div class="label">Medium Garage (Single Door)</div>
+    <button onclick="selectShape('Medium Garage (Single Door)')">Select This Design</button>
+  </div>
+
+  <!-- 5 -->
+  <div class="card">
+    <canvas id="g2" width="360" height="260"></canvas>
+    <div class="label">Double-Door Garage</div>
+    <button onclick="selectShape('Double-Door Garage')">Select This Design</button>
+  </div>
+
+  <!-- 6 -->
+  <div class="card">
+    <canvas id="g3" width="360" height="260"></canvas>
+    <div class="label">Garage with Side Door & Window</div>
+    <button onclick="selectShape('Garage with Side Door & Window')">Select This Design</button>
+  </div>
+
+  <!-- 7 -->
+  <div class="card">
+    <canvas id="h1" width="360" height="260"></canvas>
+    <div class="label">Tall House Style 1 (Classic Roof)</div>
+    <button onclick="selectShape('Tall House Style 1 (Classic Roof)')">Select This Design</button>
+  </div>
+
+  <!-- 8 -->
+  <div class="card">
+    <canvas id="h2" width="360" height="260"></canvas>
+    <div class="label">Tall House Style 2 (Steep Roof)</div>
+    <button onclick="selectShape('Tall House Style 2 (Steep Roof)')">Select This Design</button>
+  </div>
+
+  <!-- 9 -->
+  <div class="card">
+    <canvas id="h3" width="360" height="260"></canvas>
+    <div class="label">Tall House Style 3 (Chimney + Porch)</div>
+    <button onclick="selectShape('Tall House Style 3 (Chimney + Porch)')">Select This Design</button>
+  </div>
+
+</div>
+
+<h2>Your Selected Shapes</h2>
+<textarea id="selectedList" rows="8" readonly>Click shapes above to build your list here...</textarea>
+<button class="copy-btn" onclick="copyList()">📋 Copy List to Clipboard</button>
+
+<script>
+// ================== DRAWING FUNCTIONS ==================
+function drawSmallShedA(c) {
+  const ctx = c.getContext('2d');
+  // base
+  ctx.fillStyle = '#A38D6B'; ctx.fillRect(80, 120, 200, 130);
+  // roof
+  ctx.fillStyle = '#8B2A00';
+  ctx.beginPath(); ctx.moveTo(50,120); ctx.lineTo(180,50); ctx.lineTo(310,120); ctx.fill();
+  // door
+  ctx.fillStyle = '#3C2F1F'; ctx.fillRect(130, 160, 45, 90);
+  // X fire marker (on roof)
+  ctx.strokeStyle = '#F33'; ctx.lineWidth = 8;
+  ctx.beginPath(); ctx.moveTo(170,80); ctx.lineTo(200,110); ctx.moveTo(200,80); ctx.lineTo(170,110); ctx.stroke();
+}
+
+function drawSmallShedWindow(c) {
+  const ctx = c.getContext('2d');
+  ctx.fillStyle = '#A38D6B'; ctx.fillRect(70, 115, 210, 135);
+  ctx.fillStyle = '#8B2A00';
+  ctx.beginPath(); ctx.moveTo(40,115); ctx.lineTo(175,45); ctx.lineTo(305,115); ctx.fill();
+  ctx.fillStyle = '#3C2F1F'; ctx.fillRect(125, 165, 48, 85);
+  // window
+  ctx.fillStyle = '#AACCFF'; ctx.fillRect(215, 130, 50, 50);
+  ctx.strokeStyle = '#222'; ctx.lineWidth = 6; ctx.strokeRect(215,130,50,50);
+  ctx.beginPath(); ctx.moveTo(215,155); ctx.lineTo(265,155); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(240,130); ctx.lineTo(240,180); ctx.stroke();
+  // X
+  ctx.strokeStyle = '#F33'; ctx.lineWidth = 8;
+  ctx.beginPath(); ctx.moveTo(195,75); ctx.lineTo(225,105); ctx.moveTo(225,75); ctx.lineTo(195,105); ctx.stroke();
+}
+
+function drawSmallShedChimney(c) {
+  const ctx = c.getContext('2d');
+  ctx.fillStyle = '#A38D6B'; ctx.fillRect(75, 118, 205, 132);
+  ctx.fillStyle = '#8B2A00';
+  ctx.beginPath(); ctx.moveTo(45,118); ctx.lineTo(175,48); ctx.lineTo(300,118); ctx.fill();
+  ctx.fillStyle = '#3C2F1F'; ctx.fillRect(130, 162, 45, 88);
+  // chimney
+  ctx.fillStyle = '#555'; ctx.fillRect(225, 65, 28, 55);
+  // X
+  ctx.strokeStyle = '#F33'; ctx.lineWidth = 8;
+  ctx.beginPath(); ctx.moveTo(185,88); ctx.lineTo(215,118); ctx.moveTo(215,88); ctx.lineTo(185,118); ctx.stroke();
+}
+
+function drawMediumGarageSingle(c) {
+  const ctx = c.getContext('2d');
+  ctx.fillStyle = '#8B9E7A'; ctx.fillRect(55, 105, 245, 150);
+  ctx.fillStyle = '#6B4E2A'; ctx.fillRect(95, 130, 120, 125); // big door
+  ctx.fillStyle = '#8B2A00';
+  ctx.beginPath(); ctx.moveTo(40,105); ctx.lineTo(175,45); ctx.lineTo(310,105); ctx.fill();
+  // X
+  ctx.strokeStyle = '#F33'; ctx.lineWidth = 8;
+  ctx.beginPath(); ctx.moveTo(170,78); ctx.lineTo(200,108); ctx.moveTo(200,78); ctx.lineTo(170,108); ctx.stroke();
+}
+
+function drawDoubleDoorGarage(c) {
+  const ctx = c.getContext('2d');
+  ctx.fillStyle = '#8B9E7A'; ctx.fillRect(45, 100, 265, 155);
+  ctx.fillStyle = '#6B4E2A'; ctx.fillRect(85, 125, 70, 130); ctx.fillRect(165, 125, 70, 130);
+  ctx.fillStyle = '#8B2A00';
+  ctx.beginPath(); ctx.moveTo(30,100); ctx.lineTo(175,38); ctx.lineTo(320,100); ctx.fill();
+  // X
+  ctx.strokeStyle = '#F33'; ctx.lineWidth = 8;
+  ctx.beginPath(); ctx.moveTo(175,72); ctx.lineTo(205,102); ctx.moveTo(205,72); ctx.lineTo(175,102); ctx.stroke();
+}
+
+function drawGarageSideDoor(c) {
+  const ctx = c.getContext('2d');
+  ctx.fillStyle = '#8B9E7A'; ctx.fillRect(50, 102, 255, 153);
+  ctx.fillStyle = '#6B4E2A'; ctx.fillRect(110, 128, 95, 127);
+  ctx.fillStyle = '#8B2A00';
+  ctx.beginPath(); ctx.moveTo(35,102); ctx.lineTo(175,40); ctx.lineTo(315,102); ctx.fill();
+  // side door
+  ctx.fillStyle = '#3C2F1F'; ctx.fillRect(245, 135, 38, 90);
+  // X
+  ctx.strokeStyle = '#F33'; ctx.lineWidth = 8;
+  ctx.beginPath(); ctx.moveTo(165,75); ctx.lineTo(195,105); ctx.moveTo(195,75); ctx.lineTo(165,105); ctx.stroke();
+}
+
+function drawTallHouseClassic(c) {
+  const ctx = c.getContext('2d');
+  ctx.fillStyle = '#E8D5B8'; ctx.fillRect(65, 85, 230, 170);
+  ctx.fillStyle = '#8B2A00';
+  ctx.beginPath(); ctx.moveTo(40,85); ctx.lineTo(180,28); ctx.lineTo(315,85); ctx.fill();
+  ctx.fillStyle = '#3C2F1F'; ctx.fillRect(140, 165, 48, 90);
+  // X on roof
+  ctx.strokeStyle = '#F33'; ctx.lineWidth = 8;
+  ctx.beginPath(); ctx.moveTo(155,55); ctx.lineTo(185,85); ctx.moveTo(185,55); ctx.lineTo(155,85); ctx.stroke();
+}
+
+function drawTallHouseSteep(c) {
+  const ctx = c.getContext('2d');
+  ctx.fillStyle = '#E8D5B8'; ctx.fillRect(70, 88, 225, 167);
+  ctx.fillStyle = '#8B2A00';
+  ctx.beginPath(); ctx.moveTo(45,88); ctx.lineTo(180,20); ctx.lineTo(315,88); ctx.fill();
+  ctx.fillStyle = '#3C2F1F'; ctx.fillRect(135, 168, 48, 87);
+  // X
+  ctx.strokeStyle = '#F33'; ctx.lineWidth = 8;
+  ctx.beginPath(); ctx.moveTo(160,48); ctx.lineTo(190,78); ctx.moveTo(190,48); ctx.lineTo(160,78); ctx.stroke();
+}
+
+function drawTallHouseChimney(c) {
+  const ctx = c.getContext('2d');
+  ctx.fillStyle = '#E8D5B8'; ctx.fillRect(65, 85, 230, 170);
+  ctx.fillStyle = '#8B2A00';
+  ctx.beginPath(); ctx.moveTo(40,85); ctx.lineTo(180,28); ctx.lineTo(315,85); ctx.fill();
+  ctx.fillStyle = '#3C2F1F'; ctx.fillRect(140, 165, 48, 90);
+  // chimney
+  ctx.fillStyle = '#555'; ctx.fillRect(225, 45, 28, 45);
+  // X
+  ctx.strokeStyle = '#F33'; ctx.lineWidth = 8;
+  ctx.beginPath(); ctx.moveTo(155,62); ctx.lineTo(185,92); ctx.moveTo(185,62); ctx.lineTo(155,92); ctx.stroke();
+}
+
+// ================== SELECTION SYSTEM ==================
+let selected = [];
+
+function selectShape(name) {
+  if (!selected.includes(name)) {
+    selected.push(name);
+    document.getElementById('selectedList').value = selected.join('\n');
+  }
+}
+
+function copyList() {
+  const list = document.getElementById('selectedList');
+  list.select();
+  document.execCommand('copy');
+  alert('✅ List copied to clipboard! Paste it back to me when you’re ready.');
+}
+
+// ================== DRAW ALL CANVASES ==================
+window.onload = () => {
+  drawSmallShedA(document.getElementById('s1'));
+  drawSmallShedWindow(document.getElementById('s2'));
+  drawSmallShedChimney(document.getElementById('s3'));
+  drawMediumGarageSingle(document.getElementById('g1'));
+  drawDoubleDoorGarage(document.getElementById('g2'));
+  drawGarageSideDoor(document.getElementById('g3'));
+  drawTallHouseClassic(document.getElementById('h1'));
+  drawTallHouseSteep(document.getElementById('h2'));
+  drawTallHouseChimney(document.getElementById('h3'));
+};
+</script>
+</body>
+</html>
