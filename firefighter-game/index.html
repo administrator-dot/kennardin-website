@@ -18,10 +18,10 @@
   button:hover { background: #F00; }
   #ui { position: absolute; top: 15px; left: 15px; font-size: 24px; pointer-events: none; color:#FFF; }
   .encourage {
-    position: absolute; font-size: 28px; font-weight: bold; color: #FF0;
-    text-shadow: 0 0 12px #000; pointer-events: none; animation: floatUp 2s forwards;
+    position: absolute; font-size: 26px; font-weight: bold; color: #FF0;
+    text-shadow: 0 0 12px #000; pointer-events: none; animation: floatUp 2.2s forwards;
   }
-  @keyframes floatUp { to { transform: translateY(-120px); opacity: 0; } }
+  @keyframes floatUp { to { transform: translateY(-140px); opacity: 0; } }
 </style>
 </head>
 <body>
@@ -50,7 +50,7 @@
 <canvas id="game" width="900" height="600"></canvas>
 
 <script>
-// ============== Kennard Fire Defender – Small-Town Realistic Edition ==============
+// ============== Kennard Fire Defender – Small-Town Indiana Edition (6 Levels) ==============
 const canvas = document.getElementById('game');
 const ctx = canvas.getContext('2d');
 const scoreEl = document.getElementById('score');
@@ -59,66 +59,75 @@ const levelEl = document.getElementById('level');
 let score = 0;
 let mouseX = 450, mouseY = 300;
 let isSpraying = false;
-let gameState = 'title'; // title, playing, levelComplete
+let gameState = 'title';
 let currentLevel = 1;
-let floatingMessages = [];
+let fireSpots = [];
+let particles = [];
+let explosions = []; // small explosion bursts for tankers
 
 const truckX = 95;
 const truckY = 505;
 
-// Levels data – small-town Indiana style
 const levels = [
-  // Level 1: Single family home
-  { 
-    name: "Level 1 – Single Home",
-    fireSpots: [
-      {x: 490, y: 245, w: 58, h: 85, health: 240, maxHealth: 240, type: 'window'},
-      {x: 610, y: 245, w: 58, h: 85, health: 240, maxHealth: 240, type: 'window'},
-      {x: 465, y: 155, w: 235, h: 48, health: 340, maxHealth: 340, type: 'roof'}
-    ],
-    entities: [{type:'house', x:460}]
-  },
-  // Level 2: Two homes
-  { 
-    name: "Level 2 – Two Homes",
-    fireSpots: [
-      {x: 320, y: 245, w: 52, h: 80, health: 220, maxHealth: 220, type: 'window'},
-      {x: 410, y: 245, w: 52, h: 80, health: 220, maxHealth: 220, type: 'window'},
-      {x: 295, y: 158, w: 210, h: 45, health: 310, maxHealth: 310, type: 'roof'},
-      {x: 590, y: 245, w: 52, h: 80, health: 220, maxHealth: 220, type: 'window'},
-      {x: 680, y: 245, w: 52, h: 80, health: 220, maxHealth: 220, type: 'window'},
-      {x: 565, y: 158, w: 210, h: 45, health: 310, maxHealth: 310, type: 'roof'}
-    ],
-    entities: [{type:'house', x:290}, {type:'house', x:560}]
-  },
-  // Level 3: Home + burning car
-  { 
-    name: "Level 3 – Home + Car",
-    fireSpots: [
-      {x: 490, y: 245, w: 58, h: 85, health: 240, maxHealth: 240, type: 'window'},
-      {x: 610, y: 245, w: 58, h: 85, health: 240, maxHealth: 240, type: 'window'},
-      {x: 465, y: 155, w: 235, h: 48, health: 340, maxHealth: 340, type: 'roof'},
-      {x: 220, y: 355, w: 95, h: 48, health: 180, maxHealth: 180, type: 'hood'}, // car hood
-      {x: 240, y: 310, w: 55, h: 38, health: 130, maxHealth: 130, type: 'cab'}    // car cabin
-    ],
-    entities: [{type:'house', x:460}, {type:'car', x:170}]
-  },
-  // Level 4: Home + semi-truck tanker (big fire!)
-  { 
-    name: "Level 4 – Home + Semi Tanker",
-    fireSpots: [
-      {x: 490, y: 245, w: 58, h: 85, health: 240, maxHealth: 240, type: 'window'},
-      {x: 610, y: 245, w: 58, h: 85, health: 240, maxHealth: 240, type: 'window'},
-      {x: 465, y: 155, w: 235, h: 48, health: 340, maxHealth: 340, type: 'roof'},
-      {x: 150, y: 310, w: 65, h: 55, health: 280, maxHealth: 280, type: 'cab'},     // semi cab
-      {x: 230, y: 285, w: 240, h: 95, health: 420, maxHealth: 420, type: 'tanker'}  // tanker explosion fire
-    ],
-    entities: [{type:'house', x:460}, {type:'semi', x:120}]
-  }
-];
+  // 1: Single realistic home
+  { name: "Level 1 – Neighborhood Home", fireSpots: [
+    {x: 495, y: 242, w: 58, h: 88, health: 240, maxHealth: 240, type: 'window'},
+    {x: 615, y: 242, w: 58, h: 88, health: 240, maxHealth: 240, type: 'window'},
+    {x: 470, y: 152, w: 235, h: 48, health: 340, maxHealth: 340, type: 'roof'}
+  ], entities: [{type:'house', x:460}] },
 
-let fireSpots = [];
-let particles = [];
+  // 2: Two homes side-by-side
+  { name: "Level 2 – Two Homes on Elm Street", fireSpots: [
+    {x: 280, y: 242, w: 55, h: 85, health: 230, maxHealth: 230, type: 'window'},
+    {x: 370, y: 242, w: 55, h: 85, health: 230, maxHealth: 230, type: 'window'},
+    {x: 255, y: 155, w: 210, h: 46, health: 320, maxHealth: 320, type: 'roof'},
+    {x: 580, y: 242, w: 55, h: 85, health: 230, maxHealth: 230, type: 'window'},
+    {x: 670, y: 242, w: 55, h: 85, health: 230, maxHealth: 230, type: 'window'},
+    {x: 555, y: 155, w: 210, h: 46, health: 320, maxHealth: 320, type: 'roof'}
+  ], entities: [{type:'house', x:255}, {type:'house', x:555}] },
+
+  // 3: Home + clear burning sedan
+  { name: "Level 3 – Home + Burning Sedan", fireSpots: [
+    {x: 495, y: 242, w: 58, h: 88, health: 240, maxHealth: 240, type: 'window'},
+    {x: 615, y: 242, w: 58, h: 88, health: 240, maxHealth: 240, type: 'window'},
+    {x: 470, y: 152, w: 235, h: 48, health: 340, maxHealth: 340, type: 'roof'},
+    {x: 165, y: 348, w: 112, h: 52, health: 190, maxHealth: 190, type: 'hood'},
+    {x: 185, y: 312, w: 68, h: 40, health: 140, maxHealth: 140, type: 'cab'}
+  ], entities: [{type:'house', x:460}, {type:'sedan', x:140}] },
+
+  // 4: Home + pickup truck
+  { name: "Level 4 – Home + Pickup Truck", fireSpots: [
+    {x: 495, y: 242, w: 58, h: 88, health: 240, maxHealth: 240, type: 'window'},
+    {x: 615, y: 242, w: 58, h: 88, health: 240, maxHealth: 240, type: 'window'},
+    {x: 470, y: 152, w: 235, h: 48, health: 340, maxHealth: 340, type: 'roof'},
+    {x: 155, y: 340, w: 128, h: 48, health: 210, maxHealth: 210, type: 'bed'},
+    {x: 172, y: 308, w: 78, h: 38, health: 155, maxHealth: 155, type: 'cab'}
+  ], entities: [{type:'house', x:460}, {type:'pickup', x:130}] },
+
+  // 5: Home + semi tanker (clear positioning + explosions)
+  { name: "Level 5 – Home + Semi Tanker Fire", fireSpots: [
+    {x: 495, y: 242, w: 58, h: 88, health: 240, maxHealth: 240, type: 'window'},
+    {x: 615, y: 242, w: 58, h: 88, health: 240, maxHealth: 240, type: 'window'},
+    {x: 470, y: 152, w: 235, h: 48, health: 340, maxHealth: 340, type: 'roof'},
+    {x: 105, y: 305, w: 82, h: 72, health: 290, maxHealth: 290, type: 'cab'},
+    {x: 195, y: 278, w: 265, h: 98, health: 460, maxHealth: 460, type: 'tanker'}
+  ], entities: [{type:'house', x:460}, {type:'semi', x:80}] },
+
+  // 6: Apartment building + two vehicles (final challenge)
+  { name: "Level 6 – Apartment + Car & Pickup", fireSpots: [
+    {x: 380, y: 182, w: 68, h: 68, health: 260, maxHealth: 260, type: 'window'},
+    {x: 380, y: 272, w: 68, h: 68, health: 260, maxHealth: 260, type: 'window'},
+    {x: 380, y: 362, w: 68, h: 68, health: 260, maxHealth: 260, type: 'window'},
+    {x: 510, y: 182, w: 68, h: 68, health: 260, maxHealth: 260, type: 'window'},
+    {x: 510, y: 272, w: 68, h: 68, health: 260, maxHealth: 260, type: 'window'},
+    {x: 510, y: 362, w: 68, h: 68, health: 260, maxHealth: 260, type: 'window'},
+    {x: 465, y: 138, w: 260, h: 42, health: 380, maxHealth: 380, type: 'roof'},
+    {x: 140, y: 348, w: 112, h: 52, health: 190, maxHealth: 190, type: 'hood'},
+    {x: 155, y: 312, w: 68, h: 40, health: 140, maxHealth: 140, type: 'cab'},
+    {x: 280, y: 340, w: 128, h: 48, health: 210, maxHealth: 210, type: 'bed'},
+    {x: 297, y: 308, w: 78, h: 38, health: 155, maxHealth: 155, type: 'cab'}
+  ], entities: [{type:'apartment', x:360}, {type:'sedan', x:120}, {type:'pickup', x:260}] }
+];
 
 document.addEventListener('mousemove', e => {
   const rect = canvas.getBoundingClientRect();
@@ -141,84 +150,64 @@ class Particle {
     this.life--;
     if (this.type === 'water') this.vy += 0.11;
     if (this.type === 'fire') {
-      this.vy -= 0.16 + Math.random() * 0.18;
-      this.vx += (Math.random() - 0.5) * 1.6;
+      this.vy -= 0.17 + Math.random() * 0.2;
+      this.vx += (Math.random() - 0.5) * 1.7;
     }
     if (this.type === 'smoke') {
       this.vy -= 0.06;
-      this.vx += (Math.random() - 0.5) * 0.45;
+      this.vx += (Math.random() - 0.5) * 0.5;
     }
   }
   draw() {
     ctx.globalAlpha = Math.max(0.1, this.life / 48);
     ctx.fillStyle = this.color;
-    if (this.type === 'water') {
-      ctx.fillRect(this.x - 2.5, this.y - 3, 5, 9);
-    } else {
-      ctx.fillRect(this.x - this.size/2, this.y - this.size/2, this.size, this.size);
-    }
+    if (this.type === 'water') ctx.fillRect(this.x - 2.5, this.y - 3, 5, 9);
+    else ctx.fillRect(this.x - this.size/2, this.y - this.size/2, this.size, this.size);
     ctx.globalAlpha = 1;
   }
 }
 
 function createFireParticles(x, y, intensity) {
   for (let i = 0; i < intensity; i++) {
-    const vx = (Math.random() - 0.5) * 3.2;
-    const vy = -3.5 - Math.random() * 5.5;
+    const vx = (Math.random() - 0.5) * 3.4;
+    const vy = -3.8 - Math.random() * 5.8;
     const colors = ['#FF1100', '#FF5500', '#FFAA00', '#FF3300', '#FF7700'];
-    particles.push(new Particle(
-      x + (Math.random() - 0.5) * 45,
-      y + (Math.random() - 0.5) * 32,
-      vx, vy,
-      colors[Math.floor(Math.random() * colors.length)],
-      45 + Math.random() * 32,
-      6 + Math.random() * 12,
-      'fire'
-    ));
+    particles.push(new Particle(x + (Math.random()-0.5)*48, y + (Math.random()-0.5)*35, vx, vy, colors[Math.floor(Math.random()*colors.length)], 48 + Math.random()*35, 7 + Math.random()*13, 'fire'));
   }
 }
 
 function createWaterParticles() {
-  for (let i = 0; i < 32; i++) {
-    const spread = (Math.random() - 0.5) * 6.5;
-    const dirX = (mouseX - (truckX + 138)) * 0.041;
-    const dirY = (mouseY - (truckY - 32)) * 0.041;
-    particles.push(new Particle(
-      mouseX + (Math.random() - 0.5) * 7,
-      mouseY + (Math.random() - 0.5) * 7,
-      dirX + spread,
-      dirY + spread - 5,
-      '#33CCFF',
-      34,
-      4,
-      'water'
-    ));
+  for (let i = 0; i < 34; i++) {
+    const spread = (Math.random() - 0.5) * 6;
+    const dirX = (mouseX - (truckX + 142)) * 0.042;
+    const dirY = (mouseY - (truckY - 34)) * 0.042;
+    particles.push(new Particle(mouseX + (Math.random()-0.5)*7, mouseY + (Math.random()-0.5)*7, dirX + spread, dirY + spread - 5.2, '#33CCFF', 35, 4, 'water'));
   }
 }
 
 function createSmoke(x, y) {
-  for (let i = 0; i < 16; i++) {
-    particles.push(new Particle(
-      x + (Math.random() - 0.5) * 55,
-      y + (Math.random() - 0.5) * 28,
-      (Math.random() - 0.5) * 2.4,
-      -1.1 - Math.random() * 1.8,
-      '#666666',
-      620, // ~10 seconds at 60fps
-      12 + Math.random() * 17,
-      'smoke'
-    ));
+  for (let i = 0; i < 18; i++) {
+    particles.push(new Particle(x + (Math.random()-0.5)*58, y + (Math.random()-0.5)*30, (Math.random()-0.5)*2.6, -1.2 - Math.random()*1.9, '#666666', 650, 13 + Math.random()*18, 'smoke'));
   }
 }
 
-function showEncouragingMessage(text) {
+function createSmallExplosion(x, y) {
+  for (let i = 0; i < 22; i++) {
+    const vx = (Math.random() - 0.5) * 7;
+    const vy = (Math.random() - 0.5) * 7 - 3;
+    particles.push(new Particle(x, y, vx, vy, '#FFAA00', 18, 5 + Math.random()*6, 'fire'));
+  }
+  explosions.push({x, y, life: 22});
+}
+
+function showPutOutMessage(text) {
   const msg = document.createElement('div');
   msg.className = 'encourage';
   msg.textContent = text;
-  msg.style.left = (Math.random() * 300 + 280) + 'px';
-  msg.style.top = (250 + Math.random() * 100) + 'px';
+  msg.style.left = (Math.random() * 260 + 320) + 'px';
+  msg.style.top = '220px';
   document.getElementById('overlay').appendChild(msg);
-  setTimeout(() => msg.remove(), 2200);
+  setTimeout(() => msg.remove(), 2300);
 }
 
 const safetyTips = [
@@ -231,157 +220,167 @@ const safetyTips = [
 ];
 
 function drawBackground() {
-  // Small-town Indiana sky
   const grad = ctx.createLinearGradient(0, 0, 0, 520);
   grad.addColorStop(0, '#7BC4FF');
   grad.addColorStop(1, '#C0E4FF');
   ctx.fillStyle = grad;
   ctx.fillRect(0, 0, canvas.width, 520);
-
-  // Grass
   ctx.fillStyle = '#3D8C40';
   ctx.fillRect(0, 520, canvas.width, 80);
-
-  // Distant trees (simple small-town look)
+  // trees
   ctx.fillStyle = '#2A6B2A';
-  ctx.fillRect(20, 380, 45, 140);   // trunk
-  ctx.beginPath(); ctx.arc(42, 370, 38, 0, Math.PI*2); ctx.fill();
-  ctx.beginPath(); ctx.arc(20, 410, 32, 0, Math.PI*2); ctx.fill();
-
-  ctx.fillRect(780, 390, 38, 130);
-  ctx.beginPath(); ctx.arc(800, 375, 35, 0, Math.PI*2); ctx.fill();
-
-  // Distant small house silhouette
-  ctx.fillStyle = '#E0C8A0';
-  ctx.fillRect(680, 410, 65, 110);
-  ctx.fillStyle = '#8B2A00';
-  ctx.beginPath(); ctx.moveTo(665, 410); ctx.lineTo(715, 355); ctx.lineTo(765, 410); ctx.fill();
+  ctx.fillRect(18, 385, 42, 135);
+  ctx.beginPath(); ctx.arc(39, 375, 36, 0, Math.PI*2); ctx.fill();
+  ctx.fillRect(775, 390, 38, 130);
+  ctx.beginPath(); ctx.arc(795, 375, 34, 0, Math.PI*2); ctx.fill();
 }
 
 function drawRealisticHouse(x) {
-  // Walls with siding
+  // Walls + siding
   ctx.fillStyle = '#E8D5B8';
   ctx.fillRect(x, 205, 265, 315);
-  // Siding lines
   ctx.strokeStyle = '#C9B89A';
   ctx.lineWidth = 3;
-  for (let i = 0; i < 12; i++) {
-    ctx.beginPath();
-    ctx.moveTo(x + 10, 215 + i*24);
-    ctx.lineTo(x + 255, 215 + i*24);
-    ctx.stroke();
+  for (let i = 0; i < 13; i++) {
+    ctx.beginPath(); ctx.moveTo(x+10, 215 + i*23); ctx.lineTo(x+255, 215 + i*23); ctx.stroke();
   }
   // Roof
   ctx.fillStyle = '#8B2A00';
   ctx.beginPath();
-  ctx.moveTo(x - 20, 195);
-  ctx.lineTo(x + 132, 115);
-  ctx.lineTo(x + 285, 195);
+  ctx.moveTo(x-22, 195);
+  ctx.lineTo(x+132, 108);
+  ctx.lineTo(x+287, 195);
   ctx.fill();
   // Chimney
   ctx.fillStyle = '#A33';
-  ctx.fillRect(x + 175, 125, 28, 55);
-  // Porch
+  ctx.fillRect(x+172, 118, 29, 58);
+  // Porch + door
   ctx.fillStyle = '#6B4E2A';
-  ctx.fillRect(x + 35, 460, 95, 60);
+  ctx.fillRect(x+32, 460, 98, 60);
   ctx.fillStyle = '#3C2F1F';
-  ctx.fillRect(x + 48, 410, 12, 50); // porch post
-  // Door
-  ctx.fillStyle = '#3C2F1F';
-  ctx.fillRect(x + 105, 410, 42, 110);
+  ctx.fillRect(x+102, 410, 44, 110);
   ctx.fillStyle = '#FFCC00';
-  ctx.fillRect(x + 122, 465, 8, 8);
+  ctx.fillRect(x+119, 465, 9, 9);
   // Windows
   ctx.strokeStyle = '#222';
-  ctx.lineWidth = 6;
-  ctx.strokeRect(x + 25, 260, 62, 88);
-  ctx.strokeRect(x + 165, 260, 62, 88);
+  ctx.lineWidth = 7;
+  ctx.strokeRect(x+28, 258, 64, 90);
+  ctx.strokeRect(x+168, 258, 64, 90);
   ctx.fillStyle = '#AACCFF';
-  ctx.fillRect(x + 30, 265, 52, 78);
-  ctx.fillRect(x + 170, 265, 52, 78);
+  ctx.fillRect(x+33, 263, 54, 80);
+  ctx.fillRect(x+173, 263, 54, 80);
+}
+
+function drawApartment(x) {
+  ctx.fillStyle = '#D8D0C8';
+  ctx.fillRect(x, 165, 275, 355);
+  ctx.fillStyle = '#8B2A00';
+  ctx.fillRect(x-5, 140, 285, 35); // roof
+  ctx.strokeStyle = '#333';
+  ctx.lineWidth = 5;
+  for (let i = 0; i < 6; i++) {
+    ctx.strokeRect(x+20 + i*80, 180, 64, 68);
+    ctx.strokeRect(x+20 + i*80, 270, 64, 68);
+    ctx.strokeRect(x+20 + i*80, 360, 64, 68);
+  }
+  ctx.fillStyle = '#AACCFF';
+  for (let i = 0; i < 6; i++) {
+    ctx.fillRect(x+25 + i*80, 185, 54, 58);
+    ctx.fillRect(x+25 + i*80, 275, 54, 58);
+    ctx.fillRect(x+25 + i*80, 365, 54, 58);
+  }
 }
 
 function drawRealisticFireTruck() {
-  // Wheels (heavy duty)
   ctx.fillStyle = '#111';
-  ctx.beginPath(); ctx.arc(truckX + 42, truckY + 26, 26, 0, Math.PI*2); ctx.fill();
-  ctx.beginPath(); ctx.arc(truckX + 118, truckY + 26, 26, 0, Math.PI*2); ctx.fill();
+  ctx.beginPath(); ctx.arc(truckX+40, truckY+27, 27, 0, Math.PI*2); ctx.fill();
+  ctx.beginPath(); ctx.arc(truckX+122, truckY+27, 27, 0, Math.PI*2); ctx.fill();
   ctx.fillStyle = '#DDD';
-  ctx.beginPath(); ctx.arc(truckX + 42, truckY + 26, 13, 0, Math.PI*2); ctx.fill();
-  ctx.beginPath(); ctx.arc(truckX + 118, truckY + 26, 13, 0, Math.PI*2); ctx.fill();
-
-  // Main red body
+  ctx.beginPath(); ctx.arc(truckX+40, truckY+27, 14, 0, Math.PI*2); ctx.fill();
+  ctx.beginPath(); ctx.arc(truckX+122, truckY+27, 14, 0, Math.PI*2); ctx.fill();
   ctx.fillStyle = '#C00';
-  ctx.fillRect(truckX, truckY - 42, 182, 72);
-
-  // Cab (more realistic)
+  ctx.fillRect(truckX, truckY-44, 185, 74);
   ctx.fillStyle = '#A00';
-  ctx.fillRect(truckX + 12, truckY - 72, 78, 38);
+  ctx.fillRect(truckX+14, truckY-76, 82, 40);
   ctx.fillStyle = '#113344';
-  ctx.fillRect(truckX + 20, truckY - 67, 32, 26); // windshield
-  ctx.fillRect(truckX + 58, truckY - 67, 24, 26);
-
-  // Pump panel / compartments
+  ctx.fillRect(truckX+22, truckY-71, 35, 29);
+  ctx.fillRect(truckX+63, truckY-71, 27, 29);
   ctx.fillStyle = '#222';
-  ctx.fillRect(truckX + 95, truckY - 38, 68, 48);
+  ctx.fillRect(truckX+98, truckY-40, 72, 50);
   ctx.fillStyle = '#FF0';
-  ctx.fillRect(truckX + 102, truckY - 32, 12, 12);
-
-  // Ladder on top
+  ctx.fillRect(truckX+105, truckY-34, 14, 14);
   ctx.fillStyle = '#DDD';
-  ctx.fillRect(truckX + 135, truckY - 68, 18, 38);
+  ctx.fillRect(truckX+140, truckY-72, 19, 40);
   ctx.fillStyle = '#AAA';
-  for (let i = 0; i < 7; i++) ctx.fillRect(truckX + 138, truckY - 64 + i*6, 12, 3);
-
-  // Red stripe + details
+  for (let i = 0; i < 7; i++) ctx.fillRect(truckX+143, truckY-68 + i*6, 13, 3);
   ctx.fillStyle = '#FF0';
-  ctx.fillRect(truckX + 8, truckY - 18, 170, 9);
+  ctx.fillRect(truckX+8, truckY-20, 173, 10);
   ctx.fillStyle = '#FFF';
-  ctx.fillRect(truckX + 8, truckY - 10, 170, 4);
+  ctx.fillRect(truckX+8, truckY-11, 173, 5);
 }
 
-function drawCar(x) {
+function drawSedan(x) {
   ctx.fillStyle = '#2A2A2A';
-  ctx.fillRect(x, 355, 110, 48);
+  ctx.fillRect(x+8, 355, 118, 52);
   ctx.fillStyle = '#111';
-  ctx.fillRect(x + 12, 320, 75, 38); // cabin
+  ctx.fillRect(x+22, 315, 82, 44);
   ctx.fillStyle = '#AACCFF';
-  ctx.fillRect(x + 20, 328, 32, 22);
-  ctx.fillRect(x + 58, 328, 22, 22);
-  // Wheels
+  ctx.fillRect(x+32, 322, 35, 28);
+  ctx.fillRect(x+72, 322, 26, 28);
   ctx.fillStyle = '#111';
-  ctx.beginPath(); ctx.arc(x + 25, 395, 16, 0, Math.PI*2); ctx.fill();
-  ctx.beginPath(); ctx.arc(x + 88, 395, 16, 0, Math.PI*2); ctx.fill();
+  ctx.beginPath(); ctx.arc(x+35, 397, 17, 0, Math.PI*2); ctx.fill();
+  ctx.beginPath(); ctx.arc(x+98, 397, 17, 0, Math.PI*2); ctx.fill();
+  ctx.fillStyle = '#DDD';
+  ctx.fillRect(x+30, 400, 12, 6);
+  ctx.fillRect(x+93, 400, 12, 6);
 }
 
-function drawSemiTanker(x) {
-  // Cab
-  ctx.fillStyle = '#C00';
-  ctx.fillRect(x, 310, 78, 68);
-  ctx.fillStyle = '#113344';
-  ctx.fillRect(x + 12, 320, 38, 32);
-  // Trailer / tanker
+function drawPickup(x) {
+  ctx.fillStyle = '#1F2A3C';
+  ctx.fillRect(x+5, 352, 135, 50);
+  ctx.fillStyle = '#111';
+  ctx.fillRect(x+18, 316, 78, 40);
+  ctx.fillStyle = '#AACCFF';
+  ctx.fillRect(x+27, 322, 38, 26);
+  ctx.fillRect(x+72, 322, 18, 26);
+  ctx.fillStyle = '#111';
+  ctx.beginPath(); ctx.arc(x+32, 394, 17, 0, Math.PI*2); ctx.fill();
+  ctx.beginPath(); ctx.arc(x+105, 394, 17, 0, Math.PI*2); ctx.fill();
   ctx.fillStyle = '#DDD';
-  ctx.fillRect(x + 80, 290, 260, 92);
+  ctx.fillRect(x+115, 355, 22, 22); // bed
+}
+
+function drawSemi(x) {
+  ctx.fillStyle = '#C00';
+  ctx.fillRect(x, 300, 88, 78);
+  ctx.fillStyle = '#113344';
+  ctx.fillRect(x+14, 312, 42, 38);
+  ctx.fillStyle = '#DDD';
+  ctx.fillRect(x+85, 278, 275, 102);
   ctx.fillStyle = '#A33';
-  ctx.fillRect(x + 85, 300, 250, 12);
+  ctx.fillRect(x+92, 288, 260, 14);
+  ctx.fillStyle = '#111';
+  ctx.beginPath(); ctx.arc(x+35, 370, 19, 0, Math.PI*2); ctx.fill();
+  ctx.beginPath(); ctx.arc(x+115, 370, 19, 0, Math.PI*2); ctx.fill();
+  ctx.beginPath(); ctx.arc(x+185, 370, 19, 0, Math.PI*2); ctx.fill();
+  ctx.beginPath(); ctx.arc(x+255, 370, 19, 0, Math.PI*2); ctx.fill();
 }
 
 function loadLevel(lvl) {
   currentLevel = lvl;
   levelEl.textContent = currentLevel;
-  const levelData = levels[lvl - 1];
-  fireSpots = levelData.fireSpots.map(s => ({...s}));
+  const data = levels[lvl-1];
+  fireSpots = data.fireSpots.map(s => ({...s, lastHit: 0}));
   particles = [];
+  explosions = [];
   gameState = 'playing';
 }
 
 function checkWin() {
-  const stillBurning = fireSpots.filter(s => s.health > 0).length;
-  if (stillBurning === 0) {
+  if (fireSpots.every(s => s.health <= 0)) {
     gameState = 'levelComplete';
     const tip = safetyTips[Math.floor(Math.random() * safetyTips.length)];
-    document.getElementById('levelTitle').textContent = levels[currentLevel - 1].name + " COMPLETE!";
+    document.getElementById('levelTitle').textContent = levels[currentLevel-1].name + " COMPLETE!";
     document.getElementById('encourageText').innerHTML = "Excellent work, Fire Defender!<br>You saved the day!";
     document.getElementById('safetyTip').textContent = "Safety Tip: " + tip;
     document.getElementById('levelCompleteScreen').style.display = 'block';
@@ -395,12 +394,8 @@ function startGame() {
 
 function nextLevel() {
   document.getElementById('levelCompleteScreen').style.display = 'none';
-  if (currentLevel < levels.length) {
-    loadLevel(currentLevel + 1);
-  } else {
-    alert("🎉 You completed ALL levels! Amazing job protecting Kennard!");
-    resetGame();
-  }
+  if (currentLevel < levels.length) loadLevel(currentLevel + 1);
+  else { alert("🎉 You completed ALL 6 levels! Amazing job protecting Kennard!"); resetGame(); }
 }
 
 function resetGame() {
@@ -414,88 +409,90 @@ function returnToFirePage() {
   window.location.href = 'https://kennardin.com/fire-department.html';
 }
 
-// Main loop
 function loop() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   drawBackground();
 
-  // Draw entities for current level
-  const levelData = levels[currentLevel - 1];
-  levelData.entities.forEach(ent => {
+  const data = levels[currentLevel-1];
+  data.entities.forEach(ent => {
     if (ent.type === 'house') drawRealisticHouse(ent.x);
-    if (ent.type === 'car') drawCar(ent.x);
-    if (ent.type === 'semi') drawSemiTanker(ent.x);
+    if (ent.type === 'apartment') drawApartment(ent.x);
+    if (ent.type === 'sedan') drawSedan(ent.x);
+    if (ent.type === 'pickup') drawPickup(ent.x);
+    if (ent.type === 'semi') drawSemi(ent.x);
   });
 
   drawRealisticFireTruck();
 
   let burningCount = 0;
+  const now = Date.now();
 
   fireSpots.forEach(spot => {
     if (spot.health <= 0) return;
     burningCount++;
 
-    // Fire grows slowly + re-ignition
-    if (Math.random() < 0.023) spot.health = Math.min(spot.health + 3.5, spot.maxHealth);
-    const now = Date.now();
-    if (spot.health > 0 && spot.health < spot.maxHealth && now - (spot.lastHit || 0) > 6800) {
-      spot.health = Math.min(spot.health + 2.2, spot.maxHealth);
-    }
+    if (Math.random() < 0.024) spot.health = Math.min(spot.health + 3.8, spot.maxHealth);
+    if (spot.health < spot.maxHealth && now - spot.lastHit > 7000) spot.health = Math.min(spot.health + 2.4, spot.maxHealth);
 
     const intensity = Math.floor(spot.health / 13);
     createFireParticles(spot.x + spot.w/2, spot.y + spot.h/2, intensity);
 
-    // Water hits
-    for (let i = particles.length - 1; i >= 0; i--) {
+    for (let i = particles.length-1; i >= 0; i--) {
       const p = particles[i];
-      if (p.type === 'water' &&
-          p.x > spot.x && p.x < spot.x + spot.w &&
-          p.y > spot.y && p.y < spot.y + spot.h) {
-        spot.health -= 1.08;
+      if (p.type === 'water' && p.x > spot.x && p.x < spot.x + spot.w && p.y > spot.y && p.y < spot.y + spot.h) {
+        spot.health -= 1.1;
         spot.lastHit = now;
         p.life = 7;
-        if (Math.random() < 0.12) showEncouragingMessage("Nice shot!");
+        if (spot.type === 'tanker' && Math.random() < 0.18) createSmallExplosion(spot.x + spot.w/2, spot.y + spot.h/2);
       }
     }
 
     if (spot.health <= 0) {
       createSmoke(spot.x + spot.w/2, spot.y + spot.h/2);
-      score += (spot.type === 'roof' || spot.type === 'tanker') ? 25 : 10;
+      if (spot.type === 'tanker' || spot.type === 'roof') score += 25;
+      else score += 10;
       scoreEl.textContent = score;
-      if (Math.random() < 0.3) showEncouragingMessage("Fire controlled!");
+      if (Math.random() < 0.4) showPutOutMessage("FIRE OUT!");
     }
   });
 
   if (isSpraying) createWaterParticles();
 
-  // Update & draw particles
-  for (let i = particles.length - 1; i >= 0; i--) {
+  for (let i = particles.length-1; i >= 0; i--) {
     const p = particles[i];
     p.update();
     p.draw();
     if (p.life <= 0) particles.splice(i, 1);
   }
 
-  // Thinner gray hose
+  for (let i = explosions.length-1; i >= 0; i--) {
+    const e = explosions[i];
+    ctx.globalAlpha = e.life / 22;
+    ctx.fillStyle = '#FF8800';
+    ctx.fillRect(e.x - 12, e.y - 12, 24, 24);
+    ctx.globalAlpha = 1;
+    e.life--;
+    if (e.life <= 0) explosions.splice(i, 1);
+  }
+
+  // thinner gray hose
   ctx.strokeStyle = '#333333';
   ctx.lineWidth = 12;
   ctx.lineCap = 'round';
   ctx.shadowBlur = 10;
   ctx.shadowColor = '#111';
   ctx.beginPath();
-  ctx.moveTo(truckX + 142, truckY - 30);
-  ctx.quadraticCurveTo(truckX + 215, truckY - 135, mouseX, mouseY);
+  ctx.moveTo(truckX + 142, truckY - 32);
+  ctx.quadraticCurveTo(truckX + 218, truckY - 140, mouseX, mouseY);
   ctx.stroke();
   ctx.shadowBlur = 0;
 
-  // Nozzle
   ctx.fillStyle = '#222';
   ctx.fillRect(mouseX - 9, mouseY - 9, 18, 18);
   ctx.fillStyle = '#555';
   ctx.fillRect(mouseX - 5, mouseY - 14, 10, 8);
 
   if (gameState === 'playing') checkWin();
-
   requestAnimationFrame(loop);
 }
 
