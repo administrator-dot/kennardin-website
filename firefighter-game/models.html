@@ -69,10 +69,9 @@
     }
 
     function drawFireTruck(x, y) {
-      // Flipped fire truck (rear / hose end faces right toward fires)
       ctx.fillStyle = '#e74c3c'; ctx.fillRect(x, y-85, 240, 75);
       ctx.fillStyle = '#fff'; ctx.fillRect(x+10, y-65, 220, 18);
-      ctx.fillStyle = '#2c3e50'; ctx.fillRect(x+10, y-105, 70, 50); // cab now on left
+      ctx.fillStyle = '#2c3e50'; ctx.fillRect(x+10, y-105, 70, 50);
       ctx.fillStyle = '#ecf0f1'; ctx.fillRect(x+70, y-115, 150, 18);
       ctx.fillStyle = '#f1c40f';
       ctx.fillRect(x+75, y-130, 8, 25); ctx.fillRect(x+95, y-130, 8, 25);
@@ -109,7 +108,7 @@
     }
 
     function createWaterParticles() {
-      const hoseEndX = truckX + 260;  // rear of flipped truck
+      const hoseEndX = truckX + 260;
       const hoseEndY = truckY - 38;
       const dx = mouseX - hoseEndX;
       const dy = mouseY - hoseEndY;
@@ -137,7 +136,7 @@
         const vx = (Math.random() - 0.5) * 3.4;
         const vy = -3.8 - Math.random() * 5.8;
         const colors = ['#FF1100', '#FF5500', '#FFAA00'];
-        particles.push({x: x + (Math.random()-0.5)*48, y: y + (Math.random()-0.5)*35, vx: vx, vy: vy, color: colors[Math.floor(Math.random()*colors.length)], life: 48, size: 8 + Math.random()*13, type: 'fire'});
+        particles.push({x: x + (Math.random()-0.5)*48, y: y + (Math.random()-0.5)*35, vx: vx, vy: vy, color: colors[Math.floor(Math.random()*colors.length)], life: 48, size: 4 + Math.random()*7, type: 'fire'});
       }
     }
 
@@ -191,8 +190,8 @@
         ctx.strokeStyle = '#555';
         ctx.lineWidth = 14;
         ctx.beginPath();
-        ctx.moveTo(truckX + 260, truckY - 38); // rear of flipped truck
-        ctx.quadraticCurveTo(truckX + 340, truckY - 160, mouseX, mouseY);
+        ctx.moveTo(truckX + 260, truckY - 38);
+        ctx.quadraticCurveTo(truckX + 340, truckY - 170, mouseX, mouseY);
         ctx.stroke();
         createWaterParticles();
       }
