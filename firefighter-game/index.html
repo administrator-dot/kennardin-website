@@ -55,7 +55,7 @@
 <canvas id="game" width="1150" height="600"></canvas>
 
 <script>
-// ============== KVFD – Fixed Fire Above Windows, Roof Alignment, Win Text, Grounded Vehicles ==============
+// ============== KVFD – Rebuilt Background, Homes, Vehicles + Precise Fire Placement ==============
 const canvas = document.getElementById('game');
 const ctx = canvas.getContext('2d');
 const scoreEl = document.getElementById('score');
@@ -88,49 +88,55 @@ const safetyTipsPool = [
 ];
 
 const levels = [
+  // Level 1 - Yellow House
   { name: "Level 1 – Yellow House", fireSpots: [
-    {x: 725, y: 195, w: 52, h: 78, health: 2800, maxHealth: 2800, type: 'window', points: 10, entity: 0}, // above window
-    {x: 845, y: 195, w: 52, h: 78, health: 2800, maxHealth: 2800, type: 'window', points: 10, entity: 0},
-    {x: 695, y: 125, w: 235, h: 48, health: 4200, maxHealth: 4200, type: 'roof', points: 25, entity: 0}, // roof top
-    {x: 780, y: 410, w: 45, h: 110, health: 2200, maxHealth: 2200, type: 'door', points: 15, entity: 0}
+    {x: 735, y: 255, w: 48, h: 72, health: 2800, maxHealth: 2800, type: 'window', points: 10, entity: 0}, // bottom of left window
+    {x: 855, y: 255, w: 48, h: 72, health: 2800, maxHealth: 2800, type: 'window', points: 10, entity: 0}, // bottom of right window
+    {x: 700, y: 138, w: 230, h: 42, health: 4200, maxHealth: 4200, type: 'roof', points: 25, entity: 0}, // top of roof
+    {x: 785, y: 415, w: 42, h: 105, health: 2200, maxHealth: 2200, type: 'door', points: 15, entity: 0}  // bottom of door
   ], entities: [{type:'house', x:680, color:'#FFEE66', short:false}] },
 
+  // Level 2 - Short + Tall House
   { name: "Level 2 – Short House + Full House", fireSpots: [
-    {x: 380, y: 245, w: 52, h: 62, health: 2600, maxHealth: 2600, type: 'window', points: 10, entity: 0},
-    {x: 470, y: 245, w: 52, h: 62, health: 2600, maxHealth: 2600, type: 'window', points: 10, entity: 0},
-    {x: 355, y: 175, w: 210, h: 46, health: 3800, maxHealth: 3800, type: 'roof', points: 25, entity: 0},
-    {x: 725, y: 195, w: 52, h: 78, health: 2800, maxHealth: 2800, type: 'window', points: 10, entity: 1},
-    {x: 845, y: 195, w: 52, h: 78, health: 2800, maxHealth: 2800, type: 'window', points: 10, entity: 1},
-    {x: 695, y: 125, w: 210, h: 46, health: 4200, maxHealth: 4200, type: 'roof', points: 25, entity: 1},
-    {x: 780, y: 410, w: 45, h: 110, health: 2400, maxHealth: 2400, type: 'door', points: 15, entity: 1}
+    {x: 380, y: 268, w: 50, h: 58, health: 2600, maxHealth: 2600, type: 'window', points: 10, entity: 0},
+    {x: 470, y: 268, w: 50, h: 58, health: 2600, maxHealth: 2600, type: 'window', points: 10, entity: 0},
+    {x: 355, y: 178, w: 205, h: 42, health: 3800, maxHealth: 3800, type: 'roof', points: 25, entity: 0},
+    {x: 725, y: 255, w: 50, h: 72, health: 2800, maxHealth: 2800, type: 'window', points: 10, entity: 1},
+    {x: 845, y: 255, w: 50, h: 72, health: 2800, maxHealth: 2800, type: 'window', points: 10, entity: 1},
+    {x: 695, y: 138, w: 210, h: 42, health: 4200, maxHealth: 4200, type: 'roof', points: 25, entity: 1},
+    {x: 785, y: 415, w: 42, h: 105, health: 2400, maxHealth: 2400, type: 'door', points: 15, entity: 1}
   ], entities: [{type:'house', x:355, color:'#66CCFF', short:true}, {type:'house', x:695, color:'#66FF99', short:false}] },
 
+  // Level 3 - House + Sedan
   { name: "Level 3 – Yellow House + Blue Sedan", fireSpots: [
-    {x: 725, y: 195, w: 52, h: 78, health: 3000, maxHealth: 3000, type: 'window', points: 10, entity: 0},
-    {x: 845, y: 195, w: 52, h: 78, health: 3000, maxHealth: 3000, type: 'window', points: 10, entity: 0},
-    {x: 695, y: 125, w: 235, h: 48, health: 4500, maxHealth: 4500, type: 'roof', points: 25, entity: 0},
-    {x: 245, y: 340, w: 95, h: 50, health: 2400, maxHealth: 2400, type: 'hood', points: 15, entity: 1},
-    {x: 270, y: 305, w: 60, h: 38, health: 2000, maxHealth: 2000, type: 'cab', points: 20, entity: 1}
+    {x: 735, y: 255, w: 48, h: 72, health: 3000, maxHealth: 3000, type: 'window', points: 10, entity: 0},
+    {x: 855, y: 255, w: 48, h: 72, health: 3000, maxHealth: 3000, type: 'window', points: 10, entity: 0},
+    {x: 700, y: 138, w: 230, h: 42, health: 4500, maxHealth: 4500, type: 'roof', points: 25, entity: 0},
+    {x: 255, y: 345, w: 95, h: 48, health: 2400, maxHealth: 2400, type: 'hood', points: 15, entity: 1},
+    {x: 275, y: 312, w: 58, h: 35, health: 2000, maxHealth: 2000, type: 'cab', points: 20, entity: 1}
   ], entities: [{type:'house', x:680, color:'#FFEE66', short:false}, {type:'sedan', x:240}] },
 
+  // Level 4 - House + Pickup
   { name: "Level 4 – Pink House + Red Pickup", fireSpots: [
-    {x: 725, y: 195, w: 52, h: 78, health: 3000, maxHealth: 3000, type: 'window', points: 10, entity: 0},
-    {x: 845, y: 195, w: 52, h: 78, health: 3000, maxHealth: 3000, type: 'window', points: 10, entity: 0},
-    {x: 695, y: 125, w: 235, h: 48, health: 4500, maxHealth: 4500, type: 'roof', points: 25, entity: 0},
-    {x: 235, y: 338, w: 120, h: 48, health: 2600, maxHealth: 2600, type: 'bed', points: 15, entity: 1},
-    {x: 252, y: 306, w: 75, h: 38, health: 2100, maxHealth: 2100, type: 'cab', points: 20, entity: 1}
+    {x: 735, y: 255, w: 48, h: 72, health: 3000, maxHealth: 3000, type: 'window', points: 10, entity: 0},
+    {x: 855, y: 255, w: 48, h: 72, health: 3000, maxHealth: 3000, type: 'window', points: 10, entity: 0},
+    {x: 700, y: 138, w: 230, h: 42, health: 4500, maxHealth: 4500, type: 'roof', points: 25, entity: 0},
+    {x: 245, y: 340, w: 120, h: 46, health: 2600, maxHealth: 2600, type: 'bed', points: 15, entity: 1},
+    {x: 255, y: 308, w: 72, h: 36, health: 2100, maxHealth: 2100, type: 'cab', points: 20, entity: 1}
   ], entities: [{type:'house', x:680, color:'#FF99CC', short:false}, {type:'pickup', x:240}] },
 
+  // Level 5 - Semi
   { name: "Level 5 – Semi Tanker Fire", fireSpots: [
-    {x: 520, y: 295, w: 85, h: 72, health: 3800, maxHealth: 3800, type: 'cab', points: 20, entity: 0},
-    {x: 610, y: 270, w: 270, h: 98, health: 6200, maxHealth: 6200, type: 'tanker', points: 30, entity: 0}
+    {x: 520, y: 295, w: 82, h: 68, health: 3800, maxHealth: 3800, type: 'cab', points: 20, entity: 0},
+    {x: 615, y: 272, w: 265, h: 95, health: 6200, maxHealth: 6200, type: 'tanker', points: 30, entity: 0}
   ], entities: [{type:'semi', x:320}] },
 
+  // Level 6 - Two Wrecked Cars
   { name: "Level 6 – Wrecked Cars on Grass", fireSpots: [
-    {x: 680, y: 340, w: 105, h: 52, health: 2800, maxHealth: 2800, type: 'hood', points: 15, entity: 0},
-    {x: 705, y: 305, w: 65, h: 40, health: 2200, maxHealth: 2200, type: 'cab', points: 20, entity: 0},
-    {x: 820, y: 338, w: 130, h: 48, health: 2800, maxHealth: 2800, type: 'bed', points: 15, entity: 1},
-    {x: 837, y: 305, w: 80, h: 38, health: 2200, maxHealth: 2200, type: 'cab', points: 20, entity: 1}
+    {x: 680, y: 340, w: 102, h: 50, health: 2800, maxHealth: 2800, type: 'hood', points: 15, entity: 0},
+    {x: 705, y: 305, w: 62, h: 38, health: 2200, maxHealth: 2200, type: 'cab', points: 20, entity: 0},
+    {x: 820, y: 338, w: 125, h: 48, health: 2800, maxHealth: 2800, type: 'bed', points: 15, entity: 1},
+    {x: 837, y: 305, w: 78, h: 36, health: 2200, maxHealth: 2200, type: 'cab', points: 20, entity: 1}
   ], entities: [{type:'sedan', x:520}, {type:'pickup', x:680}] }
 ];
 
@@ -214,9 +220,9 @@ function createFireParticles(x, y, intensity) {
   const count = Math.max(2, Math.floor(intensity * 0.22));
   for (let i = 0; i < count; i++) {
     const vx = (Math.random() - 0.5) * 2.6;
-    const vy = -3.2 - Math.random() * 4.4; // fire rises above
+    const vy = -3.2 - Math.random() * 4.4;
     const colors = ['#FF4400', '#FF8800', '#FFCC00'];
-    particles.push(new Particle(x + (Math.random()-0.5)*32, y + (Math.random()-0.5)*18, vx, vy, colors[Math.floor(Math.random()*colors.length)], 26, 4.5 + Math.random()*6.5, 'fire'));
+    particles.push(new Particle(x + (Math.random()-0.5)*30, y + (Math.random()-0.5)*18, vx, vy, colors[Math.floor(Math.random()*colors.length)], 26, 4.5 + Math.random()*6.5, 'fire'));
   }
 }
 
@@ -277,12 +283,12 @@ function drawSouthParkHouse(x, color, short, burned) {
   ctx.fillStyle = burned ? '#111' : '#A33';
   ctx.fillRect(x + 175, baseY - 85, 28, 55); // chimney
   ctx.fillStyle = burned ? '#111' : '#3C2F1F';
-  ctx.fillRect(x+105, baseY + (short ? 115 : 205), 45, 110);
+  ctx.fillRect(x+105, baseY + (short ? 115 : 205), 45, 110); // door area
   ctx.fillStyle = '#FFCC00';
-  ctx.fillRect(x+122, baseY + (short ? 170 : 260), 10, 10);
+  ctx.fillRect(x+122, baseY + (short ? 170 : 260), 10, 10); // knob
   ctx.fillStyle = burned ? '#111' : '#AACCFF';
-  ctx.fillRect(x+35, baseY + 40, 55, short ? 55 : 82);
-  ctx.fillRect(x+175, baseY + 40, 55, short ? 55 : 82);
+  ctx.fillRect(x+35, baseY + 40, 55, short ? 55 : 82); // left window
+  ctx.fillRect(x+175, baseY + 40, 55, short ? 55 : 82); // right window
   ctx.strokeRect(x+30, baseY + 35, 65, short ? 62 : 92);
   ctx.strokeRect(x+170, baseY + 35, 65, short ? 62 : 92);
   ctx.globalAlpha = 1;
