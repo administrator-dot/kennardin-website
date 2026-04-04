@@ -108,11 +108,26 @@
     }
 
     function createWaterParticles() {
+      const hoseStartX = truckX + 148;
+      const hoseStartY = truckY - 34;
+      const dx = mouseX - hoseStartX;
+      const dy = mouseY - hoseStartY;
+      const length = Math.sqrt(dx*dx + dy*dy);
+      const dirX = dx / length * 0.9;
+      const dirY = dy / length * 0.9;
+
       for (let i = 0; i < 34; i++) {
-        const spread = (Math.random() - 0.5) * 8;
-        const dirX = (mouseX - (truckX + 165)) * 0.058;
-        const dirY = (mouseY - (truckY - 38)) * 0.058;
-        particles.push({x: mouseX + (Math.random()-0.5)*8, y: mouseY + (Math.random()-0.5)*8, vx: dirX + spread, vy: dirY + spread - 6, color: '#33CCFF', life: 38, size: 5, type: 'water'});
+        const spread = (Math.random() - 0.5) * 7;
+        particles.push({
+          x: mouseX + (Math.random()-0.5)*8,
+          y: mouseY + (Math.random()-0.5)*8,
+          vx: dirX * 18 + spread,
+          vy: dirY * 18 + spread - 4,
+          color: '#33CCFF',
+          life: 38,
+          size: 5,
+          type: 'water'
+        });
       }
     }
 
@@ -156,13 +171,12 @@
         p.life--;
         drawParticle(p);
 
-        // Water hits fire
         if (p.type === 'water') {
           for (let j = fires.length - 1; j >= 0; j--) {
             const f = fires[j];
             const dx = f.x - p.x;
             const dy = f.y - p.y;
-            if (Math.sqrt(dx*dx + dy*dy) < 22) {
+            if (Math.sqrt(dx*dx + dy*dy) < 25) {
               fires.splice(j, 1);
               p.life = 8;
               break;
@@ -185,14 +199,14 @@
 
     function igniteFires() {
       fires = [
-        {x: 555, y: 430, size: 11},
-        {x: 630, y: 450, size: 9},
-        {x: 885, y: 370, size: 10},
-        {x: 940, y: 370, size: 10},
-        {x: 995, y: 370, size: 10},
-        {x: 1005, y: 410, size: 12},
-        {x: 910, y: 280, size: 8},
-        {x: 960, y: 280, size: 8}
+        {x: 555, y: 430, size: 11, health: 60},
+        {x: 630, y: 450, size: 9, health: 60},
+        {x: 885, y: 370, size: 10, health: 60},
+        {x: 940, y: 370, size: 10, health: 60},
+        {x: 995, y: 370, size: 10, health: 60},
+        {x: 1005, y: 410, size: 12, health: 60},
+        {x: 910, y: 280, size: 8, health: 60},
+        {x: 960, y: 280, size: 8, health: 60}
       ];
       render();
     }
