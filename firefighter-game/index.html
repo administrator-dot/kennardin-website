@@ -55,7 +55,7 @@
 <canvas id="game" width="1150" height="600"></canvas>
 
 <script>
-// ============== KVFD – ALL LEVELS REBUILT WITH KENNARD STYLE HOUSES + PRECISE FIRE PLACEMENT ==============
+// ============== KVFD – New Layout with All Vehicles on Fire Truck Ground Level ==============
 const canvas = document.getElementById('game');
 const ctx = canvas.getContext('2d');
 const scoreEl = document.getElementById('score');
@@ -96,40 +96,39 @@ const levels = [
     {x: 785, y: 415, w: 42, h: 105, health: 2200, maxHealth: 2200, type: 'door', points: 15, entity: 0}
   ], entities: [{type:'house', x:680, color:'#FFEE66', short:false}] },
 
-  // Level 2 - Short Blue + Tall Green House
-  { name: "Level 2 – Short House + Full House", fireSpots: [
+  // Level 2 - Short Blue House + Blue Sedan (right side)
+  { name: "Level 2 – Short House + Sedan", fireSpots: [
     {x: 380, y: 268, w: 50, h: 58, health: 2600, maxHealth: 2600, type: 'window', points: 10, entity: 0},
     {x: 470, y: 268, w: 50, h: 58, health: 2600, maxHealth: 2600, type: 'window', points: 10, entity: 0},
     {x: 355, y: 178, w: 205, h: 42, health: 3800, maxHealth: 3800, type: 'roof', points: 25, entity: 0},
-    {x: 725, y: 255, w: 50, h: 72, health: 2800, maxHealth: 2800, type: 'window', points: 10, entity: 1},
-    {x: 845, y: 255, w: 50, h: 72, health: 2800, maxHealth: 2800, type: 'window', points: 10, entity: 1},
-    {x: 695, y: 138, w: 210, h: 42, health: 4200, maxHealth: 4200, type: 'roof', points: 25, entity: 1},
-    {x: 785, y: 415, w: 42, h: 105, health: 2400, maxHealth: 2400, type: 'door', points: 15, entity: 1}
-  ], entities: [{type:'house', x:355, color:'#66CCFF', short:true}, {type:'house', x:695, color:'#66FF99', short:false}] },
+    {x: 780, y: 345, w: 95, h: 48, health: 2400, maxHealth: 2400, type: 'hood', points: 15, entity: 1},
+    {x: 800, y: 312, w: 58, h: 35, health: 2000, maxHealth: 2000, type: 'cab', points: 20, entity: 1}
+  ], entities: [{type:'house', x:355, color:'#66CCFF', short:true}, {type:'sedan', x:720}] },
 
-  // Level 3 - Tall Yellow House + Blue Sedan
-  { name: "Level 3 – Yellow House + Blue Sedan", fireSpots: [
-    {x: 735, y: 255, w: 48, h: 72, health: 3000, maxHealth: 3000, type: 'window', points: 10, entity: 0},
-    {x: 855, y: 255, w: 48, h: 72, health: 3000, maxHealth: 3000, type: 'window', points: 10, entity: 0},
-    {x: 700, y: 138, w: 230, h: 42, health: 4500, maxHealth: 4500, type: 'roof', points: 25, entity: 0},
-    {x: 255, y: 345, w: 95, h: 48, health: 2400, maxHealth: 2400, type: 'hood', points: 15, entity: 1},
-    {x: 275, y: 312, w: 58, h: 35, health: 2000, maxHealth: 2000, type: 'cab', points: 20, entity: 1}
-  ], entities: [{type:'house', x:680, color:'#FFEE66', short:false}, {type:'sedan', x:240}] },
+  // Level 3 - Short House (far right) + Burning Truck (close left)
+  { name: "Level 3 – Short House + Burning Truck", fireSpots: [
+    {x: 255, y: 338, w: 120, h: 48, health: 3100, maxHealth: 3100, type: 'bed', points: 15, entity: 0},
+    {x: 272, y: 306, w: 75, h: 38, health: 2500, maxHealth: 2500, type: 'cab', points: 20, entity: 0},
+    {x: 725, y: 255, w: 48, h: 72, health: 2800, maxHealth: 2800, type: 'window', points: 10, entity: 1},
+    {x: 845, y: 255, w: 48, h: 72, health: 2800, maxHealth: 2800, type: 'window', points: 10, entity: 1},
+    {x: 695, y: 178, w: 205, h: 42, health: 3800, maxHealth: 3800, type: 'roof', points: 25, entity: 1}
+  ], entities: [{type:'pickup', x:240}, {type:'house', x:695, color:'#66FF99', short:true}] },
 
-  // Level 4 - Tall Pink House + Red Pickup
-  { name: "Level 4 – Pink House + Red Pickup", fireSpots: [
-    {x: 735, y: 255, w: 48, h: 72, health: 3000, maxHealth: 3000, type: 'window', points: 10, entity: 0},
-    {x: 855, y: 255, w: 48, h: 72, health: 3000, maxHealth: 3000, type: 'window', points: 10, entity: 0},
-    {x: 700, y: 138, w: 230, h: 42, health: 4500, maxHealth: 4500, type: 'roof', points: 25, entity: 0},
-    {x: 245, y: 340, w: 120, h: 46, health: 2600, maxHealth: 2600, type: 'bed', points: 15, entity: 1},
-    {x: 255, y: 308, w: 72, h: 36, health: 2100, maxHealth: 2100, type: 'cab', points: 20, entity: 1}
-  ], entities: [{type:'house', x:680, color:'#FF99CC', short:false}, {type:'pickup', x:240}] },
+  // Level 4 - Corn Field (close) + Burning Tractor (far right)
+  { name: "Level 4 – Corn Field + Tractor", fireSpots: [
+    {x: 280, y: 320, w: 95, h: 65, health: 2600, maxHealth: 2600, type: 'corn', points: 10, entity: 0},
+    {x: 340, y: 305, w: 80, h: 55, health: 2400, maxHealth: 2400, type: 'corn', points: 10, entity: 0},
+    {x: 780, y: 315, w: 110, h: 55, health: 3200, maxHealth: 3200, type: 'tractor_body', points: 15, entity: 1},
+    {x: 810, y: 285, w: 65, h: 38, health: 2200, maxHealth: 2200, type: 'tractor_cab', points: 20, entity: 1}
+  ], entities: [{type:'cornfield', x:240}, {type:'tractor', x:720}] },
 
-  // Level 5 - Semi Tanker
-  { name: "Level 5 – Semi Tanker Fire", fireSpots: [
-    {x: 520, y: 295, w: 82, h: 68, health: 3800, maxHealth: 3800, type: 'cab', points: 20, entity: 0},
-    {x: 615, y: 272, w: 265, h: 95, health: 6200, maxHealth: 6200, type: 'tanker', points: 30, entity: 0}
-  ], entities: [{type:'semi', x:320}] },
+  // Level 5 - Lawn Mower (close) + Tall House (far)
+  { name: "Level 5 – Lawn Mower + Tall House", fireSpots: [
+    {x: 255, y: 355, w: 85, h: 38, health: 1800, maxHealth: 1800, type: 'mower_body', points: 10, entity: 0},
+    {x: 735, y: 255, w: 48, h: 72, health: 3000, maxHealth: 3000, type: 'window', points: 10, entity: 1},
+    {x: 855, y: 255, w: 48, h: 72, health: 3000, maxHealth: 3000, type: 'window', points: 10, entity: 1},
+    {x: 700, y: 138, w: 230, h: 42, health: 4500, maxHealth: 4500, type: 'roof', points: 25, entity: 1}
+  ], entities: [{type:'lawnmower', x:240}, {type:'house', x:680, color:'#FF99CC', short:false}] },
 
   // Level 6 - Two Wrecked Cars
   { name: "Level 6 – Wrecked Cars on Grass", fireSpots: [
@@ -281,14 +280,14 @@ function drawKennardHouse(x, color, short, burned) {
   ctx.lineTo(x+290, baseY - 10);
   ctx.fill();
   ctx.fillStyle = burned ? '#111' : '#A33';
-  ctx.fillRect(x + 175, baseY - 85, 28, 55); // chimney
+  ctx.fillRect(x + 175, baseY - 85, 28, 55);
   ctx.fillStyle = burned ? '#111' : '#3C2F1F';
-  ctx.fillRect(x+105, baseY + (short ? 115 : 205), 45, 110); // door
+  ctx.fillRect(x+105, baseY + (short ? 115 : 205), 45, 110);
   ctx.fillStyle = '#FFCC00';
-  ctx.fillRect(x+122, baseY + (short ? 170 : 260), 10, 10); // knob
+  ctx.fillRect(x+122, baseY + (short ? 170 : 260), 10, 10);
   ctx.fillStyle = burned ? '#111' : '#AACCFF';
-  ctx.fillRect(x+35, baseY + 40, 55, short ? 55 : 82); // left window
-  ctx.fillRect(x+175, baseY + 40, 55, short ? 55 : 82); // right window
+  ctx.fillRect(x+35, baseY + 40, 55, short ? 55 : 82);
+  ctx.fillRect(x+175, baseY + 40, 55, short ? 55 : 82);
   ctx.strokeRect(x+30, baseY + 35, 65, short ? 62 : 92);
   ctx.strokeRect(x+170, baseY + 35, 65, short ? 62 : 92);
   ctx.globalAlpha = 1;
@@ -371,6 +370,40 @@ function drawSemi(x) {
   ctx.beginPath(); ctx.arc(x+260, 370, 19, 0, Math.PI*2); ctx.fill();
 }
 
+function drawTractor(x) {
+  ctx.fillStyle = 'rgba(0,0,0,0.5)';
+  ctx.fillRect(x+20, truckY+33, 140, 18);
+  ctx.fillStyle = '#1F2A3C';
+  ctx.fillRect(x+20, 348, 135, 52);
+  ctx.fillStyle = '#333';
+  ctx.fillRect(x+35, 312, 75, 40);
+  ctx.fillStyle = '#AACCFF';
+  ctx.fillRect(x+45, 318, 35, 26);
+  ctx.fillStyle = '#111';
+  ctx.beginPath(); ctx.arc(x+45, 390, 22, 0, Math.PI*2); ctx.fill(); // large rear wheel
+  ctx.beginPath(); ctx.arc(x+115, 390, 14, 0, Math.PI*2); ctx.fill(); // small front wheel
+}
+
+function drawLawnmower(x) {
+  ctx.fillStyle = 'rgba(0,0,0,0.5)';
+  ctx.fillRect(x+25, truckY+38, 95, 16);
+  ctx.fillStyle = '#228B22';
+  ctx.fillRect(x+25, 348, 95, 38);
+  ctx.fillStyle = '#111';
+  ctx.fillRect(x+35, 325, 65, 28);
+  ctx.fillStyle = '#DDD';
+  ctx.beginPath(); ctx.arc(x+45, 385, 12, 0, Math.PI*2); ctx.fill();
+}
+
+function drawCornfield(x) {
+  ctx.fillStyle = '#3D8C40';
+  ctx.fillRect(x, 340, 160, 80);
+  ctx.fillStyle = '#228B22';
+  for (let i = 0; i < 12; i++) {
+    ctx.fillRect(x + 15 + i*12, 320 - Math.random()*25, 8, 60);
+  }
+}
+
 function loop() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   drawBackground();
@@ -384,6 +417,9 @@ function loop() {
     if (ent.type === 'sedan') drawSedan(ent.x);
     if (ent.type === 'pickup') drawPickup(ent.x);
     if (ent.type === 'semi') drawSemi(ent.x);
+    if (ent.type === 'tractor') drawTractor(ent.x);
+    if (ent.type === 'lawnmower') drawLawnmower(ent.x);
+    if (ent.type === 'cornfield') drawCornfield(ent.x);
   });
 
   drawSideFireTruck();
@@ -419,7 +455,6 @@ function loop() {
         spot.health -= damage;
         spot.lastHit = now;
         p.life = 6;
-        if (spot.type === 'tanker' && Math.random() < 0.2) createSmallExplosion(spot.x + spot.w/2, spot.y + spot.h/2);
       }
     }
 
