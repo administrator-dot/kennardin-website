@@ -3,12 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Kennard Fire Defender - Grid Test</title>
+  <title>Kennard Fire Defender</title>
   <style>
     body { margin:0; background:#000; font-family:Arial, sans-serif; overflow:hidden; color:#fff; text-align:center; }
     canvas { display:block; margin:0 auto; image-rendering:pixelated; }
-    #overlay { position:absolute; top:0; left:0; width:100%; height:100%; pointer-events:none; }
-    button { pointer-events:auto; margin:15px; padding:14px 28px; font-size:20px; background:#C00; color:white; border:none; border-radius:8px; cursor:pointer; }
+    #overlay { position:absolute; top:0; left:0; width:100%; height:100%; pointer-events:none; display:flex; align-items:center; justify-content:center; flex-direction:column; }
+    button { pointer-events:auto; margin:15px; padding:14px 28px; font-size:22px; background:#C00; color:white; border:none; border-radius:8px; cursor:pointer; }
     button:hover { background:#F00; }
     .info { position:absolute; top:15px; left:15px; font-size:24px; pointer-events:none; }
   </style>
@@ -16,25 +16,30 @@
 <body>
 
   <div id="overlay">
-    <h1 style="font-size:58px; margin-top:40px; color:#FF0;">KENNARD FIRE DEFENDER</h1>
-    <p style="font-size:26px; margin:10px 0 30px;">KVFD • Kennard, Indiana</p>
+    <div id="titleScreen">
+      <h1 style="font-size:58px; color:#FF0;">KENNARD FIRE DEFENDER</h1>
+      <p style="font-size:26px; margin:10px 0 40px;">KVFD • Kennard, Indiana</p>
+      <button onclick="startGame()">START MISSION</button>
+    </div>
 
-    <div class="controls">
-      <button onclick="changeBackground(0)">☀️ Day</button>
-      <button onclick="changeBackground(1)">🌅 Dusk</button>
-      <button onclick="changeBackground(2)">🌙 Night</button>
-      <button onclick="igniteFires()">🔥 Ignite Fires</button>
-      <button onclick="extinguishAll()">🧯 Put Out All</button>
+    <div id="levelCompleteScreen" style="display:none;">
+      <h1 id="levelTitle" style="font-size:48px; color:#0F0;"></h1>
+      <p id="encourageText" style="font-size:32px; margin:20px;"></p>
+      <p id="safetyTip" style="font-size:26px; max-width:600px;"></p>
+      <button onclick="nextLevel()">NEXT MISSION</button>
     </div>
   </div>
 
-  <div class="info">Score: <span id="score">0</span></div>
+  <div class="info">Level <span id="levelNum">1</span> • Score: <span id="score">0</span></div>
 
   <canvas id="gameCanvas" width="1200" height="600"></canvas>
 
   <script>
     const canvas = document.getElementById('gameCanvas');
     const ctx = canvas.getContext('2d');
+    let gameState = 'title'; // title, playing, levelComplete
+    let currentLevel = 1;
+    let score = 0;
     let currentBg = 0;
     let fires = [];
     let particles = [];
@@ -44,6 +49,14 @@
     const truckX = 120;
     const truckY = 480;
 
+    const safetyTips = [
+      "Never leave space heaters unattended!",
+      "Check smoke detectors monthly.",
+      "Keep a 3-foot kid-free zone around stoves.",
+      "Know two ways out of every room.",
+      "Stop, drop, and roll if your clothes catch fire."
+    ];
+
     function drawGrid() {
       ctx.strokeStyle = 'rgba(255,255,255,0.15)';
       ctx.lineWidth = 1;
@@ -52,20 +65,9 @@
     }
 
     function drawBackground(bg) {
-      if (bg === 0) {
-        ctx.fillStyle = '#5cc8ff'; ctx.fillRect(0, 0, 1200, 480);
-        ctx.fillStyle = '#4caf50'; ctx.fillRect(0, 480, 1200, 120);
-        ctx.fillStyle = '#ffeb3b'; ctx.beginPath(); ctx.arc(1000, 120, 40, 0, Math.PI*2); ctx.fill();
-      } else if (bg === 1) {
-        ctx.fillStyle = '#ff7a00'; ctx.fillRect(0, 0, 1200, 480);
-        ctx.fillStyle = '#3a8c3a'; ctx.fillRect(0, 480, 1200, 120);
-        ctx.fillStyle = '#ff9800'; ctx.beginPath(); ctx.arc(900, 180, 35, 0, Math.PI*2); ctx.fill();
-      } else {
-        ctx.fillStyle = '#112233'; ctx.fillRect(0, 0, 1200, 480);
-        ctx.fillStyle = '#223322'; ctx.fillRect(0, 480, 1200, 120);
-        ctx.fillStyle = '#f4f4f4'; ctx.beginPath(); ctx.arc(1000, 120, 35, 0, Math.PI*2); ctx.fill();
-        ctx.fillStyle = '#112233'; ctx.beginPath(); ctx.arc(1020, 115, 25, 0, Math.PI*2); ctx.fill();
-      }
+      if (bg === 0) { ctx.fillStyle = '#5cc8ff'; ctx.fillRect(0,0,1200,480); ctx.fillStyle = '#4caf50'; ctx.fillRect(0,480,1200,120); ctx.fillStyle = '#ffeb3b'; ctx.beginPath(); ctx.arc(1000,120,40,0,Math.PI*2); ctx.fill(); }
+      else if (bg === 1) { ctx.fillStyle = '#ff7a00'; ctx.fillRect(0,0,1200,480); ctx.fillStyle = '#3a8c3a'; ctx.fillRect(0,480,1200,120); ctx.fillStyle = '#ff9800'; ctx.beginPath(); ctx.arc(900,180,35,0,Math.PI*2); ctx.fill(); }
+      else { ctx.fillStyle = '#112233'; ctx.fillRect(0,0,1200,480); ctx.fillStyle = '#223322'; ctx.fillRect(0,480,1200,120); ctx.fillStyle = '#f4f4f4'; ctx.beginPath(); ctx.arc(1000,120,35,0,Math.PI*2); ctx.fill(); ctx.fillStyle = '#112233'; ctx.beginPath(); ctx.arc(1020,115,25,0,Math.PI*2); ctx.fill(); }
     }
 
     function drawSideFireTruck(x, y) {
@@ -109,7 +111,7 @@
       ctx.fillStyle = '#2c3e50'; ctx.fillRect(x+145, y-80, 35, 80);
     }
 
-    // EXACT water + hose code from https://kennardin.com/firefighter-game/index.html (adapted only for our grid/truck position)
+    // Exact water + hose from live game
     function createWaterParticles() {
       const hoseStartX = truckX + 148;
       const hoseStartY = truckY - 34;
@@ -121,7 +123,7 @@
 
       const waterBlues = ['#33CCFF', '#1E90FF', '#00BFFF', '#40E0FF'];
 
-      for (let i = 0; i < 18; i++) {   // exact style from live game
+      for (let i = 0; i < 18; i++) {
         const spread = (Math.random() - 0.5) * 4.5;
         const color = waterBlues[Math.floor(Math.random() * waterBlues.length)];
         particles.push({
@@ -130,8 +132,8 @@
           vx: dirX * 27 + spread,
           vy: dirY * 27 + spread - 4,
           color: color,
-          life: 18,      // tuned for clean disappearance
-          size: 3.5,     // a bit larger as you asked
+          life: 18,
+          size: 3.5,
           type: 'water'
         });
       }
@@ -185,6 +187,8 @@
             if (Math.sqrt(dx*dx + dy*dy) < 22) {
               fires.splice(j, 1);
               p.life = 8;
+              score += 10;
+              document.getElementById('score').textContent = score;
               break;
             }
           }
@@ -192,7 +196,7 @@
         if (p.life <= 0) particles.splice(i, 1);
       }
 
-      // EXACT hose code you liked from the live game
+      // Exact hose from live game
       ctx.strokeStyle = '#555';
       ctx.lineWidth = 14;
       ctx.beginPath();
@@ -201,45 +205,85 @@
       ctx.stroke();
 
       if (isSpraying) createWaterParticles();
+
+      // Check if level complete
+      if (gameState === 'playing' && fires.length === 0) {
+        gameState = 'levelComplete';
+        showLevelComplete();
+      }
     }
 
-    function igniteFires() {
-      fires = [
-        {x: 555, y: 430}, {x: 630, y: 450},
-        {x: 885, y: 370}, {x: 940, y: 370}, {x: 995, y: 370},
-        {x: 1005, y: 410}, {x: 910, y: 280}, {x: 960, y: 280}
-      ];
+    function showLevelComplete() {
+      const titleEl = document.getElementById('levelTitle');
+      const encourageEl = document.getElementById('encourageText');
+      const tipEl = document.getElementById('safetyTip');
+
+      titleEl.textContent = `LEVEL ${currentLevel} COMPLETE!`;
+      encourageEl.textContent = currentLevel === 1 ? "Great work, firefighter!" : "Excellent job protecting Kennard!";
+      tipEl.textContent = safetyTips[Math.floor(Math.random() * safetyTips.length)];
+
+      document.getElementById('levelCompleteScreen').style.display = 'flex';
+    }
+
+    function startGame() {
+      document.getElementById('titleScreen').style.display = 'none';
+      gameState = 'playing';
+      score = 0;
+      document.getElementById('score').textContent = score;
+      loadLevel(1);
+    }
+
+    function nextLevel() {
+      document.getElementById('levelCompleteScreen').style.display = 'none';
+      currentLevel++;
+      document.getElementById('levelNum').textContent = currentLevel;
+      loadLevel(currentLevel);
+    }
+
+    function loadLevel(level) {
+      gameState = 'playing';
+      fires = [];
+      particles = [];
+      if (level === 1) {
+        fires = [{x:555,y:430},{x:630,y:450},{x:885,y:370},{x:940,y:370}];
+      } else if (level === 2) {
+        fires = [{x:555,y:430},{x:630,y:450},{x:885,y:370},{x:940,y:370},{x:995,y:370},{x:1005,y:410},{x:910,y:280},{x:960,y:280}];
+      }
       render();
     }
 
+    function igniteFires() { /* for testing only */ }
+
     function extinguishAll() { fires = []; render(); }
 
+    // Mouse controls
     canvas.addEventListener('mousemove', e => {
       const rect = canvas.getBoundingClientRect();
       mouseX = e.clientX - rect.left;
       mouseY = e.clientY - rect.top;
-      if (isSpraying) render();
+      if (isSpraying && gameState === 'playing') render();
     });
 
-    canvas.addEventListener('mousedown', () => { isSpraying = true; render(); });
-
+    canvas.addEventListener('mousedown', () => { if (gameState === 'playing') isSpraying = true; });
     canvas.addEventListener('mouseup', () => {
-      isSpraying = false;
-      // Aggressive cleanup so water vanishes instantly on release
-      for (let i = particles.length - 1; i >= 0; i--) {
-        if (particles[i].type === 'water') particles[i].life = 0;
+      if (gameState === 'playing') {
+        isSpraying = false;
+        // Instant cleanup on release
+        for (let i = particles.length - 1; i >= 0; i--) {
+          if (particles[i].type === 'water') particles[i].life = 0;
+        }
       }
-      render();
     });
+    canvas.addEventListener('mouseleave', () => { if (gameState === 'playing') isSpraying = false; });
 
-    canvas.addEventListener('mouseleave', () => { isSpraying = false; render(); });
+    function changeBackground(bg) { currentBg = bg; render(); }
 
-    function changeBackground(bg) {
-      currentBg = bg;
-      render();
-    }
+    // Main game loop
+    setInterval(() => {
+      if (gameState === 'playing' || particles.length > 0) render();
+    }, 30);
 
-    setInterval(() => { if (fires.length > 0 || particles.length > 0 || isSpraying) render(); }, 30);
+    // Start with title screen
     render();
   </script>
 </body>
