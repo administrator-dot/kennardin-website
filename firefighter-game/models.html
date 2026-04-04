@@ -77,7 +77,7 @@
 <canvas id="game" width="1200" height="600"></canvas>
 
 <script>
-// ============== FINAL CLEAN VERSION WITH TORNADO + UI IMPROVEMENTS ==============
+// ============== TORNADO CENTERED BEHIND HOUSE + TWO BURNING TREES IN LEVEL 6 ==============
 const canvas = document.getElementById('game');
 const ctx = canvas.getContext('2d');
 const scoreEl = document.getElementById('score');
@@ -134,13 +134,14 @@ const baseLevels = [
     {x:950,y:400,w:45,h:100,health:90,maxHealth:160,type:'door'}
   ], entities: [{type:'smallHouse',x:850,color:'#FFCC99'}, {type:'sedan',x:520,yOffset:8}] },
 
-  { name: "Level 6 – Tall House + Pickup + Burning Tree", fireSpots: [
+  { name: "Level 6 – Tall House + Pickup + Burning Trees", fireSpots: [
     {x:900,y:240,w:60,h:90,health:140,maxHealth:230,type:'window1'},
     {x:1020,y:240,w:60,h:90,health:140,maxHealth:230,type:'window2'},
     {x:860,y:140,w:240,h:50,health:180,maxHealth:280,type:'roof'},
     {x:960,y:410,w:50,h:110,health:120,maxHealth:200,type:'door'},
-    {x:1150,y:280,w:45,h:120,health:100,maxHealth:180,type:'treefire'}
-  ], entities: [{type:'house',x:860,color:'#66CCFF'}, {type:'pickup',x:590,yOffset:10}, {type:'tree',x:1150}] },
+    {x:680,y:280,w:45,h:120,health:100,maxHealth:180,type:'treefire1'},  // left side
+    {x:1150,y:280,w:45,h:120,health:100,maxHealth:180,type:'treefire2'}  // right side
+  ], entities: [{type:'house',x:860,color:'#66CCFF'}, {type:'pickup',x:590,yOffset:10}, {type:'tree',x:680}, {type:'tree',x:1150}] },
 
   { name: "Level 7 – Mini Barn", fireSpots: [
     {x:880,y:255,w:78,h:225,health:150,maxHealth:250,type:'door'},
@@ -165,7 +166,7 @@ const baseLevels = [
     {x:1020,y:240,w:60,h:90,health:150,maxHealth:250,type:'window2'},
     {x:860,y:140,w:240,h:50,health:190,maxHealth:290,type:'roof'},
     {x:960,y:410,w:50,h:110,health:130,maxHealth:220,type:'door'}
-  ], entities: [{type:'house',x:860,color:'#FFEE66'}, {type:'tornado',x:1080}] },
+  ], entities: [{type:'house',x:860,color:'#FFEE66'}, {type:'tornado',x:1020}] },  // centered behind house
 
   { name: "Level 10 – Big Car Wreck", fireSpots: [
     {x:480,y:355,w:110,h:55,health:140,maxHealth:240,type:'hood'},
@@ -459,15 +460,15 @@ function drawLargeRedBarn(x) {
   ctx.globalAlpha = 1;
 }
 
-// Faded Tornado
+// Faded Tornado (centered behind house)
 function drawTornado(x) {
   ctx.globalAlpha = 0.35;
   ctx.strokeStyle = '#AAAAAA';
-  ctx.lineWidth = 18;
+  ctx.lineWidth = 22;
   ctx.beginPath();
-  ctx.moveTo(x+20, 180);
-  ctx.quadraticCurveTo(x+45, 280, x-15, 380);
-  ctx.quadraticCurveTo(x+55, 420, x+10, 480);
+  ctx.moveTo(x, 160);
+  ctx.quadraticCurveTo(x+35, 260, x-25, 360);
+  ctx.quadraticCurveTo(x+45, 410, x+5, 480);
   ctx.stroke();
   ctx.globalAlpha = 1;
 }
