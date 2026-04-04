@@ -3,13 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Fire Simulation Test - Models</title>
+  <title>Kennard Fire Defender - Models Test</title>
   <style>
     body { font-family: Arial, sans-serif; margin: 0; padding: 20px; background: #111; color: #fff; text-align: center; }
     h1 { margin: 10px 0 5px; }
     .subtitle { font-size: 18px; margin-bottom: 15px; color: #ccc; }
     .canvas-container { margin: 20px auto; border: 4px solid #333; background: #222; padding: 10px; display: inline-block; }
-    canvas { image-rendering: pixelated; }
+    canvas { image-rendering: pixelated; cursor: crosshair; }
     .controls { margin: 15px 0; }
     button { padding: 12px 24px; margin: 0 8px; font-size: 18px; background: #001f3f; color: white; border: none; border-radius: 6px; cursor: pointer; }
     button:hover { background: #003366; }
@@ -18,12 +18,11 @@
 </head>
 <body>
 
-  <h1>Fire Simulation Test</h1>
-  <p class="subtitle">Day • Dusk • Night — Realistic Fire Truck + Burn Zones</p>
+  <h1>Kennard Fire Defender</h1>
+  <p class="subtitle">Day • Dusk • Night — Realistic Fire Truck + Hose & Spray</p>
 
   <div class="tips">
-    <strong>Tips:</strong> Click <strong>Ignite Fires</strong> to start fires at real burn zones.<br>
-    Click any individual flame to put it out. Use <strong>Put Out All</strong> to clear everything.
+    <strong>How to play:</strong> Move mouse to aim hose • Click & hold to spray water • Click "Ignite Fires" to start fires
   </div>
 
   <div class="controls">
@@ -43,59 +42,33 @@
     const ctx = canvas.getContext('2d');
     let currentBg = 0;
     let fires = [];
+    let isSpraying = false;
+    let mouseX = 600, mouseY = 300;
 
-    function drawGrid() {
-      ctx.strokeStyle = 'rgba(255,255,255,0.15)';
-      for (let x = 0; x <= 1200; x += 40) { ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, 600); ctx.stroke(); }
-      for (let y = 0; y <= 600; y += 40) { ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(1200, y); ctx.stroke(); }
-    }
-
-    function drawBackground(bg) {
-      if (bg === 0) { // Day
-        ctx.fillStyle = '#5cc8ff'; ctx.fillRect(0, 0, 1200, 480);
-        ctx.fillStyle = '#4caf50'; ctx.fillRect(0, 480, 1200, 120);
-        // Sun
-        ctx.fillStyle = '#ffeb3b'; ctx.beginPath(); ctx.arc(1000, 120, 40, 0, Math.PI*2); ctx.fill();
-      } else if (bg === 1) { // Dusk
-        ctx.fillStyle = '#ff7a00'; ctx.fillRect(0, 0, 1200, 480);
-        ctx.fillStyle = '#3a8c3a'; ctx.fillRect(0, 480, 1200, 120);
-        // Sunset sun
-        ctx.fillStyle = '#ff9800'; ctx.beginPath(); ctx.arc(900, 180, 35, 0, Math.PI*2); ctx.fill();
-      } else { // Night
-        ctx.fillStyle = '#112233'; ctx.fillRect(0, 0, 1200, 480);
-        ctx.fillStyle = '#223322'; ctx.fillRect(0, 480, 1200, 120);
-        // Moon
-        ctx.fillStyle = '#f4f4f4'; ctx.beginPath(); ctx.arc(1000, 120, 35, 0, Math.PI*2); ctx.fill();
-        ctx.fillStyle = '#112233'; ctx.beginPath(); ctx.arc(1020, 115, 25, 0, Math.PI*2); ctx.fill();
-        // Stars
-        ctx.fillStyle = '#fff'; ctx.fillRect(200, 80, 4, 4); ctx.fillRect(450, 50, 3, 3); ctx.fillRect(650, 110, 4, 4);
-        ctx.fillRect(800, 70, 3, 3); ctx.fillRect(1100, 140, 4, 4);
-      }
-    }
-
+    // Draw realistic fire truck (matches your image)
     function drawFireTruck(x, y) {
-      // Realistic fire truck based on your image (top one)
-      ctx.fillStyle = '#e74c3c'; ctx.fillRect(x, y-85, 240, 75); // body
-      ctx.fillStyle = '#fff'; ctx.fillRect(x+10, y-65, 220, 18); // white stripe
-      ctx.fillStyle = '#2c3e50'; ctx.fillRect(x+190, y-105, 70, 50); // cab
-      // Ladder
-      ctx.fillStyle = '#ecf0f1'; ctx.fillRect(x+30, y-115, 150, 18);
-      ctx.fillRect(x+35, y-130, 8, 25); ctx.fillRect(x+55, y-130, 8, 25); ctx.fillRect(x+75, y-130, 8, 25);
-      ctx.fillRect(x+95, y-130, 8, 25); ctx.fillRect(x+115, y-130, 8, 25); ctx.fillRect(x+135, y-130, 8, 25);
-      // Windows
-      ctx.fillStyle = '#34495e'; ctx.fillRect(x+205, y-95, 40, 30);
+      ctx.fillStyle = '#e74c3c'; ctx.fillRect(x, y-85, 240, 75);           // body
+      ctx.fillStyle = '#fff'; ctx.fillRect(x+10, y-65, 220, 18);            // white stripe
+      ctx.fillStyle = '#2c3e50'; ctx.fillRect(x+190, y-105, 70, 50);        // cab
+      ctx.fillStyle = '#ecf0f1'; ctx.fillRect(x+30, y-115, 150, 18);        // ladder base
+      ctx.fillStyle = '#f1c40f'; ctx.fillRect(x+35, y-130, 8, 25);         // ladder rungs
+      ctx.fillRect(x+55, y-130, 8, 25); ctx.fillRect(x+75, y-130, 8, 25);
+      ctx.fillRect(x+95, y-130, 8, 25); ctx.fillRect(x+115, y-130, 8, 25);
+      ctx.fillRect(x+135, y-130, 8, 25);
+      ctx.fillStyle = '#34495e'; ctx.fillRect(x+205, y-95, 40, 30);         // window
+      ctx.fillStyle = '#3498db'; ctx.fillRect(x+225, y-125, 18, 12);        // siren light
       // Wheels
-      ctx.fillStyle = '#2c3e50'; ctx.beginPath(); ctx.arc(x+50, y-10, 24, 0, Math.PI*2); ctx.fill();
+      ctx.fillStyle = '#2c3e50';
+      ctx.beginPath(); ctx.arc(x+50, y-10, 24, 0, Math.PI*2); ctx.fill();
       ctx.beginPath(); ctx.arc(x+130, y-10, 24, 0, Math.PI*2); ctx.fill();
       ctx.beginPath(); ctx.arc(x+200, y-10, 24, 0, Math.PI*2); ctx.fill();
-      ctx.fillStyle = '#ecf0f1'; ctx.beginPath(); ctx.arc(x+50, y-10, 12, 0, Math.PI*2); ctx.fill();
+      ctx.fillStyle = '#ecf0f1';
+      ctx.beginPath(); ctx.arc(x+50, y-10, 12, 0, Math.PI*2); ctx.fill();
       ctx.beginPath(); ctx.arc(x+130, y-10, 12, 0, Math.PI*2); ctx.fill();
       ctx.beginPath(); ctx.arc(x+200, y-10, 12, 0, Math.PI*2); ctx.fill();
-      // Siren light
-      ctx.fillStyle = '#3498db'; ctx.fillRect(x+225, y-125, 18, 12);
     }
 
-    function drawBlueCar(x, y) { /* same as before */ 
+    function drawBlueCar(x, y) {
       ctx.fillStyle = '#3498db'; ctx.fillRect(x, y-55, 160, 55);
       ctx.fillStyle = '#2c3e50'; ctx.fillRect(x+110, y-72, 55, 35);
       ctx.fillStyle = '#34495e'; ctx.fillRect(x+15, y-50, 35, 22); ctx.fillRect(x+60, y-50, 35, 22);
@@ -104,7 +77,7 @@
       ctx.beginPath(); ctx.arc(x+125, y-8, 18, 0, Math.PI*2); ctx.fill();
     }
 
-    function drawHouse(x, y) { /* same larger house as last version */ 
+    function drawHouse(x, y) {
       ctx.fillStyle = '#f4d9b8'; ctx.fillRect(x, y-160, 200, 160);
       ctx.fillStyle = '#c0392b'; ctx.beginPath(); ctx.moveTo(x, y-160); ctx.lineTo(x+100, y-220); ctx.lineTo(x+200, y-160); ctx.fill();
       ctx.fillStyle = '#34495e';
@@ -113,12 +86,25 @@
       ctx.fillStyle = '#2c3e50'; ctx.fillRect(x+145, y-80, 35, 80);
     }
 
+    function drawWaterSpray(x1, y1, x2, y2) {
+      const dx = x2 - x1;
+      const dy = y2 - y1;
+      const length = Math.sqrt(dx*dx + dy*dy);
+      for (let i = 0; i < 25; i++) {
+        const t = i / 25;
+        const px = x1 + dx * t + (Math.random() * 20 - 10);
+        const py = y1 + dy * t + (Math.random() * 20 - 10);
+        ctx.fillStyle = `rgba(100, 180, 255, ${0.6 + Math.random() * 0.4})`;
+        ctx.fillRect(px, py, 4, 4);
+      }
+    }
+
     function drawFire(x, y, size) {
-      const intensity = Math.random() * 0.3 + 0.7;
-      ctx.fillStyle = `rgba(255, ${80 + Math.random()*100}, 0, ${intensity})`;
-      ctx.beginPath(); ctx.arc(x, y, size * (0.8 + Math.random()*0.4), 0, Math.PI*2); ctx.fill();
-      ctx.fillStyle = `rgba(255, 180, 0, ${intensity})`;
-      ctx.beginPath(); ctx.arc(x + Math.random()*8-4, y - size*0.6, size*0.6, 0, Math.PI*2); ctx.fill();
+      const intensity = Math.random() * 0.4 + 0.8;
+      ctx.fillStyle = `rgba(255, ${60 + Math.random()*120}, 0, ${intensity})`;
+      ctx.beginPath(); ctx.arc(x, y, size * (0.9 + Math.random()*0.5), 0, Math.PI*2); ctx.fill();
+      ctx.fillStyle = `rgba(255, 200, 0, ${intensity * 0.8})`;
+      ctx.beginPath(); ctx.arc(x + Math.random()*10-5, y - size*0.7, size*0.7, 0, Math.PI*2); ctx.fill();
     }
 
     function render() {
@@ -130,42 +116,95 @@
       drawBlueCar(520, 480);
       drawHouse(860, 480);
 
+      // Draw active fires
       fires.forEach(f => drawFire(f.x, f.y, f.size));
+
+      // Draw hose + water spray when spraying
+      if (isSpraying) {
+        ctx.strokeStyle = '#555';
+        ctx.lineWidth = 12;
+        ctx.beginPath();
+        ctx.moveTo(320, 410); // hose start (fire truck)
+        ctx.lineTo(mouseX, mouseY);
+        ctx.stroke();
+
+        drawWaterSpray(320, 410, mouseX, mouseY);
+      }
+    }
+
+    function drawBackground(bg) {
+      if (bg === 0) { // Day
+        ctx.fillStyle = '#5cc8ff'; ctx.fillRect(0, 0, 1200, 480);
+        ctx.fillStyle = '#4caf50'; ctx.fillRect(0, 480, 1200, 120);
+        ctx.fillStyle = '#ffeb3b'; ctx.beginPath(); ctx.arc(1000, 120, 40, 0, Math.PI*2); ctx.fill();
+      } else if (bg === 1) { // Dusk
+        ctx.fillStyle = '#ff7a00'; ctx.fillRect(0, 0, 1200, 480);
+        ctx.fillStyle = '#3a8c3a'; ctx.fillRect(0, 480, 1200, 120);
+        ctx.fillStyle = '#ff9800'; ctx.beginPath(); ctx.arc(900, 180, 35, 0, Math.PI*2); ctx.fill();
+      } else { // Night
+        ctx.fillStyle = '#112233'; ctx.fillRect(0, 0, 1200, 480);
+        ctx.fillStyle = '#223322'; ctx.fillRect(0, 480, 1200, 120);
+        ctx.fillStyle = '#f4f4f4'; ctx.beginPath(); ctx.arc(1000, 120, 35, 0, Math.PI*2); ctx.fill();
+        ctx.fillStyle = '#112233'; ctx.beginPath(); ctx.arc(1020, 115, 25, 0, Math.PI*2); ctx.fill();
+      }
+    }
+
+    function drawGrid() {
+      ctx.strokeStyle = 'rgba(255,255,255,0.15)';
+      for (let x = 0; x <= 1200; x += 40) { ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, 600); ctx.stroke(); }
+      for (let y = 0; y <= 600; y += 40) { ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(1200, y); ctx.stroke(); }
     }
 
     function igniteFires() {
       fires = [];
-      // Fire Truck
-      fires.push({x: 170, y: 405, size: 13}); // engine
-      fires.push({x: 310, y: 435, size: 11}); // gas tank
-      // Blue Car
-      fires.push({x: 555, y: 430, size: 11}); // engine
-      fires.push({x: 630, y: 450, size: 9});  // gas tank
-      // House
-      fires.push({x: 885, y: 370, size: 10}); fires.push({x: 940, y: 370, size: 10});
-      fires.push({x: 995, y: 370, size: 10}); fires.push({x: 1005, y: 410, size: 12});
-      fires.push({x: 910, y: 280, size: 8}); fires.push({x: 960, y: 280, size: 8});
+      fires.push({x: 170, y: 405, size: 13}); // truck engine
+      fires.push({x: 310, y: 435, size: 11}); // truck gas tank
+      fires.push({x: 555, y: 430, size: 11}); // car engine
+      fires.push({x: 630, y: 450, size: 9});  // car gas tank
+      fires.push({x: 885, y: 370, size: 10}); // house windows
+      fires.push({x: 940, y: 370, size: 10});
+      fires.push({x: 995, y: 370, size: 10});
+      fires.push({x: 1005, y: 410, size: 12}); // door
+      fires.push({x: 910, y: 280, size: 8});  // roof
+      fires.push({x: 960, y: 280, size: 8});
       render();
     }
 
     function extinguishAll() { fires = []; render(); }
 
+    canvas.addEventListener('mousemove', e => {
+      const rect = canvas.getBoundingClientRect();
+      mouseX = e.clientX - rect.left;
+      mouseY = e.clientY - rect.top;
+      if (isSpraying) render();
+    });
+
+    canvas.addEventListener('mousedown', () => { isSpraying = true; render(); });
+    canvas.addEventListener('mouseup', () => { isSpraying = false; render(); });
+
+    // Click to extinguish flames
     canvas.addEventListener('click', (e) => {
       const rect = canvas.getBoundingClientRect();
       const clickX = e.clientX - rect.left;
       const clickY = e.clientY - rect.top;
       for (let i = fires.length - 1; i >= 0; i--) {
         const f = fires[i];
-        const dx = f.x - clickX; const dy = f.y - clickY;
-        if (Math.sqrt(dx*dx + dy*dy) < f.size + 18) {
-          fires.splice(i, 1); render(); return;
+        const dx = f.x - clickX;
+        const dy = f.y - clickY;
+        if (Math.sqrt(dx*dx + dy*dy) < f.size + 20) {
+          fires.splice(i, 1);
+          render();
+          return;
         }
       }
     });
 
-    function changeBackground(bg) { currentBg = bg; render(); }
+    function changeBackground(bg) {
+      currentBg = bg;
+      render();
+    }
 
-    setInterval(() => { if (fires.length > 0) render(); }, 80);
+    setInterval(() => { if (fires.length > 0) render(); }, 70);
     render();
   </script>
 </body>
