@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Kennard Fire Defender - 20px Grid (Model)</title>
+<title>Kennard Fire Defender</title>
 <style>
   body { margin:0; background:#000; font-family:Arial, sans-serif; overflow:hidden; }
   canvas { display:block; margin:0 auto; }
@@ -17,15 +17,21 @@
   }
   button:hover { background: #F00; }
   #ui { position: absolute; top: 15px; left: 15px; font-size: 24px; pointer-events: none; color:#FFF; }
+  .bottom-label {
+    position: absolute; bottom: 15px; right: 20px; font-size: 22px; color:#FF0;
+    text-shadow: 2px 2px 6px rgba(0,0,0,0.8);
+  }
 </style>
 </head>
 <body>
+
 <div id="overlay">
+  <!-- Clean title screen (matches your screenshot) -->
   <div id="titleScreen">
-    <h1 style="font-size:58px; margin-top:70px; color:#FF0;">KENNARD FIRE DEFENDER</h1>
-    <p style="font-size:26px; margin:10px 0 40px;">For KVFD • Kennard, Indiana</p>
-    <button onclick="startGame()">START MISSION</button>
+    <h1 style="font-size:62px; margin-top:80px; color:#FF0; letter-spacing:4px;">KENNARD FIRE DEFENDER</h1>
+    <button onclick="startGame()" style="font-size:26px; padding:18px 40px; margin-top:40px;">START MISSION</button>
   </div>
+
   <div id="levelCompleteScreen" style="display:none; margin-top:120px;">
     <h1 id="levelTitle" style="font-size:48px; color:#0F0;"></h1>
     <p id="encourageText" style="font-size:32px; margin:20px;"></p>
@@ -35,12 +41,16 @@
     <button onclick="returnToFirePage()">RETURN TO FIRE PAGE</button>
   </div>
 </div>
+
 <div id="ui">
   Score: <span id="score">0</span> &nbsp;&nbsp;&nbsp; Level: <span id="level">1</span>
 </div>
+<div class="bottom-label">KVFD - Kennard, IN</div>
+
 <canvas id="game" width="1200" height="600"></canvas>
+
 <script>
-// ============== 20px GRID + IMPROVED SMALL BUILDINGS (DETAILED SIDING) ==============
+// ============== 10-LEVEL GAME - CLEAN TITLE + PROGRESSIVE DIFFICULTY ==============
 const canvas = document.getElementById('game');
 const ctx = canvas.getContext('2d');
 const scoreEl = document.getElementById('score');
@@ -58,53 +68,85 @@ const truckX = 100;
 const truckY = 480;
 
 const levels = [
-  // Level 1 – Small Shed with Window (fire on window, roof, door)
-  { name: "Level 1 – Small Shed with Window", fireSpots: [
-    {x: 920, y: 280, w: 55, h: 55, health: 140, maxHealth: 140, type: 'window'},
-    {x: 940, y: 255, w: 65, h: 40, health: 160, maxHealth: 160, type: 'roof'},
-    {x: 975, y: 355, w: 42, h: 95, health: 130, maxHealth: 130, type: 'door'}
-  ], entities: [{type:'shedWindow', x:880}] },
+  // 1 - Very easy: Small Shed with Window
+  { name: "Level 1 – Small Shed Fire", fireSpots: [
+    {x:920,y:280,w:55,h:55,health:110,maxHealth:110,type:'window'},
+    {x:940,y:255,w:65,h:40,health:130,maxHealth:130,type:'roof'},
+    {x:975,y:355,w:42,h:95,health:100,maxHealth:100,type:'door'}
+  ], entities: [{type:'shedWindow',x:880}] },
 
-  // Level 2 – Small Shed with Chimney
+  // 2 - Easy: Small Shed with Chimney
   { name: "Level 2 – Small Shed with Chimney", fireSpots: [
-    {x: 920, y: 265, w: 65, h: 40, health: 160, maxHealth: 160, type: 'roof'},
-    {x: 975, y: 355, w: 42, h: 95, health: 130, maxHealth: 130, type: 'door'},
-    {x: 1040, y: 230, w: 28, h: 55, health: 145, maxHealth: 145, type: 'chimney'}
-  ], entities: [{type:'shedChimney', x:880}] },
+    {x:920,y:265,w:65,h:40,health:140,maxHealth:140,type:'roof'},
+    {x:975,y:355,w:42,h:95,health:110,maxHealth:110,type:'door'},
+    {x:1040,y:230,w:28,h:55,health:125,maxHealth:125,type:'chimney'}
+  ], entities: [{type:'shedChimney',x:880}] },
 
-  // Level 3 – Tall Pink House + Sedan
-  { name: "Level 3 – Tall Pink House + Sedan", fireSpots: [
-    {x: 900, y: 240, w: 60, h: 90, health: 160, maxHealth: 240, type: 'window'},
-    {x: 1020, y: 240, w: 60, h: 90, health: 160, maxHealth: 240, type: 'window'},
-    {x: 860, y: 140, w: 240, h: 50, health: 220, maxHealth: 340, type: 'roof'},
-    {x: 960, y: 410, w: 50, h: 110, health: 140, maxHealth: 220, type: 'door'}
-  ], entities: [{type:'house', x:860, color:'#FF99CC'}, {type:'sedan', x:520, yOffset: 8}] },
+  // 3 - Medium: Double-Door Garage
+  { name: "Level 3 – Double-Door Garage", fireSpots: [
+    {x:880,y:255,w:78,h:225,health:160,maxHealth:160,type:'door'},
+    {x:970,y:255,w:78,h:225,health:160,maxHealth:160,type:'door'},
+    {x:920,y:200,w:90,h:45,health:180,maxHealth:180,type:'roof'}
+  ], entities: [{type:'doubleGarage',x:820}] },
 
-  // Level 4 – Tall Blue House + Pickup
-  { name: "Level 4 – Tall Blue House + Pickup", fireSpots: [
-    {x: 900, y: 240, w: 60, h: 90, health: 160, maxHealth: 240, type: 'window'},
-    {x: 1020, y: 240, w: 60, h: 90, health: 160, maxHealth: 240, type: 'window'},
-    {x: 860, y: 140, w: 240, h: 50, health: 220, maxHealth: 340, type: 'roof'},
-    {x: 960, y: 410, w: 50, h: 110, health: 140, maxHealth: 220, type: 'door'}
-  ], entities: [{type:'house', x:860, color:'#66CCFF'}, {type:'pickup', x:590, yOffset: 10}] },
+  // 4 - Medium: Tall House
+  { name: "Level 4 – Tall House", fireSpots: [
+    {x:900,y:240,w:60,h:90,health:170,maxHealth:170,type:'window'},
+    {x:1020,y:240,w:60,h:90,health:170,maxHealth:170,type:'window'},
+    {x:860,y:140,w:240,h:50,health:230,maxHealth:230,type:'roof'},
+    {x:960,y:410,w:50,h:110,health:150,maxHealth:150,type:'door'}
+  ], entities: [{type:'house',x:860,color:'#FFEE66'}] },
 
-  // Level 5 – Semi & Sedan Wreck
-  { name: "Level 5 – Semi & Sedan Wreck", fireSpots: [
-    {x: 720, y: 345, w: 105, h: 55, health: 140, maxHealth: 210, type: 'hood'},
-    {x: 745, y: 310, w: 65, h: 42, health: 100, maxHealth: 160, type: 'cab'},
-    {x: 860, y: 300, w: 90, h: 80, health: 180, maxHealth: 280, type: 'cab'},
-    {x: 960, y: 270, w: 260, h: 105, health: 280, maxHealth: 420, type: 'tanker'}
-  ], entities: [{type:'sedan', x:680, yOffset: 6}, {type:'semi', x:820}] },
+  // 5 - Medium-Hard: Tall House + Sedan
+  { name: "Level 5 – Tall House + Sedan", fireSpots: [
+    {x:900,y:240,w:60,h:90,health:180,maxHealth:180,type:'window'},
+    {x:1020,y:240,w:60,h:90,health:180,maxHealth:180,type:'window'},
+    {x:860,y:140,w:240,h:50,health:240,maxHealth:240,type:'roof'},
+    {x:960,y:410,w:50,h:110,health:160,maxHealth:160,type:'door'}
+  ], entities: [{type:'house',x:860,color:'#FF99CC'}, {type:'sedan',x:520,yOffset:8}] },
 
-  // Level 6 – Tall Green House + Vehicles
-  { name: "Level 6 – Tall Green House + Vehicles", fireSpots: [
-    {x: 900, y: 240, w: 60, h: 90, health: 160, maxHealth: 240, type: 'window'},
-    {x: 1020, y: 240, w: 60, h: 90, health: 160, maxHealth: 240, type: 'window'},
-    {x: 860, y: 140, w: 240, h: 50, health: 220, maxHealth: 340, type: 'roof'},
-    {x: 960, y: 410, w: 50, h: 110, health: 140, maxHealth: 220, type: 'door'},
-    {x: 590, y: 350, w: 110, h: 60, health: 130, maxHealth: 195, type: 'hood'},
-    {x: 620, y: 310, w: 70, h: 45, health: 95, maxHealth: 145, type: 'cab'}
-  ], entities: [{type:'house', x:860, color:'#66FF99'}, {type:'sedan', x:550, yOffset: 9}, {type:'pickup', x:760, yOffset: 14}] }
+  // 6 - Hard: Tall House + Pickup
+  { name: "Level 6 – Tall House + Pickup", fireSpots: [
+    {x:900,y:240,w:60,h:90,health:190,maxHealth:190,type:'window'},
+    {x:1020,y:240,w:60,h:90,health:190,maxHealth:190,type:'window'},
+    {x:860,y:140,w:240,h:50,health:250,maxHealth:250,type:'roof'},
+    {x:960,y:410,w:50,h:110,health:170,maxHealth:170,type:'door'}
+  ], entities: [{type:'house',x:860,color:'#66CCFF'}, {type:'pickup',x:590,yOffset:10}] },
+
+  // 7 - Harder: Tall House + Two Vehicles
+  { name: "Level 7 – Tall House + Two Vehicles", fireSpots: [
+    {x:900,y:240,w:60,h:90,health:200,maxHealth:200,type:'window'},
+    {x:1020,y:240,w:60,h:90,health:200,maxHealth:200,type:'window'},
+    {x:860,y:140,w:240,h:50,health:260,maxHealth:260,type:'roof'},
+    {x:960,y:410,w:50,h:110,health:180,maxHealth:180,type:'door'},
+    {x:520,y:350,w:110,h:60,health:130,maxHealth:130,type:'hood'}
+  ], entities: [{type:'house',x:860,color:'#66FF99'}, {type:'sedan',x:480,yOffset:9}, {type:'pickup',x:680,yOffset:7}] },
+
+  // 8 - Very Hard: Semi & Sedan Wreck
+  { name: "Level 8 – Semi & Sedan Wreck", fireSpots: [
+    {x:720,y:345,w:105,h:55,health:150,maxHealth:150,type:'hood'},
+    {x:745,y:310,w:65,h:42,health:120,maxHealth:120,type:'cab'},
+    {x:860,y:300,w:90,h:80,health:200,maxHealth:200,type:'cab'},
+    {x:960,y:270,w:260,h:105,health:310,maxHealth:310,type:'tanker'}
+  ], entities: [{type:'sedan',x:680,yOffset:6}, {type:'semi',x:820}] },
+
+  // 9 - Extreme: Tall House + Semi
+  { name: "Level 9 – Tall House + Semi", fireSpots: [
+    {x:900,y:240,w:60,h:90,health:210,maxHealth:210,type:'window'},
+    {x:1020,y:240,w:60,h:90,health:210,maxHealth:210,type:'window'},
+    {x:860,y:140,w:240,h:50,health:270,maxHealth:270,type:'roof'},
+    {x:960,y:410,w:50,h:110,health:190,maxHealth:190,type:'door'},
+    {x:460,y:300,w:90,h:80,health:220,maxHealth:220,type:'cab'}
+  ], entities: [{type:'house',x:860,color:'#FFEE66'}, {type:'semi',x:340}] },
+
+  // 10 - Final Boss: Massive Multi-Vehicle Wreck
+  { name: "Level 10 – Massive Multi-Vehicle Wreck", fireSpots: [
+    {x:620,y:345,w:110,h:55,health:170,maxHealth:170,type:'hood'},
+    {x:650,y:310,w:70,h:45,health:130,maxHealth:130,type:'cab'},
+    {x:780,y:300,w:90,h:80,health:230,maxHealth:230,type:'cab'},
+    {x:880,y:270,w:260,h:105,health:340,maxHealth:340,type:'tanker'},
+    {x:520,y:340,w:130,h:55,health:190,maxHealth:190,type:'bed'}
+  ], entities: [{type:'sedan',x:480,yOffset:8}, {type:'pickup',x:640,yOffset:10}, {type:'semi',x:780}] }
 ];
 
 function startGame() {
@@ -134,7 +176,7 @@ function checkWin() {
 function nextLevel() {
   document.getElementById('levelCompleteScreen').style.display = 'none';
   if (currentLevel < levels.length) loadLevel(currentLevel + 1);
-  else { alert("🎉 You completed all levels! Great job!"); resetGame(); }
+  else { alert("🎉 You completed all 10 levels! You are a true Kennard Fire Defender!"); resetGame(); }
 }
 
 function resetGame() {
@@ -242,54 +284,41 @@ function drawSideFireTruck() {
   ctx.fillRect(truckX + 25, truckY - 82, 12, 6);
 }
 
-// ================== IMPROVED SMALL BUILDINGS (tall-house style siding) ==================
+// Small buildings with tall-house style siding
 function drawShedWindow(x) {
-  ctx.fillStyle = '#E8D5B8';
-  ctx.fillRect(x+30, 255, 190, 225);
-  // siding lines
-  ctx.strokeStyle = '#C9B89A';
-  ctx.lineWidth = 4;
+  ctx.fillStyle = '#E8D5B8'; ctx.fillRect(x+30, 255, 190, 225);
+  ctx.strokeStyle = '#C9B89A'; ctx.lineWidth = 4;
   for (let i = 0; i < 9; i++) {
     ctx.beginPath(); ctx.moveTo(x+38, 270 + i*24); ctx.lineTo(x+210, 270 + i*24); ctx.stroke();
   }
-  // roof
   ctx.fillStyle = '#8B2A00';
   ctx.beginPath(); ctx.moveTo(x+10, 255); ctx.lineTo(x+125, 185); ctx.lineTo(x+240, 255); ctx.fill();
-  // door
   ctx.fillStyle = '#3C2F1F'; ctx.fillRect(x+75, 340, 48, 140);
-  // window
   ctx.fillStyle = '#AACCFF'; ctx.fillRect(x+155, 275, 52, 52);
   ctx.strokeStyle = '#222'; ctx.lineWidth = 8; ctx.strokeRect(x+155, 275, 52, 52);
 }
 
 function drawShedChimney(x) {
-  ctx.fillStyle = '#E8D5B8';
-  ctx.fillRect(x+30, 255, 190, 225);
-  ctx.strokeStyle = '#C9B89A';
-  ctx.lineWidth = 4;
+  ctx.fillStyle = '#E8D5B8'; ctx.fillRect(x+30, 255, 190, 225);
+  ctx.strokeStyle = '#C9B89A'; ctx.lineWidth = 4;
   for (let i = 0; i < 9; i++) {
     ctx.beginPath(); ctx.moveTo(x+38, 270 + i*24); ctx.lineTo(x+210, 270 + i*24); ctx.stroke();
   }
   ctx.fillStyle = '#8B2A00';
   ctx.beginPath(); ctx.moveTo(x+10, 255); ctx.lineTo(x+125, 185); ctx.lineTo(x+240, 255); ctx.fill();
   ctx.fillStyle = '#3C2F1F'; ctx.fillRect(x+75, 340, 48, 140);
-  // chimney
   ctx.fillStyle = '#555'; ctx.fillRect(x+195, 195, 32, 68);
 }
 
 function drawDoubleDoorGarage(x) {
-  ctx.fillStyle = '#E8D5B8';
-  ctx.fillRect(x+20, 230, 260, 250);
-  ctx.strokeStyle = '#C9B89A';
-  ctx.lineWidth = 4;
+  ctx.fillStyle = '#E8D5B8'; ctx.fillRect(x+20, 230, 260, 250);
+  ctx.strokeStyle = '#C9B89A'; ctx.lineWidth = 4;
   for (let i = 0; i < 11; i++) {
     ctx.beginPath(); ctx.moveTo(x+30, 245 + i*22); ctx.lineTo(x+270, 245 + i*22); ctx.stroke();
   }
-  // double doors (centered)
   ctx.fillStyle = '#6B4E2A';
   ctx.fillRect(x+85, 255, 78, 225);
   ctx.fillRect(x+175, 255, 78, 225);
-  // roof
   ctx.fillStyle = '#8B2A00';
   ctx.beginPath(); ctx.moveTo(x, 230); ctx.lineTo(x+150, 160); ctx.lineTo(x+300, 230); ctx.fill();
 }
@@ -376,6 +405,7 @@ function loop() {
   data.entities.forEach(ent => {
     if (ent.type === 'shedWindow') drawShedWindow(ent.x);
     if (ent.type === 'shedChimney') drawShedChimney(ent.x);
+    if (ent.type === 'doubleGarage') drawDoubleDoorGarage(ent.x);
     if (ent.type === 'house') drawTallHouse(ent.x);
     if (ent.type === 'sedan') drawSedan(ent.x, ent.yOffset || 0);
     if (ent.type === 'pickup') drawPickup(ent.x, ent.yOffset || 0);
@@ -387,7 +417,7 @@ function loop() {
   ctx.fillStyle = '#FFFFFF';
   ctx.font = 'bold 22px Arial';
   ctx.textAlign = 'right';
-  ctx.fillText('KVFD - Kennard, IN', 1180, 45);
+  ctx.fillText('KVFD - Kennard, IN', 1180, 580);   // moved to bottom as requested
 
   fireSpots.forEach(spot => {
     if (spot.health <= 0) return;
