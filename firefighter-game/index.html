@@ -5,35 +5,35 @@
 <title>Kennard Fire Defender</title>
 <style>
   body { margin:0; background:#000; font-family:Arial, sans-serif; overflow:hidden; }
-  canvas { display:block; margin:0 auto; background: linear-gradient(#5C9EFF, #B0E0FF); }
+  canvas { display:block; margin:0 auto; }
   #overlay {
     position: absolute; top: 0; left: 0; width: 100%; height: 100%;
     pointer-events: none; color: white; text-align: center;
-    text-shadow: 2px 2px 6px rgba(0,0,0,0.9);
+    text-shadow: 2px 2px 8px rgba(0,0,0,0.9);
   }
   button {
-    pointer-events: auto; margin: 15px; padding: 12px 24px; font-size: 18px;
+    pointer-events: auto; margin: 15px; padding: 14px 28px; font-size: 20px;
     background: #C00; color: white; border: none; border-radius: 8px; cursor: pointer;
   }
   button:hover { background: #F00; }
-  #ui { position: absolute; top: 15px; left: 15px; font-size: 22px; pointer-events: none; }
+  #ui { position: absolute; top: 15px; left: 15px; font-size: 24px; pointer-events: none; color:#FFF; }
 </style>
 </head>
 <body>
 
 <div id="overlay">
   <div id="titleScreen">
-    <h1 style="font-size:52px; margin-top:80px; color:#FF0;">Kennard Fire Defender</h1>
-    <p style="font-size:28px; margin:20px;">For Kennard Volunteer Fire Department</p>
-    <button onclick="startGame()">Start Mission</button>
+    <h1 style="font-size:58px; margin-top:70px; color:#FF0; letter-spacing:2px;">KENNARD FIRE DEFENDER</h1>
+    <p style="font-size:26px; margin:10px 0 40px;">For Kennard Volunteer Fire Department</p>
+    <button onclick="startGame()">START MISSION</button>
   </div>
 
-  <div id="winScreen" style="display:none; margin-top:150px;">
-    <h1 style="font-size:48px; color:#0F0;">Mission Complete!</h1>
-    <p style="font-size:32px;">Thank you for playing</p>
-    <p style="font-size:28px; color:#FF0;">Stay Fire Safe!</p>
-    <button onclick="resetGame()">Play Again</button>
-    <button onclick="returnToFirePage()">Return to Fire Page</button>
+  <div id="winScreen" style="display:none; margin-top:140px;">
+    <h1 style="font-size:52px; color:#0F0;">MISSION COMPLETE!</h1>
+    <p style="font-size:34px; margin:20px;">Thank you for playing</p>
+    <p style="font-size:30px; color:#FF0;">Stay Fire Safe!</p>
+    <button onclick="resetGame()">PLAY AGAIN</button>
+    <button onclick="returnToFirePage()">RETURN TO FIRE PAGE</button>
   </div>
 </div>
 
@@ -44,7 +44,7 @@
 <canvas id="game" width="900" height="600"></canvas>
 
 <script>
-// ============== Kennard Fire Defender - Improved Version ==============
+// ============== Kennard Fire Defender - GTA-STYLE UPDATE ==============
 const canvas = document.getElementById('game');
 const ctx = canvas.getContext('2d');
 const scoreEl = document.getElementById('score');
@@ -58,19 +58,19 @@ let gameState = 'title'; // 'title', 'playing', 'won'
 const truckX = 120;
 const truckY = 510;
 
-// Fire spots for Level 1
+// GTA-style fire spots (Level 1) – higher health so it takes noticeably longer
 let fireSpots = [
-  {x: 520, y: 260, w: 55, h: 75, health: 100, maxHealth: 100, type: 'window'},
-  {x: 630, y: 260, w: 55, h: 75, health: 100, maxHealth: 100, type: 'window'},
-  {x: 495, y: 165, w: 210, h: 45, health: 160, maxHealth: 160, type: 'roof'}
+  {x: 515, y: 255, w: 58, h: 82, health: 220, maxHealth: 220, type: 'window', lastHit: 0},
+  {x: 625, y: 255, w: 58, h: 82, health: 220, maxHealth: 220, type: 'window', lastHit: 0},
+  {x: 490, y: 155, w: 225, h: 48, health: 320, maxHealth: 320, type: 'roof', lastHit: 0}
 ];
 
 let particles = [];
 
 document.addEventListener('mousemove', e => {
   const rect = canvas.getBoundingClientRect();
-  mouseX = Math.max(50, Math.min(e.clientX - rect.left, canvas.width - 20));
-  mouseY = Math.max(100, Math.min(e.clientY - rect.top, canvas.height - 80));
+  mouseX = Math.max(60, Math.min(e.clientX - rect.left, canvas.width - 30));
+  mouseY = Math.max(110, Math.min(e.clientY - rect.top, canvas.height - 90));
 });
 
 canvas.addEventListener('mousedown', () => { if (gameState === 'playing') isSpraying = true; });
@@ -86,119 +86,168 @@ class Particle {
     this.x += this.vx;
     this.y += this.vy;
     this.life--;
-    if (this.type === 'water') this.vy += 0.18;
+    if (this.type === 'water') this.vy += 0.12;           // slight gravity
     if (this.type === 'fire') {
-      this.vy -= 0.12 + Math.random()*0.1;
-      this.vx += (Math.random() - 0.5) * 1.2;
+      this.vy -= 0.15 + Math.random() * 0.15;
+      this.vx += (Math.random() - 0.5) * 1.4;
     }
     if (this.type === 'smoke') {
-      this.vy -= 0.06;
-      this.vx += (Math.random() - 0.5) * 0.4;
+      this.vy -= 0.07;
+      this.vx += (Math.random() - 0.5) * 0.5;
     }
   }
   draw() {
-    ctx.globalAlpha = Math.max(0, this.life / 50);
+    ctx.globalAlpha = Math.max(0.1, this.life / 45);
     ctx.fillStyle = this.color;
-    ctx.fillRect(this.x - this.size/2, this.y - this.size/2, this.size, this.size);
+    if (this.type === 'water') {
+      ctx.fillRect(this.x - 2, this.y - 2, 5, 8);   // stronger, longer water drops
+    } else {
+      ctx.fillRect(this.x - this.size/2, this.y - this.size/2, this.size, this.size);
+    }
     ctx.globalAlpha = 1;
   }
 }
 
 function createFireParticles(x, y, intensity) {
   for (let i = 0; i < intensity; i++) {
-    const vx = (Math.random() - 0.5) * 2.5;
-    const vy = -2 - Math.random() * 4;
-    const colors = ['#FF2200', '#FF8800', '#FFDD00', '#FF4400'];
+    const vx = (Math.random() - 0.5) * 3;
+    const vy = -3 - Math.random() * 5;
+    const colors = ['#FF1100', '#FF6600', '#FFCC00', '#FF3300', '#FF8800'];
     particles.push(new Particle(
-      x + (Math.random() - 0.5) * 35,
-      y + (Math.random() - 0.5) * 25,
+      x + (Math.random() - 0.5) * 42,
+      y + (Math.random() - 0.5) * 28,
       vx, vy,
       colors[Math.floor(Math.random() * colors.length)],
-      35 + Math.random() * 25,
-      5 + Math.random() * 9,
+      42 + Math.random() * 28,
+      6 + Math.random() * 11,
       'fire'
     ));
   }
 }
 
 function createWaterParticles() {
-  for (let i = 0; i < 22; i++) {
-    const spread = (Math.random() - 0.5) * 14;
-    const speed = 9 + Math.random() * 7;
-    const dirX = (mouseX - (truckX + 110)) * 0.025;
-    const dirY = (mouseY - (truckY - 30)) * 0.025;
+  // TIGHTER, STRONGER spray – GTA action feel
+  for (let i = 0; i < 28; i++) {
+    const spread = (Math.random() - 0.5) * 7;   // much tighter cone
+    const dirX = (mouseX - (truckX + 125)) * 0.038;
+    const dirY = (mouseY - (truckY - 28)) * 0.038;
     particles.push(new Particle(
-      mouseX + (Math.random() - 0.5) * 8,
-      mouseY + (Math.random() - 0.5) * 8,
-      dirX + spread * 0.4,
-      dirY + spread * 0.4 - 3,
-      '#40C0FF',
-      28,
-      3.5,
+      mouseX + (Math.random() - 0.5) * 6,
+      mouseY + (Math.random() - 0.5) * 6,
+      dirX + spread,
+      dirY + spread - 4.5,
+      '#33CCFF',
+      32,
+      4,
       'water'
     ));
   }
 }
 
 function createSmoke(x, y) {
-  for (let i = 0; i < 12; i++) {
+  for (let i = 0; i < 14; i++) {
     particles.push(new Particle(
-      x + (Math.random() - 0.5) * 45,
-      y + (Math.random() - 0.5) * 20,
-      (Math.random() - 0.5) * 2,
-      -0.8 - Math.random() * 1.2,
-      '#777777',
-      620, // ~10 seconds
-      10 + Math.random() * 14,
+      x + (Math.random() - 0.5) * 50,
+      y + (Math.random() - 0.5) * 25,
+      (Math.random() - 0.5) * 2.2,
+      -1 - Math.random() * 1.6,
+      '#666666',
+      650,
+      11 + Math.random() * 16,
       'smoke'
     ));
   }
 }
 
+function drawBackground() {
+  // GTA-style city skyline background
+  ctx.fillStyle = '#1E3A5F';
+  ctx.fillRect(0, 0, canvas.width, 520);
+
+  // distant buildings
+  ctx.fillStyle = '#2C4A6A';
+  ctx.fillRect(30, 280, 80, 240);
+  ctx.fillRect(140, 210, 65, 310);
+  ctx.fillRect(230, 260, 95, 260);
+  ctx.fillRect(350, 180, 75, 340);
+  ctx.fillRect(720, 240, 110, 280);
+
+  // windows on distant buildings
+  ctx.fillStyle = '#FFEE99';
+  for (let i = 0; i < 6; i++) ctx.fillRect(50 + i*12, 310 + i*35, 6, 8);
+  for (let i = 0; i < 8; i++) ctx.fillRect(160 + i*8, 240 + i*32, 5, 7);
+
+  // ground / street
+  ctx.fillStyle = '#333';
+  ctx.fillRect(0, 520, canvas.width, 80);
+  ctx.strokeStyle = '#DDD';
+  ctx.lineWidth = 4;
+  ctx.beginPath();
+  ctx.moveTo(0, 555);
+  ctx.lineTo(canvas.width, 555);
+  ctx.stroke();
+}
+
 function drawFireTruck() {
   // Wheels
   ctx.fillStyle = '#111';
-  ctx.beginPath(); ctx.arc(truckX+35, truckY+25, 22, 0, Math.PI*2); ctx.fill();
-  ctx.beginPath(); ctx.arc(truckX+95, truckY+25, 22, 0, Math.PI*2); ctx.fill();
-  ctx.fillStyle = '#333';
-  ctx.beginPath(); ctx.arc(truckX+35, truckY+25, 12, 0, Math.PI*2); ctx.fill();
-  ctx.beginPath(); ctx.arc(truckX+95, truckY+25, 12, 0, Math.PI*2); ctx.fill();
+  ctx.beginPath(); ctx.arc(truckX+38, truckY+26, 23, 0, Math.PI*2); ctx.fill();
+  ctx.beginPath(); ctx.arc(truckX+112, truckY+26, 23, 0, Math.PI*2); ctx.fill();
+  ctx.fillStyle = '#222';
+  ctx.beginPath(); ctx.arc(truckX+38, truckY+26, 13, 0, Math.PI*2); ctx.fill();
+  ctx.beginPath(); ctx.arc(truckX+112, truckY+26, 13, 0, Math.PI*2); ctx.fill();
 
-  // Main body (red)
+  // Body
   ctx.fillStyle = '#C00';
-  ctx.fillRect(truckX, truckY-35, 160, 65);
+  ctx.fillRect(truckX, truckY-38, 170, 68);
 
   // Cab
   ctx.fillStyle = '#A00';
-  ctx.fillRect(truckX+8, truckY-55, 68, 28);
+  ctx.fillRect(truckX+12, truckY-62, 72, 32);
 
   // Windows
-  ctx.fillStyle = '#112';
-  ctx.fillRect(truckX+15, truckY-50, 25, 18);
-  ctx.fillRect(truckX+48, truckY-50, 22, 18);
+  ctx.fillStyle = '#113344';
+  ctx.fillRect(truckX+18, truckY-57, 28, 22);
+  ctx.fillRect(truckX+54, truckY-57, 25, 22);
 
-  // Ladder
-  ctx.fillStyle = '#DDD';
-  ctx.fillRect(truckX+115, truckY-48, 12, 28);
+  // Ladder & details
+  ctx.fillStyle = '#EEE';
+  ctx.fillRect(truckX+125, truckY-52, 14, 32);
   ctx.fillStyle = '#AAA';
-  for (let i = 0; i < 5; i++) ctx.fillRect(truckX+117, truckY-45 + i*6, 8, 3);
+  for (let i = 0; i < 6; i++) ctx.fillRect(truckX+127, truckY-48 + i*6, 10, 3);
 
-  // Lights
+  // Red stripe
   ctx.fillStyle = '#FF0';
-  ctx.fillRect(truckX+5, truckY-38, 12, 8);
-  ctx.fillStyle = '#F80';
-  ctx.fillRect(truckX+145, truckY-20, 12, 12);
+  ctx.fillRect(truckX+8, truckY-12, 155, 8);
 }
 
 function drawHouse() {
-  ctx.fillStyle = '#E4C9A0';
-  ctx.fillRect(470, 210, 260, 310);           // walls
+  // Walls (GTA-style suburban house)
+  ctx.fillStyle = '#E0C090';
+  ctx.fillRect(470, 205, 265, 315);
+
+  // Roof
   ctx.fillStyle = '#8B2A00';
   ctx.beginPath();
-  ctx.moveTo(450, 200);
-  ctx.lineTo(600, 130);
-  ctx.lineTo(760, 200);
-  ctx.fill();                                 // roof
+  ctx.moveTo(445, 195);
+  ctx.lineTo(600, 115);
+  ctx.lineTo(765, 195);
+  ctx.fill();
+
+  // Door
+  ctx.fillStyle = '#3C2F1F';
+  ctx.fillRect(535, 410, 42, 110);
+  ctx.fillStyle = '#FFCC00';
+  ctx.fillRect(552, 465, 8, 8); // doorknob
+
+  // Windows with frames (more detail)
+  ctx.strokeStyle = '#222';
+  ctx.lineWidth = 6;
+  ctx.strokeRect(495, 260, 62, 88);
+  ctx.strokeRect(630, 260, 62, 88);
+  ctx.fillStyle = '#AACCFF';
+  ctx.fillRect(500, 265, 52, 78);
+  ctx.fillRect(635, 265, 52, 78);
 }
 
 function startGame() {
@@ -206,14 +255,16 @@ function startGame() {
   gameState = 'playing';
   score = 0;
   scoreEl.textContent = 0;
-  // reset fire spots if needed
 }
 
 function resetGame() {
   document.getElementById('winScreen').style.display = 'none';
   score = 0;
   scoreEl.textContent = 0;
-  fireSpots.forEach(s => { s.health = s.maxHealth; s.active = true; });
+  fireSpots.forEach(s => {
+    s.health = s.maxHealth;
+    s.lastHit = 0;
+  });
   particles = [];
   gameState = 'playing';
 }
@@ -230,14 +281,10 @@ function checkWin() {
   }
 }
 
-// Main game loop
+// Main loop
 function loop() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-  // Ground
-  ctx.fillStyle = '#444';
-  ctx.fillRect(0, 520, canvas.width, 80);
-
+  drawBackground();
   drawHouse();
   drawFireTruck();
 
@@ -247,20 +294,27 @@ function loop() {
     if (spot.health <= 0) return;
     burningCount++;
 
-    // Grow fire slowly
-    if (Math.random() < 0.018) spot.health = Math.min(spot.health + 2, spot.maxHealth);
+    // Fire grows slowly over time (GTA tension)
+    if (Math.random() < 0.022) spot.health = Math.min(spot.health + 3, spot.maxHealth);
 
-    const intensity = Math.floor(spot.health / 18);
+    // RE-IGNITION mechanic: if you leave it too long without spraying, it regrows
+    const now = Date.now();
+    if (spot.health > 0 && spot.health < spot.maxHealth && now - spot.lastHit > 6500) {
+      spot.health = Math.min(spot.health + 1.8, spot.maxHealth);
+    }
+
+    const intensity = Math.floor(spot.health / 14);
     createFireParticles(spot.x + spot.w/2, spot.y + spot.h/2, intensity);
 
-    // Water hits
+    // Water collision (stronger hits)
     for (let i = particles.length - 1; i >= 0; i--) {
       const p = particles[i];
       if (p.type === 'water' &&
           p.x > spot.x && p.x < spot.x + spot.w &&
           p.y > spot.y && p.y < spot.y + spot.h) {
-        spot.health -= 2.2;
-        p.life = 8;
+        spot.health -= 1.05;           // slower extinguishing
+        spot.lastHit = Date.now();
+        p.life = 6;
       }
     }
 
@@ -281,26 +335,23 @@ function loop() {
     if (p.life <= 0) particles.splice(i, 1);
   }
 
-  // Gray hose
-  ctx.strokeStyle = '#333';
-  ctx.lineWidth = 22;
+  // Thinner gray hose (GTA-style)
+  ctx.strokeStyle = '#333333';
+  ctx.lineWidth = 13;                 // thinner as requested
   ctx.lineCap = 'round';
-  ctx.shadowBlur = 8;
+  ctx.shadowBlur = 12;
   ctx.shadowColor = '#111';
   ctx.beginPath();
-  ctx.moveTo(truckX + 125, truckY - 22);
-  ctx.quadraticCurveTo(
-    truckX + 180, truckY - 120,
-    mouseX, mouseY
-  );
+  ctx.moveTo(truckX + 135, truckY - 26);
+  ctx.quadraticCurveTo(truckX + 210, truckY - 130, mouseX, mouseY);
   ctx.stroke();
   ctx.shadowBlur = 0;
 
   // Nozzle
   ctx.fillStyle = '#222';
-  ctx.fillRect(mouseX - 10, mouseY - 10, 20, 20);
+  ctx.fillRect(mouseX - 9, mouseY - 9, 18, 18);
   ctx.fillStyle = '#555';
-  ctx.fillRect(mouseX - 6, mouseY - 14, 12, 8);
+  ctx.fillRect(mouseX - 5, mouseY - 13, 10, 7);
 
   if (gameState === 'playing') checkWin();
 
