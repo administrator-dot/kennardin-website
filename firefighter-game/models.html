@@ -56,21 +56,39 @@
     const truckX = 120;
     const truckY = 480;
 
-    const safetyTips = ["Check smoke detectors monthly.", "Never leave space heaters unattended!", "Keep a 3-foot kid-free zone around stoves.", "Know two ways out of every room.", "Stop, drop, and roll if your clothes catch fire."];
+    const safetyTips = [
+      "Check smoke detectors monthly.",
+      "Never leave space heaters unattended!",
+      "Keep a 3-foot kid-free zone around stoves.",
+      "Know two ways out of every room.",
+      "Stop, drop, and roll if your clothes catch fire."
+    ];
 
     function drawGrid() {
-      ctx.strokeStyle = 'rgba(255,255,255,0.15)'; ctx.lineWidth = 1;
+      ctx.strokeStyle = 'rgba(255,255,255,0.15)';
+      ctx.lineWidth = 1;
       for (let x = 0; x <= 1200; x += 40) { ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, 600); ctx.stroke(); }
       for (let y = 0; y <= 600; y += 40) { ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(1200, y); ctx.stroke(); }
     }
 
     function drawBackground(bg) {
-      if (bg === 0) { ctx.fillStyle = '#5cc8ff'; ctx.fillRect(0,0,1200,480); ctx.fillStyle = '#4caf50'; ctx.fillRect(0,480,1200,120); ctx.fillStyle = '#ffeb3b'; ctx.beginPath(); ctx.arc(1000,120,40,0,Math.PI*2); ctx.fill(); }
-      else if (bg === 1) { ctx.fillStyle = '#ff7a00'; ctx.fillRect(0,0,1200,480); ctx.fillStyle = '#3a8c3a'; ctx.fillRect(0,480,1200,120); ctx.fillStyle = '#ff9800'; ctx.beginPath(); ctx.arc(900,180,35,0,Math.PI*2); ctx.fill(); }
-      else { ctx.fillStyle = '#112233'; ctx.fillRect(0,0,1200,480); ctx.fillStyle = '#223322'; ctx.fillRect(0,480,1200,120); ctx.fillStyle = '#f4f4f4'; ctx.beginPath(); ctx.arc(1000,120,35,0,Math.PI*2); ctx.fill(); ctx.fillStyle = '#112233'; ctx.beginPath(); ctx.arc(1020,115,25,0,Math.PI*2); ctx.fill(); }
+      if (bg === 0) {
+        ctx.fillStyle = '#5cc8ff'; ctx.fillRect(0,0,1200,480);
+        ctx.fillStyle = '#4caf50'; ctx.fillRect(0,480,1200,120);
+        ctx.fillStyle = '#ffeb3b'; ctx.beginPath(); ctx.arc(1000,120,40,0,Math.PI*2); ctx.fill();
+      } else if (bg === 1) {
+        ctx.fillStyle = '#ff7a00'; ctx.fillRect(0,0,1200,480);
+        ctx.fillStyle = '#3a8c3a'; ctx.fillRect(0,480,1200,120);
+        ctx.fillStyle = '#ff9800'; ctx.beginPath(); ctx.arc(900,180,35,0,Math.PI*2); ctx.fill();
+      } else {
+        ctx.fillStyle = '#112233'; ctx.fillRect(0,0,1200,480);
+        ctx.fillStyle = '#223322'; ctx.fillRect(0,480,1200,120);
+        ctx.fillStyle = '#f4f4f4'; ctx.beginPath(); ctx.arc(1000,120,35,0,Math.PI*2); ctx.fill();
+        ctx.fillStyle = '#112233'; ctx.beginPath(); ctx.arc(1020,115,25,0,Math.PI*2); ctx.fill();
+      }
     }
 
-    // Simpler fire truck exactly like your screenshot (correct size)
+    // Simple fire truck exactly like your screenshot (correct size)
     function drawSimpleFireTruck(x, y) {
       ctx.fillStyle = '#e74c3c'; ctx.fillRect(x, y-70, 210, 68);           // red body
       ctx.fillStyle = '#fff'; ctx.fillRect(x+15, y-58, 180, 22);           // white stripe
@@ -80,15 +98,17 @@
       ctx.fillStyle = '#f1c40f'; ctx.fillRect(x+165, y-105, 8, 48);
       ctx.fillStyle = '#2c3e50'; ctx.fillRect(x+170, y-108, 38, 8);
       // wheels
-      ctx.fillStyle = '#2c3e50'; ctx.beginPath(); ctx.arc(x+45, y-5, 22, 0, Math.PI*2); ctx.fill();
+      ctx.fillStyle = '#2c3e50';
+      ctx.beginPath(); ctx.arc(x+45, y-5, 22, 0, Math.PI*2); ctx.fill();
       ctx.beginPath(); ctx.arc(x+115, y-5, 22, 0, Math.PI*2); ctx.fill();
       ctx.beginPath(); ctx.arc(x+175, y-5, 22, 0, Math.PI*2); ctx.fill();
-      ctx.fillStyle = '#ecf0f1'; ctx.beginPath(); ctx.arc(x+45, y-5, 11, 0, Math.PI*2); ctx.fill();
+      ctx.fillStyle = '#ecf0f1';
+      ctx.beginPath(); ctx.arc(x+45, y-5, 11, 0, Math.PI*2); ctx.fill();
       ctx.beginPath(); ctx.arc(x+115, y-5, 11, 0, Math.PI*2); ctx.fill();
       ctx.beginPath(); ctx.arc(x+175, y-5, 11, 0, Math.PI*2); ctx.fill();
     }
 
-    function drawBlueCar(x, y) { /* unchanged */ 
+    function drawBlueCar(x, y) {
       ctx.fillStyle = '#3498db'; ctx.fillRect(x, y-55, 160, 55);
       ctx.fillStyle = '#2c3e50'; ctx.fillRect(x+110, y-72, 55, 35);
       ctx.fillStyle = '#34495e'; ctx.fillRect(x+15, y-50, 35, 22); ctx.fillRect(x+60, y-50, 35, 22);
@@ -97,7 +117,7 @@
       ctx.beginPath(); ctx.arc(x+125, y-8, 18, 0, Math.PI*2); ctx.fill();
     }
 
-    function drawHouse(x, y) { /* unchanged */ 
+    function drawHouse(x, y) {
       ctx.fillStyle = '#f4d9b8'; ctx.fillRect(x, y-160, 200, 160);
       ctx.fillStyle = '#c0392b'; ctx.beginPath(); ctx.moveTo(x, y-160); ctx.lineTo(x+100, y-220); ctx.lineTo(x+200, y-160); ctx.fill();
       ctx.fillStyle = '#34495e';
@@ -106,11 +126,132 @@
       ctx.fillStyle = '#2c3e50'; ctx.fillRect(x+145, y-80, 35, 80);
     }
 
-    // Exact water + hose from the live game (your favorite version)
+    // Exact water + hose from the live game
     function createWaterParticles() {
       const hoseStartX = truckX + 148;
       const hoseStartY = truckY - 34;
       const dx = mouseX - hoseStartX;
       const dy = mouseY - hoseStartY;
       const length = Math.sqrt(dx*dx + dy*dy) || 1;
-      const dirX = dx / length *
+      const dirX = dx / length * 1.25;
+      const dirY = dy / length * 1.25;
+
+      const waterBlues = ['#33CCFF', '#1E90FF', '#00BFFF', '#40E0FF'];
+
+      for (let i = 0; i < 18; i++) {
+        const spread = (Math.random() - 0.5) * 4.5;
+        const color = waterBlues[Math.floor(Math.random() * waterBlues.length)];
+        particles.push({
+          x: mouseX + (Math.random()-0.5)*4,
+          y: mouseY + (Math.random()-0.5)*4,
+          vx: dirX * 27 + spread,
+          vy: dirY * 27 + spread - 4,
+          color: color,
+          life: 18,
+          size: 3.5,
+          type: 'water'
+        });
+      }
+    }
+
+    function createFireParticles(x, y, intensity) {
+      for (let i = 0; i < intensity; i++) {
+        const vx = (Math.random() - 0.5) * 3.4;
+        const vy = -3.8 - Math.random() * 5.8;
+        const colors = ['#FF1100', '#FF5500', '#FFAA00'];
+        particles.push({x: x + (Math.random()-0.5)*48, y: y + (Math.random()-0.5)*35, vx: vx, vy: vy, color: colors[Math.floor(Math.random()*colors.length)], life: 48, size: 4 + Math.random()*7, type: 'fire'});
+      }
+    }
+
+    function drawParticle(p) {
+      ctx.globalAlpha = Math.max(0.1, p.life / 48);
+      ctx.fillStyle = p.color;
+      if (p.type === 'water') ctx.fillRect(p.x - 1.75, p.y - 2, 3.5, 4.5);
+      else ctx.fillRect(p.x - p.size/2, p.y - p.size/2, p.size, p.size);
+      ctx.globalAlpha = 1;
+    }
+
+    function render() {
+      ctx.clearRect(0, 0, 1200, 600);
+      drawBackground(currentBg);
+      drawGrid();
+      drawSimpleFireTruck(truckX, truckY);
+      drawBlueCar(520, 480);
+      drawHouse(860, 480);
+
+      fires.forEach(f => createFireParticles(f.x, f.y, 6));
+
+      for (let i = particles.length - 1; i >= 0; i--) {
+        const p = particles[i];
+        p.x += p.vx; p.y += p.vy;
+        if (p.type === 'water') p.vy += 0.11;
+        if (p.type === 'fire') { p.vy -= 0.17 + Math.random()*0.2; p.vx += (Math.random()-0.5)*1.7; }
+        p.life--;
+        drawParticle(p);
+
+        if (p.type === 'water') {
+          for (let j = fires.length-1; j >= 0; j--) {
+            const f = fires[j];
+            const dx = f.x - p.x; const dy = f.y - p.y;
+            if (Math.sqrt(dx*dx + dy*dy) < 22) { fires.splice(j,1); p.life = 8; score += 10; document.getElementById('score').textContent = score; break; }
+          }
+        }
+        if (p.life <= 0) particles.splice(i,1);
+      }
+
+      ctx.strokeStyle = '#555'; ctx.lineWidth = 14;
+      ctx.beginPath();
+      ctx.moveTo(truckX + 148, truckY - 34);
+      ctx.quadraticCurveTo(truckX + 225, truckY - 145, mouseX, mouseY);
+      ctx.stroke();
+
+      if (isSpraying) createWaterParticles();
+
+      if (gameState === 'playing' && fires.length === 0) {
+        gameState = 'levelComplete';
+        showLevelComplete();
+      }
+    }
+
+    function showLevelComplete() {
+      document.getElementById('levelTitle').innerHTML = `Level ${currentLevel} <span style="color:#0F0;">COMPLETE!</span>`;
+      document.getElementById('encourageText').innerHTML = `Great Work, Kennard Fire Defender!<br>You saved the day!`;
+      document.getElementById('safetyTip').textContent = safetyTips[Math.floor(Math.random()*safetyTips.length)];
+      document.getElementById('bottomPanel').style.display = 'block';
+    }
+
+    function startGame() { /* not used - we auto-start */ }
+    function nextLevel() { document.getElementById('bottomPanel').style.display = 'none'; currentLevel++; document.getElementById('levelNum').textContent = currentLevel; loadLevel(currentLevel); }
+    function playAgain() { document.getElementById('bottomPanel').style.display = 'none'; score = 0; document.getElementById('score').textContent = 0; loadLevel(currentLevel); }
+    function returnToFirePage() { window.location.href = "https://kennardin.com/firefighter-game/index.html"; }
+
+    function loadLevel(level) {
+      gameState = 'playing';
+      fires = [];
+      particles = [];
+      if (level === 1) fires = [{x:555,y:430},{x:630,y:450},{x:885,y:370},{x:940,y:370}];
+      else if (level === 2) fires = [{x:555,y:430},{x:630,y:450},{x:885,y:370},{x:940,y:370},{x:995,y:370},{x:1005,y:410},{x:910,y:280},{x:960,y:280}];
+      render();
+    }
+
+    canvas.addEventListener('mousemove', e => {
+      const rect = canvas.getBoundingClientRect();
+      mouseX = e.clientX - rect.left;
+      mouseY = e.clientY - rect.top;
+      if (isSpraying && gameState === 'playing') render();
+    });
+
+    canvas.addEventListener('mousedown', () => { if (gameState === 'playing') isSpraying = true; });
+    canvas.addEventListener('mouseup', () => {
+      if (gameState === 'playing') {
+        isSpraying = false;
+        for (let i = particles.length-1; i>=0; i--) if (particles[i].type==='water') particles[i].life = 0;
+      }
+    });
+    canvas.addEventListener('mouseleave', () => { if (gameState === 'playing') isSpraying = false; });
+
+    setInterval(() => { if (gameState === 'playing' || particles.length > 0) render(); }, 30);
+    loadLevel(1);   // Auto-start Level 1
+  </script>
+</body>
+</html>
