@@ -55,7 +55,7 @@
 <canvas id="game" width="1150" height="600"></canvas>
 
 <script>
-// ============== KVFD – Rebuilt Background, Homes, Vehicles + Precise Fire Placement ==============
+// ============== KVFD – All Levels Rebuilt with Kennard Style Houses + Precise Fire Placement ==============
 const canvas = document.getElementById('game');
 const ctx = canvas.getContext('2d');
 const scoreEl = document.getElementById('score');
@@ -88,15 +88,15 @@ const safetyTipsPool = [
 ];
 
 const levels = [
-  // Level 1 - Yellow House
+  // Level 1 - Tall Yellow House
   { name: "Level 1 – Yellow House", fireSpots: [
-    {x: 735, y: 255, w: 48, h: 72, health: 2800, maxHealth: 2800, type: 'window', points: 10, entity: 0}, // bottom of left window
-    {x: 855, y: 255, w: 48, h: 72, health: 2800, maxHealth: 2800, type: 'window', points: 10, entity: 0}, // bottom of right window
+    {x: 735, y: 255, w: 48, h: 72, health: 2800, maxHealth: 2800, type: 'window', points: 10, entity: 0}, // bottom of window
+    {x: 855, y: 255, w: 48, h: 72, health: 2800, maxHealth: 2800, type: 'window', points: 10, entity: 0},
     {x: 700, y: 138, w: 230, h: 42, health: 4200, maxHealth: 4200, type: 'roof', points: 25, entity: 0}, // top of roof
-    {x: 785, y: 415, w: 42, h: 105, health: 2200, maxHealth: 2200, type: 'door', points: 15, entity: 0}  // bottom of door
+    {x: 785, y: 415, w: 42, h: 105, health: 2200, maxHealth: 2200, type: 'door', points: 15, entity: 0} // bottom of door
   ], entities: [{type:'house', x:680, color:'#FFEE66', short:false}] },
 
-  // Level 2 - Short + Tall House
+  // Level 2 - Short Blue + Tall Green House
   { name: "Level 2 – Short House + Full House", fireSpots: [
     {x: 380, y: 268, w: 50, h: 58, health: 2600, maxHealth: 2600, type: 'window', points: 10, entity: 0},
     {x: 470, y: 268, w: 50, h: 58, health: 2600, maxHealth: 2600, type: 'window', points: 10, entity: 0},
@@ -107,7 +107,7 @@ const levels = [
     {x: 785, y: 415, w: 42, h: 105, health: 2400, maxHealth: 2400, type: 'door', points: 15, entity: 1}
   ], entities: [{type:'house', x:355, color:'#66CCFF', short:true}, {type:'house', x:695, color:'#66FF99', short:false}] },
 
-  // Level 3 - House + Sedan
+  // Level 3 - Tall Yellow House + Blue Sedan
   { name: "Level 3 – Yellow House + Blue Sedan", fireSpots: [
     {x: 735, y: 255, w: 48, h: 72, health: 3000, maxHealth: 3000, type: 'window', points: 10, entity: 0},
     {x: 855, y: 255, w: 48, h: 72, health: 3000, maxHealth: 3000, type: 'window', points: 10, entity: 0},
@@ -116,7 +116,7 @@ const levels = [
     {x: 275, y: 312, w: 58, h: 35, health: 2000, maxHealth: 2000, type: 'cab', points: 20, entity: 1}
   ], entities: [{type:'house', x:680, color:'#FFEE66', short:false}, {type:'sedan', x:240}] },
 
-  // Level 4 - House + Pickup
+  // Level 4 - Tall Pink House + Red Pickup
   { name: "Level 4 – Pink House + Red Pickup", fireSpots: [
     {x: 735, y: 255, w: 48, h: 72, health: 3000, maxHealth: 3000, type: 'window', points: 10, entity: 0},
     {x: 855, y: 255, w: 48, h: 72, health: 3000, maxHealth: 3000, type: 'window', points: 10, entity: 0},
@@ -125,7 +125,7 @@ const levels = [
     {x: 255, y: 308, w: 72, h: 36, health: 2100, maxHealth: 2100, type: 'cab', points: 20, entity: 1}
   ], entities: [{type:'house', x:680, color:'#FF99CC', short:false}, {type:'pickup', x:240}] },
 
-  // Level 5 - Semi
+  // Level 5 - Semi Tanker
   { name: "Level 5 – Semi Tanker Fire", fireSpots: [
     {x: 520, y: 295, w: 82, h: 68, health: 3800, maxHealth: 3800, type: 'cab', points: 20, entity: 0},
     {x: 615, y: 272, w: 265, h: 95, health: 6200, maxHealth: 6200, type: 'tanker', points: 30, entity: 0}
@@ -264,7 +264,7 @@ function drawBackground() {
   ctx.fillRect(0, 510, canvas.width, 12);
 }
 
-function drawSouthParkHouse(x, color, short, burned) {
+function drawKennardHouse(x, color, short, burned) {
   const alpha = burned ? 0.7 : 1;
   const houseHeight = short ? 195 : 315;
   const baseY = short ? 325 : 205;
@@ -283,7 +283,7 @@ function drawSouthParkHouse(x, color, short, burned) {
   ctx.fillStyle = burned ? '#111' : '#A33';
   ctx.fillRect(x + 175, baseY - 85, 28, 55); // chimney
   ctx.fillStyle = burned ? '#111' : '#3C2F1F';
-  ctx.fillRect(x+105, baseY + (short ? 115 : 205), 45, 110); // door area
+  ctx.fillRect(x+105, baseY + (short ? 115 : 205), 45, 110); // door frame
   ctx.fillStyle = '#FFCC00';
   ctx.fillRect(x+122, baseY + (short ? 170 : 260), 10, 10); // knob
   ctx.fillStyle = burned ? '#111' : '#AACCFF';
@@ -380,7 +380,7 @@ function loop() {
 
   data.entities.forEach((ent, i) => {
     const burned = fireSpots.filter(s => s.entity === i).every(s => s.health <= 0) && fireSpots.some(s => s.entity === i && now - s.lastHit > 16000);
-    if (ent.type === 'house') drawSouthParkHouse(ent.x, ent.color, ent.short || false, burned);
+    if (ent.type === 'house') drawKennardHouse(ent.x, ent.color, ent.short || false, burned);
     if (ent.type === 'sedan') drawSedan(ent.x);
     if (ent.type === 'pickup') drawPickup(ent.x);
     if (ent.type === 'semi') drawSemi(ent.x);
