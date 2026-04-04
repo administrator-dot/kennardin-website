@@ -60,8 +60,8 @@
   A donation to the KVFD is always appreciated.
 </div>
 
-<!-- Time of Day Buttons -->
-<div style="position:absolute; top:15px; right:20px;">
+<!-- Time of Day Buttons - Top Right -->
+<div style="position:absolute; top:15px; right:20px; z-index:10;">
   <button onclick="setTimeOfDay(0)">Day</button>
   <button onclick="setTimeOfDay(1)">Dusk</button>
   <button onclick="setTimeOfDay(2)">Night</button>
@@ -70,7 +70,7 @@
 <canvas id="game" width="1200" height="600"></canvas>
 
 <script>
-// ============== TIME OF DAY + GARAGE CLEANED + INTERESTING DETAILS ADDED ==============
+// ============== TIME OF DAY + GARAGE CLEAN + INTERESTING DETAILS + ADJUSTED FIRE SPOTS ==============
 const canvas = document.getElementById('game');
 const ctx = canvas.getContext('2d');
 const scoreEl = document.getElementById('score');
@@ -107,9 +107,10 @@ const baseLevels = [
   ] },
 
   { name: "Level 3 – Garage Fire", fireSpots: [
-    {x:920,y:255,w:110,h:225,health:130,maxHealth:220,type:'door'},
-    {x:920,y:200,w:110,h:45,health:140,maxHealth:230,type:'roof'},
-    {x:980,y:340,w:40,h:40,health:70,maxHealth:120,type:'toolbox'}   // added interest
+    {x:920,y:200,w:110,h:45,health:140,maxHealth:230,type:'roof'},     // roof
+    {x:920,y:255,w:55,h:225,health:80,maxHealth:140,type:'leftdoor'},  // left side of open door
+    {x:975,y:255,w:55,h:225,health:80,maxHealth:140,type:'rightdoor'}, // right side of open door
+    {x:945,y:460,w:40,h:20,health:60,maxHealth:100,type:'bottom'}      // bottom corners
   ], entities: [{type:'singleGarage',x:820}] },
 
   { name: "Level 4 – Tall House", fireSpots: [
@@ -171,10 +172,8 @@ const baseLevels = [
   ] }
 ];
 
-let currentSky = 0; // 0=Day, 1=Dusk, 2=Night
-
 function setTimeOfDay(mode) {
-  currentSky = mode;
+  timeOfDay = mode;
 }
 
 function startGame(diff) {
@@ -285,21 +284,24 @@ function createSmoke(x, y) {
 }
 
 function drawBackground() {
-  let skyColor1, skyColor2, sunColor, sunX, sunY;
-  if (currentSky === 0) { // Day
-    skyColor1 = '#7BC4FF'; skyColor2 = '#C0E4FF';
+  let sky1, sky2, sunColor, sunX, sunY, grassColor;
+  if (timeOfDay === 0) { // Day
+    sky1 = '#7BC4FF'; sky2 = '#C0E4FF';
     sunColor = '#FFDD00'; sunX = 300; sunY = 120;
-  } else if (currentSky === 1) { // Dusk
-    skyColor1 = '#FF8800'; skyColor2 = '#FFBB66';
+    grassColor = '#3D8C40';
+  } else if (timeOfDay === 1) { // Dusk
+    sky1 = '#FF8800'; sky2 = '#FFBB66';
     sunColor = '#FFAA00'; sunX = 900; sunY = 140;
+    grassColor = '#2A6B2F';
   } else { // Night
-    skyColor1 = '#112244'; skyColor2 = '#223366';
+    sky1 = '#112244'; sky2 = '#223366';
     sunColor = '#EEEEEE'; sunX = 600; sunY = 130;
+    grassColor = '#1F4A22';
   }
 
   const grad = ctx.createLinearGradient(0, 0, 0, 520);
-  grad.addColorStop(0, skyColor1);
-  grad.addColorStop(1, skyColor2);
+  grad.addColorStop(0, sky1);
+  grad.addColorStop(1, sky2);
   ctx.fillStyle = grad;
   ctx.fillRect(0, 0, canvas.width, 520);
 
@@ -307,8 +309,21 @@ function drawBackground() {
   ctx.fillStyle = sunColor;
   ctx.beginPath(); ctx.arc(sunX, sunY, 45, 0, Math.PI*2); ctx.fill();
 
-  ctx.fillStyle = '#3D8C40';
+  // Grass
+  ctx.fillStyle = grassColor;
   ctx.fillRect(0, 480, canvas.width, 120);
+
+  // Stars at night
+  if (timeOfDay === 2) {
+    ctx.fillStyle = '#FFFFFF';
+    ctx.globalAlpha = 0.8;
+    ctx.fillRect(200, 80, 3, 3);
+    ctx.fillRect(450, 50, 2, 2);
+    ctx.fillRect(720, 110, 3, 3);
+    ctx.fillRect(950, 70, 2, 2);
+    ctx.fillRect(1100, 40, 3, 3);
+    ctx.globalAlpha = 1;
+  }
 }
 
 function drawSideFireTruck() {
