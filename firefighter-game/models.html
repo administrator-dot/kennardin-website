@@ -64,7 +64,7 @@
 <canvas id="game" width="1200" height="600"></canvas>
 
 <script>
-// ============== FULLY RESTORED - ALL BUILDINGS VISIBLE, HAY LOWERED + FAST BURN ==============
+// ============== ALL BUILDINGS ON GRASS LINE + NEW SMALL HOUSE VARIATION ==============
 const canvas = document.getElementById('game');
 const ctx = canvas.getContext('2d');
 const scoreEl = document.getElementById('score');
@@ -106,12 +106,12 @@ const baseLevels = [
     {x:960,y:410,w:50,h:110,health:100,maxHealth:180,type:'door'}
   ], entities: [{type:'house',x:860,color:'#FFEE66'}] },
 
-  { name: "Level 5 – Tall House + Sedan", fireSpots: [
-    {x:900,y:240,w:60,h:90,health:130,maxHealth:220,type:'window1'},
-    {x:1020,y:240,w:60,h:90,health:130,maxHealth:220,type:'window2'},
-    {x:860,y:140,w:240,h:50,health:170,maxHealth:270,type:'roof'},
-    {x:960,y:410,w:50,h:110,health:110,maxHealth:190,type:'door'}
-  ], entities: [{type:'house',x:860,color:'#FF99CC'}, {type:'sedan',x:520,yOffset:8}] },
+  { name: "Level 5 – Small House + Sedan", fireSpots: [
+    {x:920,y:260,w:50,h:70,health:100,maxHealth:180,type:'window1'},
+    {x:1000,y:260,w:50,h:70,health:100,maxHealth:180,type:'window2'},
+    {x:870,y:170,w:190,h:60,health:140,maxHealth:220,type:'roof'},
+    {x:950,y:400,w:45,h:100,health:90,maxHealth:160,type:'door'}
+  ], entities: [{type:'smallHouse',x:850,color:'#FFCC99'}, {type:'sedan',x:520,yOffset:8}] },
 
   { name: "Level 6 – Tall House + Pickup", fireSpots: [
     {x:900,y:240,w:60,h:90,health:140,maxHealth:230,type:'window1'},
@@ -171,14 +171,14 @@ function loadLevel(lvl) {
   
   fireSpots = base.fireSpots.map(s => {
     let healthMod = 1, growthMod = 1;
-    if (difficulty === 1) { healthMod = 0.75; growthMod = 1.3; }   // Easy: smaller, grows fast if ignored
+    if (difficulty === 1) { healthMod = 0.75; growthMod = 1.3; }
     else if (difficulty === 2) { healthMod = 1.0; growthMod = 1.0; }
     else if (difficulty === 3) { healthMod = 1.45; growthMod = 0.75; }
     return {
       ...s,
       health: Math.floor(s.health * healthMod),
       maxHealth: Math.floor(s.maxHealth * healthMod),
-      growthRate: 6.8 * growthMod   // faster overall growth on easy
+      growthRate: 6.8 * growthMod
     };
   });
   
@@ -358,6 +358,23 @@ function drawTallHouse(x) {
   ctx.fillStyle = '#AACCFF'; ctx.fillRect(x+35, 260, 58, 85); ctx.fillRect(x+177, 260, 58, 85);
 }
 
+// New smaller house with different roof shape
+function drawSmallHouse(x, color = '#FFCC99') {
+  ctx.fillStyle = color; ctx.fillRect(x+40, 240, 180, 240);   // shorter body
+  ctx.strokeStyle = '#222'; ctx.lineWidth = 4;
+  for (let i = 0; i < 8; i++) {
+    ctx.beginPath(); ctx.moveTo(x+48, 252 + i*26); ctx.lineTo(x+212, 252 + i*26); ctx.stroke();
+  }
+  ctx.fillStyle = '#8B2A00';
+  ctx.beginPath(); ctx.moveTo(x+20, 240); ctx.lineTo(x+130, 150); ctx.lineTo(x+220, 240); ctx.fill();  // steeper roof
+  ctx.fillStyle = '#3C2F1F'; ctx.fillRect(x+92, 390, 45, 90);   // centered door
+  ctx.fillStyle = '#FFCC00'; ctx.fillRect(x+102, 440, 8, 8);
+  ctx.strokeStyle = '#222'; ctx.lineWidth = 4;
+  ctx.strokeRect(x+55, 270, 48, 65);   // smaller windows
+  ctx.strokeRect(x+145, 270, 48, 65);
+  ctx.fillStyle = '#AACCFF'; ctx.fillRect(x+58, 273, 42, 58); ctx.fillRect(x+148, 273, 42, 58);
+}
+
 function drawMiniBarn(x) {
   ctx.fillStyle = '#C22'; ctx.fillRect(x+40, 230, 180, 250);
   ctx.strokeStyle = '#222'; ctx.lineWidth = 4;
@@ -383,7 +400,7 @@ function drawLargeRedBarn(x) {
 }
 
 function drawHayBale(x) {
-  ctx.fillStyle = '#E8B070'; ctx.fillRect(x, 405, 80, 60);   // lowered a bit more
+  ctx.fillStyle = '#E8B070'; ctx.fillRect(x, 405, 80, 60);
   ctx.strokeStyle = '#222'; ctx.lineWidth = 4;
   ctx.strokeRect(x, 405, 80, 60);
   ctx.fillStyle = '#D9A060';
@@ -442,6 +459,7 @@ function loop() {
     if (ent.type === 'leanToShed') drawLeanToShed(ent.x);
     if (ent.type === 'singleGarage') drawSingleGarage(ent.x);
     if (ent.type === 'house') drawTallHouse(ent.x);
+    if (ent.type === 'smallHouse') drawSmallHouse(ent.x, ent.color);
     if (ent.type === 'miniBarn') drawMiniBarn(ent.x);
     if (ent.type === 'largeRedBarn') drawLargeRedBarn(ent.x);
     if (ent.type === 'hayBale') drawHayBale(ent.x);
