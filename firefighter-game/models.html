@@ -59,7 +59,7 @@
 </div>
 
 <script>
-// ============== FULLY VERIFIED – TIME BUTTONS WORKING + TORNADO VERTICAL + ALL DRAWINGS INCLUDED + ENDING MESSAGE ==============
+// ============== REMEMBERED BUILD – WIDER SCORE BOX + IMPROVED TORNADO ORBIT ==============
 const canvas = document.getElementById('game');
 const ctx = canvas.getContext('2d');
 
@@ -197,7 +197,7 @@ function checkWin() {
   if (fireSpots.every(s => s.health <= 0)) {
     gameState = 'levelComplete';
     document.getElementById('levelTitle').textContent = baseLevels[currentLevel-1].name + " COMPLETE!";
-    document.getElementById('encourageText').innerHTML = "Great Work, Kennard Fire Defender!<br>You saved the day!";
+    document.getElementById('encourageText').innerHTML = "Thank you for playing!<br>Try a harder level next time.<br>And remember to thank a firefighter when you see one!";
     document.getElementById('safetyTip').textContent = "Safety Tip: Never hide from fire – get low and go!";
     document.getElementById('levelCompleteScreen').style.display = 'block';
   }
@@ -219,7 +219,6 @@ function returnToFirePage() {
   window.location.href = 'https://kennardin.com/fire-department.html';
 }
 
-// Mouse handlers
 document.addEventListener('mousemove', e => {
   const rect = canvas.getBoundingClientRect();
   mouseX = Math.max(80, Math.min(e.clientX - rect.left, canvas.width - 40));
@@ -229,15 +228,14 @@ document.addEventListener('mousemove', e => {
 canvas.addEventListener('mousedown', e => {
   if (gameState === 'playing') isSpraying = true;
 
-  // Time button clicks – now properly detected
   const rect = canvas.getBoundingClientRect();
   const clickX = e.clientX - rect.left;
   const clickY = e.clientY - rect.top;
 
   if (clickY > 18 && clickY < 56) {
-    if (clickX > 980 && clickX < 1042) setTimeOfDay(0);   // Day
-    else if (clickX > 1048 && clickX < 1110) setTimeOfDay(1); // Dusk
-    else if (clickX > 1116 && clickX < 1178) setTimeOfDay(2); // Night
+    if (clickX > 980 && clickX < 1042) setTimeOfDay(0);
+    else if (clickX > 1048 && clickX < 1110) setTimeOfDay(1);
+    else if (clickX > 1116 && clickX < 1178) setTimeOfDay(2);
   }
 });
 
@@ -511,18 +509,19 @@ function drawLawnMower(x) {
   ctx.beginPath(); ctx.arc(x+105, 465, 13, 0, Math.PI*2); ctx.fill();
 }
 
-// Dark grey vertical wedge tornado with top-spin twist
+// Dark grey vertical wedge tornado with wider top orbit (top-spin effect)
 function drawTornado(x) {
   tornadoAngle += 0.032;
-  const twist = Math.sin(tornadoAngle) * 14;
+  const topTwist = Math.sin(tornadoAngle) * 22;   // wider orbit at top
+  const midTwist = Math.sin(tornadoAngle * 1.3) * 8;
 
   ctx.globalAlpha = 0.58;
   ctx.strokeStyle = '#444444';
   ctx.lineWidth = 34;
   ctx.beginPath();
-  ctx.moveTo(x - 38 + twist, 155);           // wide top
-  ctx.quadraticCurveTo(x + 22 + twist*0.6, 240, x - 18 + twist*1.4, 340);
-  ctx.quadraticCurveTo(x + 28 + twist, 410, x + 8, 480); // narrow bottom
+  ctx.moveTo(x - 38 + topTwist, 155);           // wide top with bigger movement
+  ctx.quadraticCurveTo(x + 22 + midTwist, 240, x - 18 + midTwist * 1.2, 340);
+  ctx.quadraticCurveTo(x + 28, 410, x + 8, 480); // narrow bottom with less movement
   ctx.stroke();
   ctx.globalAlpha = 1;
 }
@@ -531,16 +530,16 @@ function loop() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   drawBackground();
 
-  // Score + Level on grid-aligned dark box
+  // Wider score/level box to prevent number overlap
   ctx.fillStyle = 'rgba(0,0,0,0.65)';
-  ctx.fillRect(20, 18, 240, 48);
+  ctx.fillRect(20, 18, 320, 48);   // made wider
   ctx.fillStyle = '#FFFFFF';
   ctx.font = 'bold 26px Arial';
   ctx.textAlign = 'left';
   ctx.fillText(`Score: ${score}`, 35, 48);
-  ctx.fillText(`Level: ${currentLevel}`, 155, 48);
+  ctx.fillText(`Level: ${currentLevel}`, 195, 48);
 
-  // Day / Dusk / Night buttons drawn on canvas with clear hit areas
+  // Day / Dusk / Night buttons
   ctx.fillStyle = '#0066CC';
   ctx.fillRect(980, 18, 62, 38);
   ctx.fillRect(1048, 18, 62, 38);
