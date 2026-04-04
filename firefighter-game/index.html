@@ -42,10 +42,10 @@
   Score: <span id="score">0</span> &nbsp;&nbsp;&nbsp; Level: <span id="level">1</span>
 </div>
 
-<canvas id="game" width="1000" height="600"></canvas>
+<canvas id="game" width="1150" height="600"></canvas>
 
 <script>
-// ============== ONE TALL HOUSE PER LEVEL + FIXED GROUND + OLDER HOSE/WATER/FIRE MECHANICS ==============
+// ============== GRID SECTIONS + ONE TALL HOUSE PER LEVEL + YOUR PREFERRED HOSE/WATER/FIRE ==============
 const canvas = document.getElementById('game');
 const ctx = canvas.getContext('2d');
 const scoreEl = document.getElementById('score');
@@ -58,63 +58,62 @@ let gameState = 'title';
 let currentLevel = 1;
 let fireSpots = [];
 let particles = [];
-let explosions = [];
 
 const truckX = 85;
-const truckY = 505;   // exact grass line
+const truckY = 505;   // grass line for fire truck
 
 const levels = [
   { name: "Level 1 – Tall Yellow House", fireSpots: [
-    {x: 620, y: 235, w: 58, h: 88, health: 240, maxHealth: 240, type: 'window'},
-    {x: 740, y: 235, w: 58, h: 88, health: 240, maxHealth: 240, type: 'window'},
-    {x: 595, y: 145, w: 235, h: 48, health: 340, maxHealth: 340, type: 'roof'},
-    {x: 682, y: 410, w: 44, h: 110, health: 220, maxHealth: 220, type: 'door'}
-  ], entities: [{type:'house', x:580, color:'#FFEE66'}] },
+    {x: 720, y: 235, w: 58, h: 88, health: 240, maxHealth: 240, type: 'window'}, // bottom sill
+    {x: 840, y: 235, w: 58, h: 88, health: 240, maxHealth: 240, type: 'window'},
+    {x: 695, y: 145, w: 235, h: 48, health: 340, maxHealth: 340, type: 'roof'}, // top of roof
+    {x: 782, y: 410, w: 44, h: 110, health: 220, maxHealth: 220, type: 'door'} // bottom of door
+  ], entities: [{type:'house', x:680, color:'#FFEE66'}] },
 
   { name: "Level 2 – Tall Green House", fireSpots: [
-    {x: 620, y: 235, w: 58, h: 88, health: 240, maxHealth: 240, type: 'window'},
-    {x: 740, y: 235, w: 58, h: 88, health: 240, maxHealth: 240, type: 'window'},
-    {x: 595, y: 145, w: 235, h: 48, health: 340, maxHealth: 340, type: 'roof'},
-    {x: 682, y: 410, w: 44, h: 110, health: 220, maxHealth: 220, type: 'door'}
-  ], entities: [{type:'house', x:580, color:'#66FF99'}] },
+    {x: 720, y: 235, w: 58, h: 88, health: 240, maxHealth: 240, type: 'window'},
+    {x: 840, y: 235, w: 58, h: 88, health: 240, maxHealth: 240, type: 'window'},
+    {x: 695, y: 145, w: 235, h: 48, health: 340, maxHealth: 340, type: 'roof'},
+    {x: 782, y: 410, w: 44, h: 110, health: 220, maxHealth: 220, type: 'door'}
+  ], entities: [{type:'house', x:680, color:'#66FF99'}] },
 
   { name: "Level 3 – Tall Pink House + Sedan", fireSpots: [
-    {x: 620, y: 235, w: 58, h: 88, health: 240, maxHealth: 240, type: 'window'},
-    {x: 740, y: 235, w: 58, h: 88, health: 240, maxHealth: 240, type: 'window'},
-    {x: 595, y: 145, w: 235, h: 48, health: 340, maxHealth: 340, type: 'roof'},
-    {x: 682, y: 410, w: 44, h: 110, health: 220, maxHealth: 220, type: 'door'},
+    {x: 720, y: 235, w: 58, h: 88, health: 240, maxHealth: 240, type: 'window'},
+    {x: 840, y: 235, w: 58, h: 88, health: 240, maxHealth: 240, type: 'window'},
+    {x: 695, y: 145, w: 235, h: 48, health: 340, maxHealth: 340, type: 'roof'},
+    {x: 782, y: 410, w: 44, h: 110, health: 220, maxHealth: 220, type: 'door'},
     {x: 210, y: 345, w: 105, h: 55, health: 195, maxHealth: 195, type: 'hood'},
     {x: 235, y: 310, w: 65, h: 42, health: 145, maxHealth: 145, type: 'cab'}
-  ], entities: [{type:'house', x:580, color:'#FF99CC'}, {type:'sedan', x:180}] },
+  ], entities: [{type:'house', x:680, color:'#FF99CC'}, {type:'sedan', x:180}] },
 
   { name: "Level 4 – Tall Blue House + Pickup", fireSpots: [
-    {x: 620, y: 235, w: 58, h: 88, health: 240, maxHealth: 240, type: 'window'},
-    {x: 740, y: 235, w: 58, h: 88, health: 240, maxHealth: 240, type: 'window'},
-    {x: 595, y: 145, w: 235, h: 48, health: 340, maxHealth: 340, type: 'roof'},
-    {x: 682, y: 410, w: 44, h: 110, health: 220, maxHealth: 220, type: 'door'},
+    {x: 720, y: 235, w: 58, h: 88, health: 240, maxHealth: 240, type: 'window'},
+    {x: 840, y: 235, w: 58, h: 88, health: 240, maxHealth: 240, type: 'window'},
+    {x: 695, y: 145, w: 235, h: 48, health: 340, maxHealth: 340, type: 'roof'},
+    {x: 782, y: 410, w: 44, h: 110, health: 220, maxHealth: 220, type: 'door'},
     {x: 195, y: 338, w: 130, h: 50, health: 215, maxHealth: 215, type: 'bed'},
     {x: 212, y: 306, w: 80, h: 40, health: 160, maxHealth: 160, type: 'cab'}
-  ], entities: [{type:'house', x:580, color:'#66CCFF'}, {type:'pickup', x:170}] },
+  ], entities: [{type:'house', x:680, color:'#66CCFF'}, {type:'pickup', x:170}] },
 
   { name: "Level 5 – Tall Yellow House + Semi", fireSpots: [
-    {x: 620, y: 235, w: 58, h: 88, health: 240, maxHealth: 240, type: 'window'},
-    {x: 740, y: 235, w: 58, h: 88, health: 240, maxHealth: 240, type: 'window'},
-    {x: 595, y: 145, w: 235, h: 48, health: 340, maxHealth: 340, type: 'roof'},
-    {x: 682, y: 410, w: 44, h: 110, health: 220, maxHealth: 220, type: 'door'},
+    {x: 720, y: 235, w: 58, h: 88, health: 240, maxHealth: 240, type: 'window'},
+    {x: 840, y: 235, w: 58, h: 88, health: 240, maxHealth: 240, type: 'window'},
+    {x: 695, y: 145, w: 235, h: 48, health: 340, maxHealth: 340, type: 'roof'},
+    {x: 782, y: 410, w: 44, h: 110, health: 220, maxHealth: 220, type: 'door'},
     {x: 135, y: 300, w: 85, h: 75, health: 295, maxHealth: 295, type: 'cab'},
     {x: 225, y: 275, w: 270, h: 102, health: 465, maxHealth: 465, type: 'tanker'}
-  ], entities: [{type:'house', x:580, color:'#FFEE66'}, {type:'semi', x:105}] },
+  ], entities: [{type:'house', x:680, color:'#FFEE66'}, {type:'semi', x:105}] },
 
   { name: "Level 6 – Tall Green House + Vehicles", fireSpots: [
-    {x: 620, y: 235, w: 58, h: 88, health: 240, maxHealth: 240, type: 'window'},
-    {x: 740, y: 235, w: 58, h: 88, health: 240, maxHealth: 240, type: 'window'},
-    {x: 595, y: 145, w: 235, h: 48, health: 340, maxHealth: 340, type: 'roof'},
-    {x: 682, y: 410, w: 44, h: 110, health: 220, maxHealth: 220, type: 'door'},
+    {x: 720, y: 235, w: 58, h: 88, health: 240, maxHealth: 240, type: 'window'},
+    {x: 840, y: 235, w: 58, h: 88, health: 240, maxHealth: 240, type: 'window'},
+    {x: 695, y: 145, w: 235, h: 48, health: 340, maxHealth: 340, type: 'roof'},
+    {x: 782, y: 410, w: 44, h: 110, health: 220, maxHealth: 220, type: 'door'},
     {x: 190, y: 345, w: 105, h: 55, health: 195, maxHealth: 195, type: 'hood'},
     {x: 215, y: 310, w: 65, h: 42, health: 145, maxHealth: 145, type: 'cab'},
     {x: 310, y: 338, w: 130, h: 50, health: 215, maxHealth: 215, type: 'bed'},
     {x: 327, y: 306, w: 80, h: 40, health: 160, maxHealth: 160, type: 'cab'}
-  ], entities: [{type:'house', x:580, color:'#66FF99'}, {type:'sedan', x:170}, {type:'pickup', x:290}] }
+  ], entities: [{type:'house', x:680, color:'#66FF99'}, {type:'sedan', x:170}, {type:'pickup', x:290}] }
 ];
 
 function startGame() {
@@ -177,7 +176,6 @@ class Particle {
     this.x += this.vx; this.y += this.vy; this.life--;
     if (this.type === 'water') this.vy += 0.11;
     if (this.type === 'fire') { this.vy -= 0.17 + Math.random() * 0.2; this.vx += (Math.random() - 0.5) * 1.7; }
-    if (this.type === 'smoke') { this.vy -= 0.06; this.vx += (Math.random() - 0.5) * 0.5; }
   }
   draw() {
     ctx.globalAlpha = Math.max(0.1, this.life / 48);
