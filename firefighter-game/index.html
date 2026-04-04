@@ -54,7 +54,7 @@
 <canvas id="game" width="1150" height="600"></canvas>
 
 <script>
-// ============== Kennard Fire Defender – Final Version with All Fixes ==============
+// ============== Kennard Fire Defender – FINAL (All Vehicles Grounded + Chimney Fixed + Wrecked Cars Right) ==============
 const canvas = document.getElementById('game');
 const ctx = canvas.getContext('2d');
 const scoreEl = document.getElementById('score');
@@ -229,8 +229,9 @@ function drawSouthParkHouse(x, color, short, burned) {
   ctx.lineTo(x+132, short ? baseY - 60 : baseY - 100);
   ctx.lineTo(x+290, baseY - 10);
   ctx.fill();
+  // Chimney (fixed position)
   ctx.fillStyle = burned ? '#111' : '#A33';
-  ctx.fillRect(x+175, short ? 155 : 115, 30, 60);
+  ctx.fillRect(x + 175, baseY - 85, 28, 55);
   ctx.fillStyle = burned ? '#111' : '#3C2F1F';
   ctx.fillRect(x+105, baseY + (short ? 115 : 205), 45, 110);
   ctx.fillStyle = '#FFCC00';
