@@ -58,7 +58,7 @@
 </div>
 
 <script>
-// ============== KVFD text removed from bottom right corner (now only on screen via canvas) ==============
+// ============== WORKING BASE WITH IMPROVED DIFFICULTY SCALING ==============
 const canvas = document.getElementById('game');
 const ctx = canvas.getContext('2d');
 
@@ -67,7 +67,7 @@ let mouseX = 500, mouseY = 300;
 let isSpraying = false;
 let gameState = 'title';
 let currentLevel = 1;
-let difficulty = 2;
+let difficulty = 2; // 1 = Easy, 2 = Medium, 3 = Hard
 let timeOfDay = 0;
 let tornadoAngle = 0;
 let fireSpots = [];
@@ -90,16 +90,79 @@ const safetyTips = [
 ];
 
 const baseLevels = [
-  { name: "Level 1 – Small Shed Fire", fireSpots: [{x:880,y:280,w:55,h:55,health:80,maxHealth:140,type:'window'},{x:900,y:255,w:65,h:40,health:90,maxHealth:160,type:'roof'},{x:935,y:355,w:42,h:95,health:70,maxHealth:130,type:'door'}], entities: [{type:'shedWindow',x:840}, {type:'lawnMower',x:1060}] },
-  { name: "Level 2 – Car + Tree Crash", fireSpots: [{x:620,y:355,w:110,h:55,health:120,maxHealth:200,type:'hood'},{x:650,y:320,w:70,h:45,health:100,maxHealth:180,type:'cab'},{x:790,y:280,w:45,h:140,health:110,maxHealth:190,type:'tree1'},{x:810,y:260,w:35,h:80,health:90,maxHealth:160,type:'tree2'}], entities: [{type:'sedan',x:580,yOffset:12},{type:'tree',x:810}] },
-  { name: "Level 3 – Garage Fire", fireSpots: [{x:920,y:200,w:110,h:45,health:140,maxHealth:230,type:'roof'},{x:920,y:255,w:55,h:225,health:80,maxHealth:140,type:'leftdoor'},{x:975,y:255,w:55,h:225,health:80,maxHealth:140,type:'rightdoor'},{x:945,y:460,w:40,h:20,health:60,maxHealth:100,type:'bottom'}], entities: [{type:'singleGarage',x:820}] },
-  { name: "Level 4 – Small Shed + Tree with Tire Swing", fireSpots: [{x:880,y:280,w:55,h:55,health:110,maxHealth:190,type:'window'},{x:900,y:255,w:65,h:40,health:120,maxHealth:200,type:'roof'},{x:935,y:355,w:42,h:95,health:90,maxHealth:160,type:'door'},{x:720,y:310,w:38,h:95,health:95,maxHealth:170,type:'treefire'}], entities: [{type:'smallShed',x:820},{type:'treeWithSwing',x:620}] },
-  { name: "Level 5 – Small House + Sedan", fireSpots: [{x:920,y:260,w:50,h:70,health:100,maxHealth:180,type:'window1'},{x:1000,y:260,w:50,h:70,health:100,maxHealth:180,type:'window2'},{x:870,y:170,w:190,h:60,health:140,maxHealth:220,type:'roof'},{x:950,y:400,w:45,h:100,health:90,maxHealth:160,type:'door'}], entities: [{type:'smallHouse',x:850,color:'#FFCC99'}, {type:'sedan',x:520,yOffset:8}] },
-  { name: "Level 6 – Tall House + Pickup + Burning Trees", fireSpots: [{x:900,y:240,w:60,h:90,health:140,maxHealth:230,type:'window1'},{x:1020,y:240,w:60,h:90,health:140,maxHealth:230,type:'window2'},{x:860,y:140,w:240,h:50,health:180,maxHealth:280,type:'roof'},{x:960,y:410,w:50,h:110,health:120,maxHealth:200,type:'door'},{x:680,y:280,w:45,h:120,health:100,maxHealth:180,type:'treefire1'},{x:1150,y:280,w:45,h:120,health:100,maxHealth:180,type:'treefire2'}], entities: [{type:'house',x:860,color:'#66CCFF'}, {type:'pickup',x:590,yOffset:10}, {type:'tree',x:680}, {type:'tree',x:1150}] },
-  { name: "Level 7 – Mini Barn", fireSpots: [{x:880,y:255,w:78,h:225,health:150,maxHealth:250,type:'door'},{x:920,y:200,w:90,h:45,health:160,maxHealth:260,type:'roof'},{x:620,y:425,w:110,h:70,health:130,maxHealth:210,type:'tractor'}], entities: [{type:'miniBarn',x:820},{type:'tractor',x:520,facing:'right'}] },
-  { name: "Level 8 – Farm Fire", fireSpots: [{x:720,y:410,w:75,h:65,health:100,maxHealth:180,type:'hay1'},{x:800,y:395,w:75,h:65,health:110,maxHealth:190,type:'hay2'},{x:880,y:425,w:75,h:65,health:95,maxHealth:170,type:'hay3'},{x:950,y:410,w:75,h:65,health:120,maxHealth:200,type:'hay4'},{x:620,y:425,w:110,h:70,health:130,maxHealth:210,type:'tractor'}], entities: [{type:'largeRedBarn',x:1050},{type:'tractor',x:520,facing:'left'},{type:'hayBale',x:720},{type:'hayBale',x:800},{type:'hayBale',x:880},{type:'hayBale',x:950}] },
-  { name: "Level 9 – Tall House with Tornado", fireSpots: [{x:780,y:240,w:60,h:90,health:150,maxHealth:250,type:'window1'},{x:900,y:240,w:60,h:90,health:150,maxHealth:250,type:'window2'},{x:740,y:140,w:240,h:50,health:190,maxHealth:290,type:'roof'},{x:840,y:410,w:50,h:110,health:130,maxHealth:220,type:'door'}], entities: [{type:'house',x:740,color:'#FFEE66'}, {type:'tornado',x:620}] },
-  { name: "Level 10 – Big Car Wreck", fireSpots: [{x:480,y:355,w:110,h:55,health:140,maxHealth:240,type:'hood'},{x:510,y:320,w:70,h:45,health:110,maxHealth:200,type:'cab1'},{x:740,y:315,w:90,h:80,health:170,maxHealth:270,type:'cab2'},{x:840,y:285,w:260,h:105,health:220,maxHealth:320,type:'tanker'},{x:980,y:355,w:130,h:55,health:150,maxHealth:250,type:'bed'}], entities: [{type:'sedan',x:420,yOffset:12},{type:'pickup',x:620,yOffset:8},{type:'semi',x:780}] }
+  { name: "Level 1 – Small Shed Fire", fireSpots: [
+    {x:880,y:280,w:55,h:55,health:80,maxHealth:140,type:'window'},
+    {x:900,y:255,w:65,h:40,health:90,maxHealth:160,type:'roof'},
+    {x:935,y:355,w:42,h:95,health:70,maxHealth:130,type:'door'}
+  ], entities: [{type:'shedWindow',x:840}, {type:'lawnMower',x:1060}] },
+
+  { name: "Level 2 – Car + Tree Crash", fireSpots: [
+    {x:620,y:355,w:110,h:55,health:120,maxHealth:200,type:'hood'},
+    {x:650,y:320,w:70,h:45,health:100,maxHealth:180,type:'cab'},
+    {x:790,y:280,w:45,h:140,health:110,maxHealth:190,type:'tree1'},
+    {x:810,y:260,w:35,h:80,health:90,maxHealth:160,type:'tree2'}
+  ], entities: [{type:'sedan',x:580,yOffset:12},{type:'tree',x:810}] },
+
+  { name: "Level 3 – Garage Fire", fireSpots: [
+    {x:920,y:200,w:110,h:45,health:140,maxHealth:230,type:'roof'},
+    {x:920,y:255,w:55,h:225,health:80,maxHealth:140,type:'leftdoor'},
+    {x:975,y:255,w:55,h:225,health:80,maxHealth:140,type:'rightdoor'},
+    {x:945,y:460,w:40,h:20,health:60,maxHealth:100,type:'bottom'}
+  ], entities: [{type:'singleGarage',x:820}] },
+
+  { name: "Level 4 – Small Shed + Tree with Tire Swing", fireSpots: [
+    {x:880,y:280,w:55,h:55,health:110,maxHealth:190,type:'window'},
+    {x:900,y:255,w:65,h:40,health:120,maxHealth:200,type:'roof'},
+    {x:935,y:355,w:42,h:95,health:90,maxHealth:160,type:'door'},
+    {x:675,y:355,w:45,h:50,health:95,maxHealth:170,type:'tirefire1'},
+    {x:700,y:325,w:35,h:40,health:85,maxHealth:155,type:'tirefire2'}
+  ], entities: [{type:'smallShed',x:820},{type:'treeWithSwing',x:620}] },
+
+  { name: "Level 5 – Small House + Sedan", fireSpots: [
+    {x:920,y:260,w:50,h:70,health:100,maxHealth:180,type:'window1'},
+    {x:1000,y:260,w:50,h:70,health:100,maxHealth:180,type:'window2'},
+    {x:870,y:170,w:190,h:60,health:140,maxHealth:220,type:'roof'},
+    {x:950,y:400,w:45,h:100,health:90,maxHealth:160,type:'door'}
+  ], entities: [{type:'smallHouse',x:850,color:'#FFCC99'}, {type:'sedan',x:520,yOffset:8}] },
+
+  { name: "Level 6 – Tall House + Pickup + Burning Trees", fireSpots: [
+    {x:900,y:240,w:60,h:90,health:140,maxHealth:230,type:'window1'},
+    {x:1020,y:240,w:60,h:90,health:140,maxHealth:230,type:'window2'},
+    {x:860,y:140,w:240,h:50,health:180,maxHealth:280,type:'roof'},
+    {x:960,y:410,w:50,h:110,health:120,maxHealth:200,type:'door'},
+    {x:680,y:280,w:45,h:120,health:100,maxHealth:180,type:'treefire1'},
+    {x:1150,y:280,w:45,h:120,health:100,maxHealth:180,type:'treefire2'}
+  ], entities: [{type:'house',x:860,color:'#66CCFF'}, {type:'pickup',x:590,yOffset:10}, {type:'tree',x:680}, {type:'tree',x:1150}] },
+
+  { name: "Level 7 – Mini Barn", fireSpots: [
+    {x:880,y:255,w:78,h:225,health:150,maxHealth:250,type:'door'},
+    {x:920,y:200,w:90,h:45,health:160,maxHealth:260,type:'roof'},
+    {x:620,y:425,w:110,h:70,health:130,maxHealth:210,type:'tractor'}
+  ], entities: [{type:'miniBarn',x:820},{type:'tractor',x:520,facing:'right'}] },
+
+  { name: "Level 8 – Farm Fire", fireSpots: [
+    {x:720,y:410,w:75,h:65,health:100,maxHealth:180,type:'hay1'},
+    {x:800,y:395,w:75,h:65,health:110,maxHealth:190,type:'hay2'},
+    {x:880,y:425,w:75,h:65,health:95,maxHealth:170,type:'hay3'},
+    {x:950,y:410,w:75,h:65,health:120,maxHealth:200,type:'hay4'},
+    {x:620,y:425,w:110,h:70,health:130,maxHealth:210,type:'tractor'}
+  ], entities: [{type:'largeRedBarn',x:1050},{type:'tractor',x:520,facing:'left'},{type:'hayBale',x:720},{type:'hayBale',x:800},{type:'hayBale',x:880},{type:'hayBale',x:950}] },
+
+  { name: "Level 9 – Tall House with Tornado", fireSpots: [
+    {x:780,y:240,w:60,h:90,health:150,maxHealth:250,type:'window1'},
+    {x:900,y:240,w:60,h:90,health:150,maxHealth:250,type:'window2'},
+    {x:740,y:140,w:240,h:50,health:190,maxHealth:290,type:'roof'},
+    {x:840,y:410,w:50,h:110,health:130,maxHealth:220,type:'door'}
+  ], entities: [{type:'house',x:740,color:'#FFEE66'}, {type:'tornado',x:620}] },
+
+  { name: "Level 10 – Big Car Wreck", fireSpots: [
+    {x:480,y:355,w:110,h:55,health:140,maxHealth:240,type:'hood'},
+    {x:510,y:320,w:70,h:45,health:110,maxHealth:200,type:'cab1'},
+    {x:740,y:315,w:90,h:80,health:170,maxHealth:270,type:'cab2'},
+    {x:840,y:285,w:260,h:105,health:220,maxHealth:320,type:'tanker'},
+    {x:980,y:355,w:130,h:55,health:150,maxHealth:250,type:'bed'},
+    {x:650,y:340,w:55,h:40,health:130,maxHealth:210,type:'extra'}
+  ], entities: [{type:'sedan',x:420,yOffset:12},{type:'pickup',x:620,yOffset:8},{type:'semi',x:780}] }
 ];
 
 function setTimeOfDay(mode) { timeOfDay = mode; }
@@ -115,10 +178,22 @@ function loadLevel(lvl) {
   const base = baseLevels[lvl-1];
   fireSpots = base.fireSpots.map(s => {
     let healthMod = 1, growthMod = 1;
-    if (difficulty === 1) { healthMod = 0.75; growthMod = 1.3; }
-    else if (difficulty === 2) { healthMod = 1.0; growthMod = 1.0; }
-    else if (difficulty === 3) { healthMod = 1.45; growthMod = 0.75; }
-    return { ...s, health: Math.floor(s.health * healthMod), maxHealth: Math.floor(s.maxHealth * healthMod), growthRate: 6.8 * growthMod };
+    if (difficulty === 1) { 
+      healthMod = 0.55;   // Easy: much lower starting health
+      growthMod = 0.45;   // Easy: grows very slowly
+    } else if (difficulty === 2) { 
+      healthMod = 1.0; 
+      growthMod = 1.0; 
+    } else if (difficulty === 3) { 
+      healthMod = 1.65;   // Hard: much more health
+      growthMod = 1.55;   // Hard: grows faster
+    }
+    return { 
+      ...s, 
+      health: Math.floor(s.health * healthMod), 
+      maxHealth: Math.floor(s.maxHealth * healthMod), 
+      growthRate: 6.8 * growthMod 
+    };
   });
   particles = [];
   gameState = 'playing';
@@ -129,15 +204,15 @@ function checkWin() {
   if (fireSpots.every(s => s.health <= 0) && gameState === 'playing') {
     gameState = 'levelComplete';
     const isFinalLevel = currentLevel === baseLevels.length;
-   
+    
     document.getElementById('levelTitle').textContent = baseLevels[currentLevel-1].name + " COMPLETE!";
-   
+    
     if (isFinalLevel) {
       document.getElementById('encourageText').innerHTML = "Thank you for playing!<br>Try a harder difficulty next time.<br>And remember to thank a firefighter when you see one!";
     } else {
       document.getElementById('encourageText').innerHTML = "Great Work, Kennard Fire Defender!<br>You saved the day!";
     }
-   
+    
     document.getElementById('safetyTip').textContent = safetyTips[currentLevel-1];
     document.getElementById('levelCompleteScreen').style.display = 'block';
   }
@@ -168,9 +243,11 @@ document.addEventListener('mousemove', e => {
 
 canvas.addEventListener('mousedown', e => {
   if (gameState === 'playing') isSpraying = true;
+
   const rect = canvas.getBoundingClientRect();
   const clickX = e.clientX - rect.left;
   const clickY = e.clientY - rect.top;
+
   if (clickY > 18 && clickY < 56) {
     if (clickX > 980 && clickX < 1042) setTimeOfDay(0);
     else if (clickX > 1048 && clickX < 1110) setTimeOfDay(1);
@@ -267,6 +344,7 @@ function drawSideFireTruck() {
   ctx.fillStyle = '#00F'; ctx.fillRect(truckX + 25, truckY - 82, 12, 6);
 }
 
+// All draw functions (houses, sheds, garage, barn, tractor, tornado, etc.) are included below
 function drawShedWindow(x) {
   ctx.fillStyle = '#E8D5B8'; ctx.fillRect(x+30, 255, 190, 225);
   ctx.strokeStyle = '#222'; ctx.lineWidth = 4;
