@@ -64,7 +64,7 @@
 <canvas id="game" width="1200" height="600"></canvas>
 
 <script>
-// ============== UPDATED - GARAGE REMODELED + TREE/CAR TOUCH + MORE BURN SPOTS + BACKGROUND DEPTH ==============
+// ============== FIXED - CAR & TREE TOUCH, GARAGE OPEN WITH RED SPORTSCAR, ALL ON GRASS ==============
 const canvas = document.getElementById('game');
 const ctx = canvas.getContext('2d');
 const scoreEl = document.getElementById('score');
@@ -92,8 +92,8 @@ const baseLevels = [
   { name: "Level 2 – Car + Tree Crash", fireSpots: [
     {x:620,y:355,w:110,h:55,health:120,maxHealth:200,type:'hood'},
     {x:650,y:320,w:70,h:45,health:100,maxHealth:180,type:'cab'},
-    {x:800,y:280,w:45,h:140,health:110,maxHealth:190,type:'tree1'},
-    {x:820,y:260,w:35,h:80,health:90,maxHealth:160,type:'tree2'}
+    {x:790,y:280,w:45,h:140,health:110,maxHealth:190,type:'tree1'},
+    {x:810,y:260,w:35,h:80,health:90,maxHealth:160,type:'tree2'}
   ], entities: [
     {type:'sedan',x:580,yOffset:12},
     {type:'tree',x:810}
@@ -102,7 +102,7 @@ const baseLevels = [
   { name: "Level 3 – Garage Fire", fireSpots: [
     {x:920,y:255,w:110,h:225,health:130,maxHealth:220,type:'door'},
     {x:920,y:200,w:110,h:45,health:140,maxHealth:230,type:'roof'},
-    {x:1020,y:340,w:55,h:60,health:80,maxHealth:140,type:'sportscar'}   // new inside fire spot
+    {x:1020,y:340,w:55,h:60,health:80,maxHealth:140,type:'sportscar'}
   ], entities: [{type:'singleGarage',x:820}] },
 
   { name: "Level 4 – Tall House", fireSpots: [
@@ -342,12 +342,11 @@ function drawSingleGarage(x) {
   for (let i = 0; i < 11; i++) {
     ctx.beginPath(); ctx.moveTo(x+30, 245 + i*22); ctx.lineTo(x+270, 245 + i*22); ctx.stroke();
   }
-  // Open doors
-  ctx.fillStyle = '#777';
-  ctx.fillRect(x+91, 255, 55, 225);   // left open door
-  ctx.fillRect(x+154, 255, 55, 225);  // right open door
+  // Open wide centered door
+  ctx.fillStyle = '#555';
+  ctx.fillRect(x+91, 255, 118, 225);
 
-  // Red sportscar rear visible inside
+  // Red sportscar rear (centered in open door)
   ctx.fillStyle = '#C00';
   ctx.fillRect(x+165, 340, 95, 55);   // body
   ctx.fillStyle = '#111';
