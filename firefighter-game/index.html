@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Kennard Fire Defender - Level 2</title>
+<title>Kennard Fire Defender - Short House Test</title>
 <style>
   body { margin:0; background:#000; font-family:Arial, sans-serif; overflow:hidden; }
   canvas { display:block; margin:0 auto; }
@@ -25,7 +25,8 @@
   <div id="titleScreen">
     <h1 style="font-size:58px; margin-top:80px; color:#FF0;">KENNARD FIRE DEFENDER</h1>
     <div style="margin-top:30px;">
-      <button onclick="startLevel()">START LEVEL 2 TEST</button>
+      <button onclick="useModel(1)">Model 1 (Left Short House)</button>
+      <button onclick="useModel(2)">Model 2 (Right Short House)</button>
     </div>
   </div>
 
@@ -37,7 +38,6 @@
     </div>
     <div style="margin-top:30px;">
       <button onclick="resetLevel()">PLAY AGAIN</button>
-      <button onclick="returnToFirePage()">RETURN TO FIRE PAGE</button>
     </div>
   </div>
 </div>
@@ -49,7 +49,7 @@
 <canvas id="game" width="1150" height="600"></canvas>
 
 <script>
-// ============== KVFD – FRESH LEVEL 2: Sedan on ground next to fire truck, short house model fixed ==============
+// ============== KVFD – Two Short House Models + Sedan on Ground ==============
 const canvas = document.getElementById('game');
 const ctx = canvas.getContext('2d');
 const scoreEl = document.getElementById('score');
@@ -61,17 +61,23 @@ let gameState = 'title';
 let fireSpots = [];
 let particles = [];
 let explosions = [];
+let currentModel = 1; // 1 or 2
 
 const truckX = 48;
 const truckY = 505;
 
-function startLevel() {
+function useModel(model) {
+  currentModel = model;
   document.getElementById('titleScreen').style.display = 'none';
+  startLevel();
+}
+
+function startLevel() {
   fireSpots = [
-    {x: 735, y: 255, w: 48, h: 72, health: 2800, maxHealth: 2800, type: 'window', points: 10}, // bottom of left window
-    {x: 855, y: 255, w: 48, h: 72, health: 2800, maxHealth: 2800, type: 'window', points: 10}, // bottom of right window
-    {x: 700, y: 138, w: 230, h: 42, health: 4200, maxHealth: 4200, type: 'roof', points: 25},   // top of roof
-    {x: 785, y: 415, w: 42, h: 105, health: 2200, maxHealth: 2200, type: 'door', points: 15}    // bottom of door
+    {x: 735, y: 255, w: 48, h: 72, health: 2800, maxHealth: 2800, type: 'window', points: 10},
+    {x: 855, y: 255, w: 48, h: 72, health: 2800, maxHealth: 2800, type: 'window', points: 10},
+    {x: 700, y: 138, w: 230, h: 42, health: 4200, maxHealth: 4200, type: 'roof', points: 25},
+    {x: 785, y: 415, w: 42, h: 105, health: 2200, maxHealth: 2200, type: 'door', points: 15}
   ];
   particles = [];
   explosions = [];
@@ -90,10 +96,6 @@ function checkWin() {
 function resetLevel() {
   document.getElementById('levelCompleteScreen').style.display = 'none';
   startLevel();
-}
-
-function returnToFirePage() {
-  window.location.href = 'https://kennardin.com/fire-department.html';
 }
 
 document.addEventListener('mousemove', e => {
@@ -164,7 +166,7 @@ function drawBackground() {
   ctx.fillRect(0, 510, canvas.width, 12);
 }
 
-function drawKennardShortHouse() {
+function drawKennardShortHouse1() { // Model 1
   const x = 695;
   const baseY = 325;
   ctx.fillStyle = '#66CCFF';
@@ -179,14 +181,41 @@ function drawKennardShortHouse() {
   ctx.lineTo(x+290, baseY - 10);
   ctx.fill();
   ctx.fillStyle = '#A33';
-  ctx.fillRect(x + 175, baseY - 85, 28, 55); // chimney
+  ctx.fillRect(x + 175, baseY - 85, 28, 55);
   ctx.fillStyle = '#3C2F1F';
-  ctx.fillRect(x+105, baseY + 115, 45, 80); // door centered at bottom
+  ctx.fillRect(x+105, baseY + 115, 45, 80); // door centered
   ctx.fillStyle = '#FFCC00';
-  ctx.fillRect(x+122, baseY + 165, 10, 10); // knob higher
+  ctx.fillRect(x+122, baseY + 165, 10, 10); // knob
   ctx.fillStyle = '#AACCFF';
-  ctx.fillRect(x+35, baseY + 40, 55, 55); // left window
-  ctx.fillRect(x+175, baseY + 40, 55, 55); // right window
+  ctx.fillRect(x+35, baseY + 40, 55, 55);
+  ctx.fillRect(x+175, baseY + 40, 55, 55);
+  ctx.strokeRect(x+30, baseY + 35, 65, 62);
+  ctx.strokeRect(x+170, baseY + 35, 65, 62);
+}
+
+function drawKennardShortHouse2() { // Model 2
+  const x = 695;
+  const baseY = 325;
+  ctx.fillStyle = '#66FF99';
+  ctx.fillRect(x, baseY, 265, 195);
+  ctx.strokeStyle = '#222';
+  ctx.lineWidth = 10;
+  ctx.strokeRect(x+5, baseY, 255, 195);
+  ctx.fillStyle = '#8B2A00';
+  ctx.beginPath();
+  ctx.moveTo(x-25, baseY - 10);
+  ctx.lineTo(x+132, baseY - 60);
+  ctx.lineTo(x+290, baseY - 10);
+  ctx.fill();
+  ctx.fillStyle = '#A33';
+  ctx.fillRect(x + 175, baseY - 85, 28, 55);
+  ctx.fillStyle = '#3C2F1F';
+  ctx.fillRect(x+105, baseY + 115, 45, 80); // door centered
+  ctx.fillStyle = '#FFCC00';
+  ctx.fillRect(x+122, baseY + 165, 10, 10); // knob
+  ctx.fillStyle = '#AACCFF';
+  ctx.fillRect(x+35, baseY + 40, 55, 55);
+  ctx.fillRect(x+175, baseY + 40, 55, 55);
   ctx.strokeRect(x+30, baseY + 35, 65, 62);
   ctx.strokeRect(x+170, baseY + 35, 65, 62);
 }
@@ -222,7 +251,7 @@ function drawSedan(x) {
   ctx.fillStyle = 'rgba(0,0,0,0.5)';
   ctx.fillRect(x+12, truckY+33, 118, 18);
   ctx.fillStyle = '#1E5A9E';
-  ctx.fillRect(x+12, 348, 115, 52); // same ground level as fire truck
+  ctx.fillRect(x+12, 348, 115, 52); // wheels on grass
   ctx.fillStyle = '#0F3A6B';
   ctx.fillRect(x+25, 315, 85, 40);
   ctx.fillStyle = '#AACCFF';
@@ -236,8 +265,11 @@ function drawSedan(x) {
 function loop() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   drawBackground();
-  drawKennardShortHouse();
-  drawSedan(720); // right of fire truck, under START button area
+
+  if (currentModel === 1) drawKennardShortHouse1();
+  else drawKennardShortHouse2();
+
+  drawSedan(720); // right of fire truck, on ground
   drawSideFireTruck();
 
   ctx.fillStyle = '#FFF';
