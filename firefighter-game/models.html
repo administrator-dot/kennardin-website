@@ -40,7 +40,7 @@
 </div>
 <canvas id="game" width="1200" height="600"></canvas>
 <script>
-// ============== 20px GRID - LEVEL 6 CAR MOVED RIGHT + KVFD TEXT ==============
+// ============== 20px GRID + PERSPECTIVE PARKING + KVFD TEXT ==============
 const canvas = document.getElementById('game');
 const ctx = canvas.getContext('2d');
 const scoreEl = document.getElementById('score');
@@ -71,39 +71,39 @@ const levels = [
     {x: 980, y: 310, w: 50, h: 80, health: 160, maxHealth: 160, type: 'window'}
   ], entities: [{type:'garage', x:860, color:'#8B9E7A'}] },
 
-  // Level 3: Tall Pink House + Sedan
+  // Level 3: Tall Pink House + Sedan (perspective parked)
   { name: "Level 3 – Tall Pink House + Sedan", fireSpots: [
     {x: 900, y: 240, w: 60, h: 90, health: 240, maxHealth: 240, type: 'window'},
     {x: 1020, y: 240, w: 60, h: 90, health: 240, maxHealth: 240, type: 'window'},
     {x: 860, y: 140, w: 240, h: 50, health: 340, maxHealth: 340, type: 'roof'},
     {x: 960, y: 410, w: 50, h: 110, health: 220, maxHealth: 220, type: 'door'}
-  ], entities: [{type:'house', x:860, color:'#FF99CC'}, {type:'sedan', x:520}] },
+  ], entities: [{type:'house', x:860, color:'#FF99CC'}, {type:'sedan', x:520, yOffset: 8}] },
 
-  // Level 4: Tall Blue House + Pickup
+  // Level 4: Tall Blue House + Pickup (safe distance + perspective)
   { name: "Level 4 – Tall Blue House + Pickup", fireSpots: [
     {x: 900, y: 240, w: 60, h: 90, health: 240, maxHealth: 240, type: 'window'},
     {x: 1020, y: 240, w: 60, h: 90, health: 240, maxHealth: 240, type: 'window'},
     {x: 860, y: 140, w: 240, h: 50, health: 340, maxHealth: 340, type: 'roof'},
     {x: 960, y: 410, w: 50, h: 110, health: 220, maxHealth: 220, type: 'door'}
-  ], entities: [{type:'house', x:860, color:'#66CCFF'}, {type:'pickup', x:580}] },
+  ], entities: [{type:'house', x:860, color:'#66CCFF'}, {type:'pickup', x:590, yOffset: 10}] },
 
-  // Level 5: Semi & Sedan Wreck
+  // Level 5: Semi & Sedan Wreck (both on fire, safe distance)
   { name: "Level 5 – Semi & Sedan Wreck", fireSpots: [
     {x: 720, y: 345, w: 105, h: 55, health: 210, maxHealth: 210, type: 'hood'},
     {x: 745, y: 310, w: 65, h: 42, health: 160, maxHealth: 160, type: 'cab'},
     {x: 860, y: 300, w: 90, h: 80, health: 280, maxHealth: 280, type: 'cab'},
     {x: 960, y: 270, w: 260, h: 105, health: 420, maxHealth: 420, type: 'tanker'}
-  ], entities: [{type:'sedan', x:680}, {type:'semi', x:820}] },
+  ], entities: [{type:'sedan', x:680, yOffset: 6}, {type:'semi', x:820}] },
 
-  // Level 6: Tall Green House + Vehicles (sedan moved right)
+  // Level 6: Tall Green House + Vehicles (sedan moved right + perspective)
   { name: "Level 6 – Tall Green House + Vehicles", fireSpots: [
     {x: 900, y: 240, w: 60, h: 90, health: 240, maxHealth: 240, type: 'window'},
     {x: 1020, y: 240, w: 60, h: 90, health: 240, maxHealth: 240, type: 'window'},
     {x: 860, y: 140, w: 240, h: 50, health: 340, maxHealth: 340, type: 'roof'},
     {x: 960, y: 410, w: 50, h: 110, health: 220, maxHealth: 220, type: 'door'},
-    {x: 580, y: 350, w: 110, h: 60, health: 195, maxHealth: 195, type: 'hood'},
-    {x: 610, y: 310, w: 70, h: 45, health: 145, maxHealth: 145, type: 'cab'}
-  ], entities: [{type:'house', x:860, color:'#66FF99'}, {type:'sedan', x:540}, {type:'pickup', x:740}] }
+    {x: 590, y: 350, w: 110, h: 60, health: 195, maxHealth: 195, type: 'hood'},
+    {x: 620, y: 310, w: 70, h: 45, health: 145, maxHealth: 145, type: 'cab'}
+  ], entities: [{type:'house', x:860, color:'#66FF99'}, {type:'sedan', x:550, yOffset: 9}, {type:'pickup', x:760, yOffset: 7}] }
 ];
 
 function startGame() {
@@ -298,8 +298,8 @@ function drawTallHouse(x) {
   ctx.fillRect(x+177, 260, 58, 85);
 }
 
-function drawSedan(x) {
-  const groundY = 480;
+function drawSedan(x, yOffset = 0) {
+  const groundY = 480 + yOffset;
   ctx.fillStyle = '#1E5A9E';
   ctx.fillRect(x+15, groundY-52, 120, 55);
   ctx.fillStyle = '#0F3A6B';
@@ -312,8 +312,8 @@ function drawSedan(x) {
   ctx.beginPath(); ctx.arc(x+102, groundY+8, 18, 0, Math.PI*2); ctx.fill();
 }
 
-function drawPickup(x) {
-  const groundY = 480;
+function drawPickup(x, yOffset = 0) {
+  const groundY = 480 + yOffset;
   ctx.fillStyle = '#1F2A3C';
   ctx.fillRect(x+10, groundY-52, 140, 54);
   ctx.fillStyle = '#111';
@@ -352,14 +352,14 @@ function loop() {
     if (ent.type === 'shed') drawShed(ent.x);
     if (ent.type === 'garage') drawGarage(ent.x);
     if (ent.type === 'house') drawTallHouse(ent.x);
-    if (ent.type === 'sedan') drawSedan(ent.x);
-    if (ent.type === 'pickup') drawPickup(ent.x);
+    if (ent.type === 'sedan') drawSedan(ent.x, ent.yOffset || 0);
+    if (ent.type === 'pickup') drawPickup(ent.x, ent.yOffset || 0);
     if (ent.type === 'semi') drawSemi(ent.x);
   });
 
   drawSideFireTruck();
 
-  // Draw KVFD text in top-right corner
+  // KVFD text in top-right
   ctx.fillStyle = '#FFFFFF';
   ctx.font = 'bold 22px Arial';
   ctx.textAlign = 'right';
