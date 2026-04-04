@@ -108,11 +108,10 @@
     }
 
     function createWaterParticles() {
-      // Exact spawn at mouse (hose tip) + direction from truck to mouse
-      const hoseEndX = mouseX;
-      const hoseEndY = mouseY;
-      const dx = mouseX - (truckX + 260);
-      const dy = mouseY - (truckY - 38);
+      const hoseEndX = truckX + 260;
+      const hoseEndY = truckY - 38;
+      const dx = mouseX - hoseEndX;
+      const dy = mouseY - hoseEndY;
       const length = Math.sqrt(dx*dx + dy*dy) || 1;
       const dirX = dx / length * 1.25;
       const dirY = dy / length * 1.25;
@@ -120,8 +119,8 @@
       for (let i = 0; i < 14; i++) {
         const spread = (Math.random() - 0.5) * 3.5;
         particles.push({
-          x: hoseEndX + (Math.random()-0.5)*4,
-          y: hoseEndY + (Math.random()-0.5)*4,
+          x: hoseEndX + (Math.random()-0.5)*5,
+          y: hoseEndY + (Math.random()-0.5)*5,
           vx: dirX * 27 + spread,
           vy: dirY * 27 + spread - 4,
           color: '#33CCFF',
@@ -187,13 +186,15 @@
         if (p.life <= 0) particles.splice(i, 1);
       }
 
+      // HOSE IS ALWAYS DRAWN
+      ctx.strokeStyle = '#555';
+      ctx.lineWidth = 14;
+      ctx.beginPath();
+      ctx.moveTo(truckX + 260, truckY - 38);
+      ctx.quadraticCurveTo(truckX + 340, truckY - 170, mouseX, mouseY);
+      ctx.stroke();
+
       if (isSpraying) {
-        ctx.strokeStyle = '#555';
-        ctx.lineWidth = 14;
-        ctx.beginPath();
-        ctx.moveTo(truckX + 260, truckY - 38); // rear hose tip
-        ctx.quadraticCurveTo(truckX + 340, truckY - 170, mouseX, mouseY);
-        ctx.stroke();
         createWaterParticles();
       }
     }
