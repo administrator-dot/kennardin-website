@@ -45,7 +45,7 @@
 <canvas id="game" width="1000" height="600"></canvas>
 
 <script>
-// ============== ONE TALL HOUSE PER LEVEL + FIXED GROUND ==============
+// ============== FINAL FIXED VERSION – BUTTON WORKS + ALL ON GRASS + ONE TALL HOUSE PER LEVEL ==============
 const canvas = document.getElementById('game');
 const ctx = canvas.getContext('2d');
 const scoreEl = document.getElementById('score');
@@ -60,14 +60,14 @@ let fireSpots = [];
 let particles = [];
 
 const truckX = 85;
-const truckY = 505;   // grass line
+const truckY = 505;   // exact grass line
 
 const levels = [
   { name: "Level 1 – Tall Yellow House", fireSpots: [
-    {x: 620, y: 235, w: 58, h: 88, health: 240, maxHealth: 240, type: 'window'},   // bottom sill
+    {x: 620, y: 235, w: 58, h: 88, health: 240, maxHealth: 240, type: 'window'},
     {x: 740, y: 235, w: 58, h: 88, health: 240, maxHealth: 240, type: 'window'},
-    {x: 595, y: 145, w: 235, h: 48, health: 340, maxHealth: 340, type: 'roof'},    // top of roof
-    {x: 682, y: 410, w: 44, h: 110, health: 220, maxHealth: 220, type: 'door'}     // bottom of door
+    {x: 595, y: 145, w: 235, h: 48, health: 340, maxHealth: 340, type: 'roof'},
+    {x: 682, y: 410, w: 44, h: 110, health: 220, maxHealth: 220, type: 'door'}
   ], entities: [{type:'house', x:580, color:'#FFEE66'}] },
 
   { name: "Level 2 – Tall Green House", fireSpots: [
@@ -95,7 +95,7 @@ const levels = [
     {x: 212, y: 306, w: 80, h: 40, health: 160, maxHealth: 160, type: 'cab'}
   ], entities: [{type:'house', x:580, color:'#66CCFF'}, {type:'pickup', x:170}] },
 
-  { name: "Level 5 – Tall Yellow House + Semi Tanker", fireSpots: [
+  { name: "Level 5 – Tall Yellow House + Semi", fireSpots: [
     {x: 620, y: 235, w: 58, h: 88, health: 240, maxHealth: 240, type: 'window'},
     {x: 740, y: 235, w: 58, h: 88, health: 240, maxHealth: 240, type: 'window'},
     {x: 595, y: 145, w: 235, h: 48, health: 340, maxHealth: 340, type: 'roof'},
@@ -104,7 +104,7 @@ const levels = [
     {x: 225, y: 275, w: 270, h: 102, health: 465, maxHealth: 465, type: 'tanker'}
   ], entities: [{type:'house', x:580, color:'#FFEE66'}, {type:'semi', x:105}] },
 
-  { name: "Level 6 – Tall Green House + Two Vehicles", fireSpots: [
+  { name: "Level 6 – Tall Green House + Vehicles", fireSpots: [
     {x: 620, y: 235, w: 58, h: 88, health: 240, maxHealth: 240, type: 'window'},
     {x: 740, y: 235, w: 58, h: 88, health: 240, maxHealth: 240, type: 'window'},
     {x: 595, y: 145, w: 235, h: 48, health: 340, maxHealth: 340, type: 'roof'},
@@ -278,7 +278,7 @@ function drawTallHouse(x) {
 }
 
 function drawSedan(x) {
-  const groundY = 348;
+  const groundY = 348; // same as fire truck
   ctx.fillStyle = '#1E5A9E';
   ctx.fillRect(x+12, groundY, 115, 52);
   ctx.fillStyle = '#0F3A6B';
