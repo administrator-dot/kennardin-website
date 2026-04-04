@@ -2,48 +2,25 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Kennard Fire Defender - 10 Models</title>
+<title>Kennard Fire Defender - 10 Models (Animated)</title>
 <style>
   body { margin:0; background:#111; font-family:Arial, sans-serif; color:white; text-align:center; }
   h1 { color:#FF0; margin:30px 0 10px; }
   p { margin-bottom:25px; }
-  .grid { 
-    display: grid; 
-    grid-template-columns: repeat(5, 1fr); 
-    gap: 20px; 
-    padding: 20px; 
-    max-width: 1250px; 
-    margin: auto; 
-  }
-  .model { 
-    background: #1a1a1a; 
-    border: 4px solid #444; 
-    border-radius: 12px; 
-    padding: 12px; 
-    cursor: pointer; 
-    transition: all 0.2s; 
-  }
-  .model:hover { 
-    border-color: #FF0; 
-    transform: scale(1.06); 
-  }
-  canvas { 
-    width: 100%; 
-    height: 230px; 
-    background: #3D8C40; 
-    border-radius: 8px; 
-    display: block; 
-  }
+  .grid { display:grid; grid-template-columns:repeat(5,1fr); gap:20px; padding:20px; max-width:1250px; margin:auto; }
+  .model { background:#1a1a1a; border:4px solid #444; border-radius:12px; padding:12px; cursor:pointer; transition:all 0.2s; }
+  .model:hover { border-color:#FF0; transform:scale(1.05); }
+  canvas { width:100%; height:230px; background:#3D8C40; border-radius:8px; display:block; }
 </style>
 </head>
 <body>
-<h1>10 Models with Burn Points</h1>
-<p>Click any model to see it larger. Tell me which ones you like best (example: "I like Model 1, 2, 5, 7, 9, 10").</p>
+<h1>10 Models with Animated Burn Points</h1>
+<p>Click any model to see it larger. Tell me which ones you like (e.g. "Model 1, 2, 5, 7, 9, 10").</p>
 
 <div class="grid" id="grid"></div>
 
 <script>
-// ============== CLEAN 10 MODELS – NO TITLES, VEHICLES ON BOTTOM ==============
+// ============== FINAL 10 MODELS – CENTERED FIRES + DRIVEWAY + ANIMATED FIRE ==============
 const models = [
   {id:1, name:"Short Blue House", color:"#66CCFF", type:"house"},
   {id:2, name:"Short Green House", color:"#66FF99", type:"house"},
@@ -57,170 +34,173 @@ const models = [
   {id:10, name:"Shed", type:"shed"}
 ];
 
+let animationFrame;
+
 function createModelCanvas(m) {
   const c = document.createElement('canvas');
   c.width = 220;
   c.height = 230;
   const ctx = c.getContext('2d');
+  let time = 0;
 
-  // grass base
-  ctx.fillStyle = '#3D8C40';
-  ctx.fillRect(0, 165, 220, 65);
+  function drawFrame() {
+    ctx.clearRect(0, 0, 220, 230);
+    time += 0.08;
 
-  if (m.type === "house") {
-    const x = 30;
-    const baseY = 145;
-    ctx.fillStyle = m.color;
-    ctx.fillRect(x, baseY, 160, 120);
-    ctx.strokeStyle = '#222';
-    ctx.lineWidth = 8;
-    ctx.strokeRect(x+5, baseY, 150, 120);
-    // lowered roof sitting on walls
-    ctx.fillStyle = '#8B2A00';
-    ctx.beginPath();
-    ctx.moveTo(x-15, baseY - 8);
-    ctx.lineTo(x+80, baseY - 48);
-    ctx.lineTo(x+175, baseY - 8);
-    ctx.fill();
-    ctx.fillStyle = '#A33';
-    ctx.fillRect(x + 115, baseY - 65, 22, 38);
-    ctx.fillStyle = '#3C2F1F';
-    ctx.fillRect(x+68, baseY + 70, 32, 55); // door
-    ctx.fillStyle = '#FFCC00';
-    ctx.fillRect(x+76, baseY + 98, 8, 8); // knob
-    ctx.fillStyle = '#AACCFF';
-    ctx.fillRect(x+28, baseY + 28, 38, 38);
-    ctx.fillRect(x+105, baseY + 28, 38, 38);
-    // fires centered better
-    createSmallFire(ctx, 48, baseY + 48);   // left window
-    createSmallFire(ctx, 125, baseY + 48);  // right window
-    createSmallFire(ctx, 80, baseY - 22);   // roof
-    createSmallFire(ctx, 75, baseY + 98);   // door
-  } 
-  else if (m.type === "sedan") {
-    ctx.fillStyle = '#1E5A9E';
-    ctx.fillRect(35, 165, 115, 52);           // body on ground
-    ctx.fillStyle = '#0F3A6B';
-    ctx.fillRect(48, 140, 85, 40);
-    ctx.fillStyle = '#AACCFF';
-    ctx.fillRect(58, 147, 38, 26);
-    ctx.fillRect(101, 147, 25, 26);
-    ctx.fillStyle = '#111';
-    ctx.beginPath(); ctx.arc(63, 205, 17, 0, Math.PI*2); ctx.fill();
-    ctx.beginPath(); ctx.arc(123, 205, 17, 0, Math.PI*2); ctx.fill();
-    createSmallFire(ctx, 65, 155);
-    createSmallFire(ctx, 115, 155);
-  } 
-  else if (m.type === "pickup") {
-    ctx.fillStyle = '#C22';
-    ctx.fillRect(35, 165, 135, 52);
-    ctx.fillStyle = '#111';
-    ctx.fillRect(48, 140, 80, 40);
-    ctx.fillStyle = '#AACCFF';
-    ctx.fillRect(55, 147, 40, 27);
-    ctx.fillRect(100, 147, 22, 27);
-    ctx.fillStyle = '#111';
-    ctx.beginPath(); ctx.arc(55, 205, 17, 0, Math.PI*2); ctx.fill();
-    ctx.beginPath(); ctx.arc(125, 205, 17, 0, Math.PI*2); ctx.fill();
-    createSmallFire(ctx, 70, 155);
-    createSmallFire(ctx, 115, 155);
-  } 
-  else if (m.type === "tractor") {
-    ctx.fillStyle = '#228B22';
-    ctx.fillRect(35, 165, 135, 52);
-    ctx.fillStyle = '#FFD700';
-    ctx.fillRect(35, 178, 135, 12);
-    ctx.fillStyle = '#111';
-    ctx.fillRect(48, 140, 75, 40);
-    ctx.fillStyle = '#AACCFF';
-    ctx.fillRect(58, 147, 35, 26);
-    ctx.fillStyle = '#111';
-    ctx.beginPath(); ctx.arc(52, 205, 22, 0, Math.PI*2); ctx.fill();
-    ctx.beginPath(); ctx.arc(122, 205, 14, 0, Math.PI*2); ctx.fill();
-    createSmallFire(ctx, 70, 155);
-    createSmallFire(ctx, 110, 155);
-  } 
-  else if (m.type === "lawnmower") {
-    ctx.fillStyle = '#C22';
-    ctx.fillRect(45, 165, 95, 38);
-    ctx.fillStyle = '#111';
-    ctx.fillRect(55, 150, 65, 28);
-    ctx.fillStyle = '#DDD';
-    ctx.beginPath(); ctx.arc(58, 195, 12, 0, Math.PI*2); ctx.fill();
-    createSmallFire(ctx, 78, 165);
-  } 
-  else if (m.type === "boat") {
-    ctx.fillStyle = '#228B22';
-    ctx.fillRect(38, 175, 140, 35);
-    ctx.fillStyle = '#FFF';
-    ctx.beginPath();
-    ctx.moveTo(45, 155);
-    ctx.quadraticCurveTo(65, 125, 110, 125);
-    ctx.quadraticCurveTo(155, 155, 160, 170);
-    ctx.lineTo(45, 170);
-    ctx.fill();
-    ctx.fillStyle = '#111';
-    ctx.beginPath(); ctx.arc(55, 200, 16, 0, Math.PI*2); ctx.fill();
-    ctx.beginPath(); ctx.arc(145, 200, 16, 0, Math.PI*2); ctx.fill();
-    createSmallFire(ctx, 85, 145);
-  } 
-  else if (m.type === "mobilehome") {
-    ctx.fillStyle = '#C0C0C0';
-    ctx.fillRect(30, 150, 160, 95);
-    ctx.fillStyle = '#333';
-    ctx.fillRect(45, 160, 50, 35);
-    ctx.fillStyle = '#AACCFF';
-    ctx.fillRect(105, 160, 50, 35);
-    ctx.fillStyle = '#111';
-    ctx.beginPath(); ctx.arc(45, 205, 19, 0, Math.PI*2); ctx.fill();
-    ctx.beginPath(); ctx.arc(125, 205, 19, 0, Math.PI*2); ctx.fill();
-    createSmallFire(ctx, 75, 165);
-  } 
-  else if (m.type === "sportscar") {
-    ctx.fillStyle = '#FF0000';
-    ctx.beginPath();
-    ctx.moveTo(35, 175);
-    ctx.lineTo(35, 165);
-    ctx.lineTo(95, 140);
-    ctx.lineTo(155, 165);
-    ctx.lineTo(155, 175);
-    ctx.fill();
-    ctx.fillStyle = '#111';
-    ctx.fillRect(48, 145, 85, 35);
-    ctx.fillStyle = '#AACCFF';
-    ctx.fillRect(58, 150, 38, 26);
-    ctx.fillRect(101, 150, 25, 26);
-    ctx.fillStyle = '#111';
-    ctx.beginPath(); ctx.arc(63, 205, 17, 0, Math.PI*2); ctx.fill();
-    ctx.beginPath(); ctx.arc(123, 205, 17, 0, Math.PI*2); ctx.fill();
-    createSmallFire(ctx, 70, 155);
-  } 
-  else if (m.type === "shed") {
-    ctx.fillStyle = '#8B4513';
-    ctx.fillRect(35, 150, 130, 95);
-    ctx.fillStyle = '#A52A2A';
-    ctx.beginPath();
-    ctx.moveTo(25, 150);
-    ctx.lineTo(80, 110);
-    ctx.lineTo(155, 150);
-    ctx.fill();
-    ctx.fillStyle = '#3C2F1F';
-    ctx.fillRect(52, 170, 78, 65); // wide garage door
-    ctx.fillStyle = '#FFCC00';
-    ctx.fillRect(85, 195, 8, 8);
-    createSmallFire(ctx, 85, 135);
+    // grass
+    ctx.fillStyle = '#3D8C40';
+    ctx.fillRect(0, 165, 220, 65);
+
+    if (m.type === "house") {
+      const x = 30;
+      const baseY = 145;
+      ctx.fillStyle = m.color;
+      ctx.fillRect(x, baseY, 160, 120);
+      ctx.strokeStyle = '#222';
+      ctx.lineWidth = 8;
+      ctx.strokeRect(x+5, baseY, 150, 120);
+      // lowered roof
+      ctx.fillStyle = '#8B2A00';
+      ctx.beginPath();
+      ctx.moveTo(x-15, baseY - 8);
+      ctx.lineTo(x+80, baseY - 48);
+      ctx.lineTo(x+175, baseY - 8);
+      ctx.fill();
+      ctx.fillStyle = '#A33';
+      ctx.fillRect(x + 115, baseY - 65, 22, 38);
+      // door
+      ctx.fillStyle = '#3C2F1F';
+      ctx.fillRect(x+68, baseY + 70, 32, 55);
+      ctx.fillStyle = '#FFCC00';
+      ctx.fillRect(x+76, baseY + 98, 8, 8);
+      // smaller windows
+      ctx.fillStyle = '#AACCFF';
+      ctx.fillRect(x+28, baseY + 28, 38, 38);
+      ctx.fillRect(x+105, baseY + 28, 38, 38);
+
+      // centered fires with animation
+      animatedFire(ctx, 48, baseY + 48, time);   // left window sill
+      animatedFire(ctx, 125, baseY + 48, time);  // right window sill
+      animatedFire(ctx, 80, baseY - 22, time);   // roof peak
+      animatedFire(ctx, 75, baseY + 98, time);   // door bottom
+    } 
+    else if (m.type === "sedan" || m.type === "pickup" || m.type === "sportscar") {
+      const color = m.type === "sedan" ? '#1E5A9E' : m.type === "pickup" ? '#C22' : '#FF0000';
+      ctx.fillStyle = color;
+      ctx.fillRect(35, 165, m.type === "pickup" ? 135 : 115, 52);
+      ctx.fillStyle = '#0F3A6B';
+      ctx.fillRect(48, 140, 85, 40);
+      ctx.fillStyle = '#AACCFF';
+      ctx.fillRect(58, 147, 38, 26);
+      if (m.type === "pickup") ctx.fillRect(100, 147, 22, 27);
+      else ctx.fillRect(101, 147, 25, 26);
+      ctx.fillStyle = '#111';
+      ctx.beginPath(); ctx.arc(63, 205, 17, 0, Math.PI*2); ctx.fill();
+      ctx.beginPath(); ctx.arc(123, 205, 17, 0, Math.PI*2); ctx.fill();
+
+      // driveway patch under wheels
+      ctx.fillStyle = '#555';
+      ctx.fillRect(45, 205, 45, 12);
+      ctx.fillRect(105, 205, 45, 12);
+
+      animatedFire(ctx, 65, 155, time);
+      animatedFire(ctx, 115, 155, time);
+    } 
+    else if (m.type === "tractor") {
+      ctx.fillStyle = '#228B22';
+      ctx.fillRect(35, 165, 135, 52);
+      ctx.fillStyle = '#FFD700';
+      ctx.fillRect(35, 178, 135, 12);
+      ctx.fillStyle = '#111';
+      ctx.fillRect(48, 140, 75, 40);
+      ctx.fillStyle = '#AACCFF';
+      ctx.fillRect(58, 147, 35, 26);
+      ctx.fillStyle = '#111';
+      ctx.beginPath(); ctx.arc(52, 205, 22, 0, Math.PI*2); ctx.fill();
+      ctx.beginPath(); ctx.arc(122, 205, 14, 0, Math.PI*2); ctx.fill();
+      ctx.fillStyle = '#555';
+      ctx.fillRect(45, 205, 45, 12);
+      ctx.fillRect(105, 205, 45, 12);
+      animatedFire(ctx, 70, 155, time);
+      animatedFire(ctx, 110, 155, time);
+    } 
+    else if (m.type === "lawnmower") {
+      ctx.fillStyle = '#C22';
+      ctx.fillRect(45, 165, 95, 38);
+      ctx.fillStyle = '#111';
+      ctx.fillRect(55, 150, 65, 28);
+      ctx.fillStyle = '#DDD';
+      ctx.beginPath(); ctx.arc(58, 195, 12, 0, Math.PI*2); ctx.fill();
+      ctx.fillStyle = '#555';
+      ctx.fillRect(55, 195, 35, 10);
+      animatedFire(ctx, 78, 165, time);
+    } 
+    else if (m.type === "boat") {
+      ctx.fillStyle = '#228B22';
+      ctx.fillRect(38, 175, 140, 35);
+      ctx.fillStyle = '#FFF';
+      ctx.beginPath();
+      ctx.moveTo(45, 155);
+      ctx.quadraticCurveTo(65, 125, 110, 125);
+      ctx.quadraticCurveTo(155, 155, 160, 170);
+      ctx.lineTo(45, 170);
+      ctx.fill();
+      ctx.fillStyle = '#111';
+      ctx.beginPath(); ctx.arc(55, 200, 16, 0, Math.PI*2); ctx.fill();
+      ctx.beginPath(); ctx.arc(145, 200, 16, 0, Math.PI*2); ctx.fill();
+      ctx.fillStyle = '#555';
+      ctx.fillRect(50, 200, 40, 10);
+      ctx.fillRect(130, 200, 35, 10);
+      animatedFire(ctx, 85, 145, time);
+    } 
+    else if (m.type === "mobilehome") {
+      ctx.fillStyle = '#C0C0C0';
+      ctx.fillRect(30, 150, 160, 95);
+      ctx.fillStyle = '#333';
+      ctx.fillRect(45, 160, 50, 35);
+      ctx.fillStyle = '#AACCFF';
+      ctx.fillRect(105, 160, 50, 35);
+      ctx.fillStyle = '#111';
+      ctx.beginPath(); ctx.arc(45, 205, 19, 0, Math.PI*2); ctx.fill();
+      ctx.beginPath(); ctx.arc(125, 205, 19, 0, Math.PI*2); ctx.fill();
+      ctx.fillStyle = '#555';
+      ctx.fillRect(40, 205, 50, 12);
+      ctx.fillRect(115, 205, 50, 12);
+      animatedFire(ctx, 75, 165, time);
+    } 
+    else if (m.type === "shed") {
+      ctx.fillStyle = '#8B4513';
+      ctx.fillRect(35, 150, 130, 95);
+      ctx.fillStyle = '#A52A2A';
+      ctx.beginPath();
+      ctx.moveTo(25, 150);
+      ctx.lineTo(80, 110);
+      ctx.lineTo(155, 150);
+      ctx.fill();
+      ctx.fillStyle = '#3C2F1F';
+      ctx.fillRect(52, 170, 78, 65);
+      ctx.fillStyle = '#FFCC00';
+      ctx.fillRect(85, 195, 8, 8);
+      ctx.fillStyle = '#555';
+      ctx.fillRect(55, 205, 70, 12);
+      animatedFire(ctx, 85, 135, time);
+    }
+
+    animationFrame = requestAnimationFrame(drawFrame);
   }
 
+  drawFrame();
   return c;
 }
 
-function createSmallFire(ctx, x, y) {
+function animatedFire(ctx, x, y, time) {
+  const flicker = Math.sin(time * 8) * 2 + Math.cos(time * 12) * 1.5;
   ctx.fillStyle = '#FF4400';
-  ctx.fillRect(x, y, 14, 20);
+  ctx.fillRect(x - 4, y + flicker, 14, 22);
   ctx.fillStyle = '#FF8800';
-  ctx.fillRect(x+3, y-10, 9, 16);
+  ctx.fillRect(x - 1, y - 12 + flicker * 0.7, 9, 18);
   ctx.fillStyle = '#FFCC00';
-  ctx.fillRect(x+5, y-18, 5, 12);
+  ctx.fillRect(x + 2, y - 20 + flicker * 1.2, 5, 14);
 }
 
 function renderAll() {
@@ -230,9 +210,7 @@ function renderAll() {
     div.className = 'model';
     const c = createModelCanvas(m);
     div.appendChild(c);
-    div.onclick = () => {
-      alert(`Selected Model ${m.id} - ${m.name}\n\nTell me your favorite models and I'll build the full game using them.`);
-    };
+    div.onclick = () => alert(`Selected Model ${m.id} - ${m.name}\n\nTell me your favorites and I will build the full game.`);
     grid.appendChild(div);
   });
 }
