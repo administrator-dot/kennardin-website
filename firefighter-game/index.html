@@ -224,4 +224,171 @@ function drawBackground() {
 function drawSideFireTruck() {
   ctx.fillStyle = 'rgba(0,0,0,0.3)';
   ctx.fillRect(truckX+25, truckY+38, 165, 12);
- 
+  ctx.fillStyle = '#111';
+  ctx.beginPath(); ctx.arc(truckX+45, truckY+27, 27, 0, Math.PI*2); ctx.fill();
+  ctx.beginPath(); ctx.arc(truckX+125, truckY+27, 27, 0, Math.PI*2); ctx.fill();
+  ctx.fillStyle = '#DDD';
+  ctx.beginPath(); ctx.arc(truckX+45, truckY+27, 14, 0, Math.PI*2); ctx.fill();
+  ctx.beginPath(); ctx.arc(truckX+125, truckY+27, 14, 0, Math.PI*2); ctx.fill();
+
+  ctx.fillStyle = '#C00';
+  ctx.fillRect(truckX, truckY-44, 185, 74);
+  ctx.fillStyle = '#A00';
+  ctx.fillRect(truckX+12, truckY-76, 85, 40);
+  ctx.fillStyle = '#113344';
+  ctx.fillRect(truckX+20, truckY-71, 38, 29);
+  ctx.fillRect(truckX+65, truckY-71, 28, 29);
+  ctx.fillStyle = '#222';
+  ctx.fillRect(truckX+100, truckY-40, 75, 52);
+  ctx.fillStyle = '#FF0';
+  ctx.fillRect(truckX+8, truckY-20, 173, 10);
+  ctx.fillStyle = '#DDD';
+  ctx.fillRect(truckX+145, truckY-72, 20, 40);
+}
+
+function drawTallHouse(x) {
+  ctx.fillStyle = '#E8D5B8';
+  ctx.fillRect(x, 205, 265, 315);
+  ctx.strokeStyle = '#C9B89A';
+  ctx.lineWidth = 3;
+  for (let i = 0; i < 13; i++) {
+    ctx.beginPath(); ctx.moveTo(x+10, 215 + i*23); ctx.lineTo(x+255, 215 + i*23); ctx.stroke();
+  }
+  ctx.fillStyle = '#8B2A00';
+  ctx.beginPath();
+  ctx.moveTo(x-22, 195);
+  ctx.lineTo(x+132, 108);
+  ctx.lineTo(x+287, 195);
+  ctx.fill();
+  ctx.fillStyle = '#A33';
+  ctx.fillRect(x+172, 118, 29, 58);
+  ctx.fillStyle = '#6B4E2A';
+  ctx.fillRect(x+32, 460, 98, 60);
+  ctx.fillStyle = '#3C2F1F';
+  ctx.fillRect(x+102, 410, 44, 110);
+  ctx.fillStyle = '#FFCC00';
+  ctx.fillRect(x+119, 465, 9, 9);
+  ctx.strokeStyle = '#222';
+  ctx.lineWidth = 7;
+  ctx.strokeRect(x+28, 258, 64, 90);
+  ctx.strokeRect(x+168, 258, 64, 90);
+  ctx.fillStyle = '#AACCFF';
+  ctx.fillRect(x+33, 263, 54, 80);
+  ctx.fillRect(x+173, 263, 54, 80);
+}
+
+function drawSedan(x) {
+  const groundY = 348;
+  ctx.fillStyle = '#1E5A9E';
+  ctx.fillRect(x+12, groundY, 115, 52);
+  ctx.fillStyle = '#0F3A6B';
+  ctx.fillRect(x+25, groundY-33, 85, 40);
+  ctx.fillStyle = '#AACCFF';
+  ctx.fillRect(x+35, groundY-26, 38, 26);
+  ctx.fillRect(x+78, groundY-26, 25, 26);
+  ctx.fillStyle = '#111';
+  ctx.beginPath(); ctx.arc(x+38, groundY+42, 17, 0, Math.PI*2); ctx.fill();
+  ctx.beginPath(); ctx.arc(x+98, groundY+42, 17, 0, Math.PI*2); ctx.fill();
+}
+
+function drawPickup(x) {
+  const groundY = 348;
+  ctx.fillStyle = '#1F2A3C';
+  ctx.fillRect(x+8, groundY, 135, 50);
+  ctx.fillStyle = '#111';
+  ctx.fillRect(x+22, groundY-36, 80, 40);
+  ctx.fillStyle = '#AACCFF';
+  ctx.fillRect(x+30, groundY-28, 40, 27);
+  ctx.fillRect(x+75, groundY-28, 20, 27);
+  ctx.fillStyle = '#111';
+  ctx.beginPath(); ctx.arc(x+35, groundY+42, 17, 0, Math.PI*2); ctx.fill();
+  ctx.beginPath(); ctx.arc(x+108, groundY+42, 17, 0, Math.PI*2); ctx.fill();
+}
+
+function drawSemi(x) {
+  const groundY = 348;
+  ctx.fillStyle = '#C00';
+  ctx.fillRect(x, groundY-78, 88, 78);
+  ctx.fillStyle = '#113344';
+  ctx.fillRect(x+14, groundY-66, 44, 38);
+  ctx.fillStyle = '#DDD';
+  ctx.fillRect(x+85, groundY-103, 280, 105);
+  ctx.fillStyle = '#A33';
+  ctx.fillRect(x+92, groundY-93, 265, 15);
+  ctx.fillStyle = '#111';
+  ctx.beginPath(); ctx.arc(x+40, groundY+22, 19, 0, Math.PI*2); ctx.fill();
+  ctx.beginPath(); ctx.arc(x+120, groundY+22, 19, 0, Math.PI*2); ctx.fill();
+  ctx.beginPath(); ctx.arc(x+190, groundY+22, 19, 0, Math.PI*2); ctx.fill();
+  ctx.beginPath(); ctx.arc(x+260, groundY+22, 19, 0, Math.PI*2); ctx.fill();
+}
+
+function loop() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  drawBackground();
+
+  const data = levels[currentLevel-1];
+  data.entities.forEach(ent => {
+    if (ent.type === 'house') drawTallHouse(ent.x);
+    if (ent.type === 'sedan') drawSedan(ent.x);
+    if (ent.type === 'pickup') drawPickup(ent.x);
+    if (ent.type === 'semi') drawSemi(ent.x);
+  });
+
+  drawSideFireTruck();
+
+  fireSpots.forEach(spot => {
+    if (spot.health <= 0) return;
+
+    if (Math.random() < 0.024) spot.health = Math.min(spot.health + 3.8, spot.maxHealth);
+
+    const intensity = Math.floor(spot.health / 13);
+    createFireParticles(spot.x + spot.w/2, spot.y + spot.h/2, intensity);
+
+    for (let i = particles.length-1; i >= 0; i--) {
+      const p = particles[i];
+      if (p.type === 'water' && p.x > spot.x && p.x < spot.x + spot.w && p.y > spot.y && p.y < spot.y + spot.h) {
+        spot.health -= 1.1;
+        p.life = 7;
+      }
+    }
+
+    if (spot.health <= 0) {
+      createSmoke(spot.x + spot.w/2, spot.y + spot.h/2);
+      score += 10;
+      scoreEl.textContent = score;
+    }
+  });
+
+  if (isSpraying) createWaterParticles();
+
+  for (let i = particles.length-1; i >= 0; i--) {
+    const p = particles[i];
+    p.update();
+    p.draw();
+    if (p.life <= 0) particles.splice(i, 1);
+  }
+
+  ctx.strokeStyle = '#333333';
+  ctx.lineWidth = 12;
+  ctx.lineCap = 'round';
+  ctx.shadowBlur = 10;
+  ctx.shadowColor = '#111';
+  ctx.beginPath();
+  ctx.moveTo(truckX + 148, truckY - 34);
+  ctx.quadraticCurveTo(truckX + 225, truckY - 145, mouseX, mouseY);
+  ctx.stroke();
+  ctx.shadowBlur = 0;
+
+  ctx.fillStyle = '#222';
+  ctx.fillRect(mouseX - 9, mouseY - 9, 18, 18);
+  ctx.fillStyle = '#555';
+  ctx.fillRect(mouseX - 5, mouseY - 14, 10, 8);
+
+  if (gameState === 'playing') checkWin();
+  requestAnimationFrame(loop);
+}
+
+loop();
+</script>
+</body>
+</html>
