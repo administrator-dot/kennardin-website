@@ -69,24 +69,25 @@
     }
 
     function drawFireTruck(x, y) {
+      // Flipped fire truck (rear / hose end faces right toward fires)
       ctx.fillStyle = '#e74c3c'; ctx.fillRect(x, y-85, 240, 75);
       ctx.fillStyle = '#fff'; ctx.fillRect(x+10, y-65, 220, 18);
-      ctx.fillStyle = '#2c3e50'; ctx.fillRect(x+190, y-105, 70, 50);
-      ctx.fillStyle = '#ecf0f1'; ctx.fillRect(x+30, y-115, 150, 18);
+      ctx.fillStyle = '#2c3e50'; ctx.fillRect(x+10, y-105, 70, 50); // cab now on left
+      ctx.fillStyle = '#ecf0f1'; ctx.fillRect(x+70, y-115, 150, 18);
       ctx.fillStyle = '#f1c40f';
-      ctx.fillRect(x+35, y-130, 8, 25); ctx.fillRect(x+55, y-130, 8, 25);
       ctx.fillRect(x+75, y-130, 8, 25); ctx.fillRect(x+95, y-130, 8, 25);
       ctx.fillRect(x+115, y-130, 8, 25); ctx.fillRect(x+135, y-130, 8, 25);
-      ctx.fillStyle = '#34495e'; ctx.fillRect(x+205, y-95, 40, 30);
-      ctx.fillStyle = '#3498db'; ctx.fillRect(x+225, y-125, 18, 12);
+      ctx.fillRect(x+155, y-130, 8, 25); ctx.fillRect(x+175, y-130, 8, 25);
+      ctx.fillStyle = '#34495e'; ctx.fillRect(x+25, y-95, 40, 30);
+      ctx.fillStyle = '#3498db'; ctx.fillRect(x+5, y-125, 18, 12);
       ctx.fillStyle = '#2c3e50';
-      ctx.beginPath(); ctx.arc(x+50, y-10, 24, 0, Math.PI*2); ctx.fill();
-      ctx.beginPath(); ctx.arc(x+130, y-10, 24, 0, Math.PI*2); ctx.fill();
-      ctx.beginPath(); ctx.arc(x+200, y-10, 24, 0, Math.PI*2); ctx.fill();
+      ctx.beginPath(); ctx.arc(x+70, y-10, 24, 0, Math.PI*2); ctx.fill();
+      ctx.beginPath(); ctx.arc(x+150, y-10, 24, 0, Math.PI*2); ctx.fill();
+      ctx.beginPath(); ctx.arc(x+210, y-10, 24, 0, Math.PI*2); ctx.fill();
       ctx.fillStyle = '#ecf0f1';
-      ctx.beginPath(); ctx.arc(x+50, y-10, 12, 0, Math.PI*2); ctx.fill();
-      ctx.beginPath(); ctx.arc(x+130, y-10, 12, 0, Math.PI*2); ctx.fill();
-      ctx.beginPath(); ctx.arc(x+200, y-10, 12, 0, Math.PI*2); ctx.fill();
+      ctx.beginPath(); ctx.arc(x+70, y-10, 12, 0, Math.PI*2); ctx.fill();
+      ctx.beginPath(); ctx.arc(x+150, y-10, 12, 0, Math.PI*2); ctx.fill();
+      ctx.beginPath(); ctx.arc(x+210, y-10, 12, 0, Math.PI*2); ctx.fill();
     }
 
     function drawBlueCar(x, y) {
@@ -108,21 +109,21 @@
     }
 
     function createWaterParticles() {
-      const hoseEndX = truckX + 148;
-      const hoseEndY = truckY - 34;
+      const hoseEndX = truckX + 260;  // rear of flipped truck
+      const hoseEndY = truckY - 38;
       const dx = mouseX - hoseEndX;
       const dy = mouseY - hoseEndY;
       const length = Math.sqrt(dx*dx + dy*dy) || 1;
-      const dirX = dx / length * 1.2;
-      const dirY = dy / length * 1.2;
+      const dirX = dx / length * 1.25;
+      const dirY = dy / length * 1.25;
 
-      for (let i = 0; i < 14; i++) {  // smaller stream
+      for (let i = 0; i < 14; i++) {
         const spread = (Math.random() - 0.5) * 3.5;
         particles.push({
-          x: mouseX + (Math.random()-0.5)*4,
-          y: mouseY + (Math.random()-0.5)*4,
-          vx: dirX * 26 + spread,
-          vy: dirY * 26 + spread - 5,
+          x: hoseEndX + (Math.random()-0.5)*5,
+          y: hoseEndY + (Math.random()-0.5)*5,
+          vx: dirX * 27 + spread,
+          vy: dirY * 27 + spread - 4,
           color: '#33CCFF',
           life: 24,
           size: 4,
@@ -190,8 +191,8 @@
         ctx.strokeStyle = '#555';
         ctx.lineWidth = 14;
         ctx.beginPath();
-        ctx.moveTo(truckX + 148, truckY - 34);
-        ctx.quadraticCurveTo(truckX + 240, truckY - 170, mouseX, mouseY);
+        ctx.moveTo(truckX + 260, truckY - 38); // rear of flipped truck
+        ctx.quadraticCurveTo(truckX + 340, truckY - 160, mouseX, mouseY);
         ctx.stroke();
         createWaterParticles();
       }
