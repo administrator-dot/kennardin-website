@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Kennard Fire Defender - Fixed Ground Placement</title>
+<title>Kennard Fire Defender - Ground Fixed</title>
 <style>
   body { margin:0; background:#000; font-family:Arial, sans-serif; overflow:hidden; }
   canvas { display:block; margin:0 auto; }
@@ -18,7 +18,7 @@
   <div id="titleScreen">
     <h1 style="font-size:58px; margin-top:80px; color:#FF0;">KENNARD FIRE DEFENDER</h1>
     <div style="margin-top:30px;">
-      <button onclick="startLevel(1)">Level 1 Test - Sedan + House</button>
+      <button onclick="startLevel()">START LEVEL TEST</button>
     </div>
   </div>
 
@@ -41,9 +41,10 @@
 <canvas id="game" width="1150" height="600"></canvas>
 
 <script>
-// ============== FINAL FIXED VERSION - ALL ON GROUND ==============
+// ============== FINAL GROUND-FIXED VERSION ==============
 const canvas = document.getElementById('game');
 const ctx = canvas.getContext('2d');
+
 let score = 0;
 let mouseX = 500, mouseY = 300;
 let isSpraying = false;
@@ -52,7 +53,7 @@ let fireSpots = [];
 let particles = [];
 
 const truckX = 48;
-const truckY = 505;   // fire truck ground line
+const truckY = 505;   // This is the exact ground line for the fire truck wheels
 
 function startLevel() {
   document.getElementById('titleScreen').style.display = 'none';
@@ -65,18 +66,15 @@ function loadLevel() {
   score = 0;
   document.getElementById('score').textContent = 0;
 
-  // Section 1 (left - closer to truck): Blue Sedan on grass
-  // Section 2 (right): Short Blue House on grass
-  fireSpots = [
-    // Sedan (Section 1)
-    {x: 320, y: 168, w: 45, h: 32, health: 2600, maxHealth: 2600, type:'hood', points:10},
-    {x: 380, y: 168, w: 38, h: 32, health: 2400, maxHealth: 2400, type:'cab', points:10},
-    // House (Section 2)
-    {x: 735, y: 173, w: 38, h: 38, health: 2800, maxHealth: 2800, type:'window', points:10}, // left window sill - centered
-    {x: 855, y: 173, w: 38, h: 38, health: 2800, maxHealth: 2800, type:'window', points:10}, // right window sill - centered
-    {x: 700, y: 98, w: 110, h: 35, health: 4200, maxHealth: 4200, type:'roof', points:25},   // roof centered
-    {x: 785, y: 215, w: 32, h: 55, health: 2200, maxHealth: 2200, type:'door', points:15}    // door bottom
-  ];
+  // Sedan - Section 1 (closer to truck) - wheels on same grass as fire truck
+  fireSpots.push({x: 295, y: 168, w: 45, h: 32, health: 2600, maxHealth: 2600, type:'hood', points:10});
+  fireSpots.push({x: 355, y: 168, w: 38, h: 32, health: 2400, maxHealth: 2400, type:'cab', points:10});
+
+  // Short Blue House - Section 2 (right side) - base aligned to grass
+  fireSpots.push({x: 735, y: 173, w: 38, h: 38, health: 2800, maxHealth: 2800, type:'window', points:10}); // left window sill centered
+  fireSpots.push({x: 855, y: 173, w: 38, h: 38, health: 2800, maxHealth: 2800, type:'window', points:10}); // right window sill centered
+  fireSpots.push({x: 700, y: 98, w: 110, h: 35, health: 4200, maxHealth: 4200, type:'roof', points:25});   // roof centered
+  fireSpots.push({x: 785, y: 215, w: 32, h: 55, health: 2200, maxHealth: 2200, type:'door', points:15});    // door bottom
 
   gameState = 'playing';
 }
@@ -179,20 +177,21 @@ function drawSideFireTruck() {
 }
 
 function drawSedan(x) {
+  const groundY = 348;   // same grass line as fire truck
   ctx.fillStyle = '#1E5A9E';
-  ctx.fillRect(x, 348, 125, 52);           // body on grass
+  ctx.fillRect(x, groundY, 125, 52);
   ctx.fillStyle = '#0F3A6B';
-  ctx.fillRect(x+15, 315, 95, 35);
+  ctx.fillRect(x+15, groundY - 33, 95, 35);
   ctx.fillStyle = '#AACCFF';
-  ctx.fillRect(x+25, 322, 40, 24);
-  ctx.fillRect(x+75, 322, 28, 24);
+  ctx.fillRect(x+25, groundY - 26, 40, 24);
+  ctx.fillRect(x+75, groundY - 26, 28, 24);
   ctx.fillStyle = '#111';
-  ctx.beginPath(); ctx.arc(x+38, 390, 19, 0, Math.PI*2); ctx.fill();
-  ctx.beginPath(); ctx.arc(x+98, 390, 19, 0, Math.PI*2); ctx.fill();
+  ctx.beginPath(); ctx.arc(x+38, groundY + 42, 19, 0, Math.PI*2); ctx.fill();
+  ctx.beginPath(); ctx.arc(x+98, groundY + 42, 19, 0, Math.PI*2); ctx.fill();
 }
 
 function drawHouse(x) {
-  const baseY = 325;
+  const baseY = 325;   // aligned to same grass level
   ctx.fillStyle = '#66CCFF';
   ctx.fillRect(x, baseY, 265, 195);
   ctx.strokeStyle = '#222';
@@ -220,9 +219,8 @@ function loop() {
   drawBackground();
   drawSideFireTruck();
 
-  // Draw models on ground
-  drawSedan(280);     // Section 1 - closer to truck
-  drawHouse(680);     // Section 2 - right side
+  drawSedan(280);   // left section - on ground
+  drawHouse(680);   // right section - on ground
 
   ctx.fillStyle = '#FFF';
   ctx.font = 'bold 18px Arial';
