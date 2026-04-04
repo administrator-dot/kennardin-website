@@ -5,37 +5,32 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Kennard Fire Defender - Models Test</title>
   <style>
-    body { font-family: Arial, sans-serif; margin: 0; padding: 20px; background: #111; color: #fff; text-align: center; }
-    h1 { margin: 10px 0 5px; }
-    .subtitle { font-size: 18px; margin-bottom: 15px; color: #ccc; }
-    .canvas-container { margin: 20px auto; border: 4px solid #333; background: #222; padding: 10px; display: inline-block; }
-    canvas { image-rendering: pixelated; cursor: crosshair; }
-    .controls { margin: 15px 0; }
-    button { padding: 12px 24px; margin: 0 8px; font-size: 18px; background: #001f3f; color: white; border: none; border-radius: 6px; cursor: pointer; }
-    button:hover { background: #003366; }
-    .tips { max-width: 1000px; margin: 15px auto; background: #222; padding: 15px; border-radius: 8px; font-size: 16px; line-height: 1.5; }
+    body { margin:0; background:#000; font-family:Arial, sans-serif; overflow:hidden; color:#fff; text-align:center; }
+    canvas { display:block; margin:0 auto; image-rendering:pixelated; }
+    #overlay { position:absolute; top:0; left:0; width:100%; height:100%; pointer-events:none; }
+    button { pointer-events:auto; margin:15px; padding:14px 28px; font-size:20px; background:#C00; color:white; border:none; border-radius:8px; cursor:pointer; }
+    button:hover { background:#F00; }
+    .info { position:absolute; top:15px; left:15px; font-size:24px; pointer-events:none; }
   </style>
 </head>
 <body>
 
-  <h1>Kennard Fire Defender</h1>
-  <p class="subtitle">Day • Dusk • Night — Realistic Fire Truck + Hose & Spray</p>
+  <div id="overlay">
+    <h1 style="font-size:58px; margin-top:40px; color:#FF0;">KENNARD FIRE DEFENDER</h1>
+    <p style="font-size:26px; margin:10px 0 30px;">KVFD • Kennard, Indiana</p>
 
-  <div class="tips">
-    <strong>How to play:</strong> Move mouse to aim hose • Click & hold to spray water • Click "Ignite Fires" to start fires
+    <div class="controls" style="margin-top:10px;">
+      <button onclick="changeBackground(0)">☀️ Day</button>
+      <button onclick="changeBackground(1)">🌅 Dusk</button>
+      <button onclick="changeBackground(2)">🌙 Night</button>
+      <button onclick="igniteFires()">🔥 Ignite Fires</button>
+      <button onclick="extinguishAll()">🧯 Put Out All</button>
+    </div>
   </div>
 
-  <div class="controls">
-    <button onclick="changeBackground(0)">☀️ Day</button>
-    <button onclick="changeBackground(1)">🌅 Dusk</button>
-    <button onclick="changeBackground(2)">🌙 Night</button>
-    <button onclick="igniteFires()">🔥 Ignite Fires</button>
-    <button onclick="extinguishAll()">🧯 Put Out All Fires</button>
-  </div>
+  <div class="info">Score: <span id="score">0</span> &nbsp;&nbsp; Level Test</div>
 
-  <div class="canvas-container">
-    <canvas id="gameCanvas" width="1200" height="600"></canvas>
-  </div>
+  <canvas id="gameCanvas" width="1200" height="600"></canvas>
 
   <script>
     const canvas = document.getElementById('gameCanvas');
@@ -45,19 +40,40 @@
     let isSpraying = false;
     let mouseX = 600, mouseY = 300;
 
-    // Draw realistic fire truck (matches your image)
+    function drawGrid() {
+      ctx.strokeStyle = 'rgba(255,255,255,0.15)';
+      ctx.lineWidth = 1;
+      for (let x = 0; x <= 1200; x += 40) { ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, 600); ctx.stroke(); }
+      for (let y = 0; y <= 600; y += 40) { ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(1200, y); ctx.stroke(); }
+    }
+
+    function drawBackground(bg) {
+      if (bg === 0) { // Day
+        ctx.fillStyle = '#5cc8ff'; ctx.fillRect(0, 0, 1200, 480);
+        ctx.fillStyle = '#4caf50'; ctx.fillRect(0, 480, 1200, 120);
+        ctx.fillStyle = '#ffeb3b'; ctx.beginPath(); ctx.arc(1000, 120, 40, 0, Math.PI*2); ctx.fill();
+      } else if (bg === 1) { // Dusk
+        ctx.fillStyle = '#ff7a00'; ctx.fillRect(0, 0, 1200, 480);
+        ctx.fillStyle = '#3a8c3a'; ctx.fillRect(0, 480, 1200, 120);
+        ctx.fillStyle = '#ff9800'; ctx.beginPath(); ctx.arc(900, 180, 35, 0, Math.PI*2); ctx.fill();
+      } else { // Night
+        ctx.fillStyle = '#112233'; ctx.fillRect(0, 0, 1200, 480);
+        ctx.fillStyle = '#223322'; ctx.fillRect(0, 480, 1200, 120);
+        ctx.fillStyle = '#f4f4f4'; ctx.beginPath(); ctx.arc(1000, 120, 35, 0, Math.PI*2); ctx.fill();
+        ctx.fillStyle = '#112233'; ctx.beginPath(); ctx.arc(1020, 115, 25, 0, Math.PI*2); ctx.fill();
+      }
+    }
+
     function drawFireTruck(x, y) {
-      ctx.fillStyle = '#e74c3c'; ctx.fillRect(x, y-85, 240, 75);           // body
-      ctx.fillStyle = '#fff'; ctx.fillRect(x+10, y-65, 220, 18);            // white stripe
-      ctx.fillStyle = '#2c3e50'; ctx.fillRect(x+190, y-105, 70, 50);        // cab
-      ctx.fillStyle = '#ecf0f1'; ctx.fillRect(x+30, y-115, 150, 18);        // ladder base
-      ctx.fillStyle = '#f1c40f'; ctx.fillRect(x+35, y-130, 8, 25);         // ladder rungs
-      ctx.fillRect(x+55, y-130, 8, 25); ctx.fillRect(x+75, y-130, 8, 25);
-      ctx.fillRect(x+95, y-130, 8, 25); ctx.fillRect(x+115, y-130, 8, 25);
-      ctx.fillRect(x+135, y-130, 8, 25);
-      ctx.fillStyle = '#34495e'; ctx.fillRect(x+205, y-95, 40, 30);         // window
-      ctx.fillStyle = '#3498db'; ctx.fillRect(x+225, y-125, 18, 12);        // siren light
-      // Wheels
+      // Detailed fire truck from your image (ladder, stripes, siren)
+      ctx.fillStyle = '#e74c3c'; ctx.fillRect(x, y-85, 240, 75);
+      ctx.fillStyle = '#fff'; ctx.fillRect(x+10, y-65, 220, 18);
+      ctx.fillStyle = '#2c3e50'; ctx.fillRect(x+190, y-105, 70, 50);
+      ctx.fillStyle = '#ecf0f1'; ctx.fillRect(x+30, y-115, 150, 18);
+      ctx.fillStyle = '#f1c40f'; ctx.fillRect(x+35, y-130, 8, 25); ctx.fillRect(x+55, y-130, 8, 25);
+      ctx.fillRect(x+75, y-130, 8, 25); ctx.fillRect(x+95, y-130, 8, 25); ctx.fillRect(x+115, y-130, 8, 25); ctx.fillRect(x+135, y-130, 8, 25);
+      ctx.fillStyle = '#34495e'; ctx.fillRect(x+205, y-95, 40, 30);
+      ctx.fillStyle = '#3498db'; ctx.fillRect(x+225, y-125, 18, 12);
       ctx.fillStyle = '#2c3e50';
       ctx.beginPath(); ctx.arc(x+50, y-10, 24, 0, Math.PI*2); ctx.fill();
       ctx.beginPath(); ctx.arc(x+130, y-10, 24, 0, Math.PI*2); ctx.fill();
@@ -89,13 +105,12 @@
     function drawWaterSpray(x1, y1, x2, y2) {
       const dx = x2 - x1;
       const dy = y2 - y1;
-      const length = Math.sqrt(dx*dx + dy*dy);
-      for (let i = 0; i < 25; i++) {
-        const t = i / 25;
-        const px = x1 + dx * t + (Math.random() * 20 - 10);
-        const py = y1 + dy * t + (Math.random() * 20 - 10);
-        ctx.fillStyle = `rgba(100, 180, 255, ${0.6 + Math.random() * 0.4})`;
-        ctx.fillRect(px, py, 4, 4);
+      for (let i = 0; i < 28; i++) {
+        const t = i / 28;
+        const px = x1 + dx * t + (Math.random() * 18 - 9);
+        const py = y1 + dy * t + (Math.random() * 18 - 9);
+        ctx.fillStyle = `rgba(100, 200, 255, ${0.7 + Math.random() * 0.3})`;
+        ctx.fillRect(px, py, 5, 5);
       }
     }
 
@@ -116,43 +131,17 @@
       drawBlueCar(520, 480);
       drawHouse(860, 480);
 
-      // Draw active fires
       fires.forEach(f => drawFire(f.x, f.y, f.size));
 
-      // Draw hose + water spray when spraying
       if (isSpraying) {
         ctx.strokeStyle = '#555';
-        ctx.lineWidth = 12;
+        ctx.lineWidth = 14;
         ctx.beginPath();
-        ctx.moveTo(320, 410); // hose start (fire truck)
-        ctx.lineTo(mouseX, mouseY);
+        ctx.moveTo(320, 410); // hose from fire truck
+        ctx.quadraticCurveTo(380, 340, mouseX, mouseY);
         ctx.stroke();
-
         drawWaterSpray(320, 410, mouseX, mouseY);
       }
-    }
-
-    function drawBackground(bg) {
-      if (bg === 0) { // Day
-        ctx.fillStyle = '#5cc8ff'; ctx.fillRect(0, 0, 1200, 480);
-        ctx.fillStyle = '#4caf50'; ctx.fillRect(0, 480, 1200, 120);
-        ctx.fillStyle = '#ffeb3b'; ctx.beginPath(); ctx.arc(1000, 120, 40, 0, Math.PI*2); ctx.fill();
-      } else if (bg === 1) { // Dusk
-        ctx.fillStyle = '#ff7a00'; ctx.fillRect(0, 0, 1200, 480);
-        ctx.fillStyle = '#3a8c3a'; ctx.fillRect(0, 480, 1200, 120);
-        ctx.fillStyle = '#ff9800'; ctx.beginPath(); ctx.arc(900, 180, 35, 0, Math.PI*2); ctx.fill();
-      } else { // Night
-        ctx.fillStyle = '#112233'; ctx.fillRect(0, 0, 1200, 480);
-        ctx.fillStyle = '#223322'; ctx.fillRect(0, 480, 1200, 120);
-        ctx.fillStyle = '#f4f4f4'; ctx.beginPath(); ctx.arc(1000, 120, 35, 0, Math.PI*2); ctx.fill();
-        ctx.fillStyle = '#112233'; ctx.beginPath(); ctx.arc(1020, 115, 25, 0, Math.PI*2); ctx.fill();
-      }
-    }
-
-    function drawGrid() {
-      ctx.strokeStyle = 'rgba(255,255,255,0.15)';
-      for (let x = 0; x <= 1200; x += 40) { ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, 600); ctx.stroke(); }
-      for (let y = 0; y <= 600; y += 40) { ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(1200, y); ctx.stroke(); }
     }
 
     function igniteFires() {
@@ -161,10 +150,10 @@
       fires.push({x: 310, y: 435, size: 11}); // truck gas tank
       fires.push({x: 555, y: 430, size: 11}); // car engine
       fires.push({x: 630, y: 450, size: 9});  // car gas tank
-      fires.push({x: 885, y: 370, size: 10}); // house windows
+      fires.push({x: 885, y: 370, size: 10}); // house windows & door
       fires.push({x: 940, y: 370, size: 10});
       fires.push({x: 995, y: 370, size: 10});
-      fires.push({x: 1005, y: 410, size: 12}); // door
+      fires.push({x: 1005, y: 410, size: 12});
       fires.push({x: 910, y: 280, size: 8});  // roof
       fires.push({x: 960, y: 280, size: 8});
       render();
@@ -181,9 +170,9 @@
 
     canvas.addEventListener('mousedown', () => { isSpraying = true; render(); });
     canvas.addEventListener('mouseup', () => { isSpraying = false; render(); });
+    canvas.addEventListener('mouseleave', () => { isSpraying = false; render(); });
 
-    // Click to extinguish flames
-    canvas.addEventListener('click', (e) => {
+    canvas.addEventListener('click', e => {
       const rect = canvas.getBoundingClientRect();
       const clickX = e.clientX - rect.left;
       const clickY = e.clientY - rect.top;
