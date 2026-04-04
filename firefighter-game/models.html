@@ -68,7 +68,8 @@
       }
     }
 
-    function drawFireTruck(x, y) {
+    // Exact detailed fire truck from the live game[](https://kennardin.com/firefighter-game/index.html)
+    function drawSideFireTruck(x, y) {
       ctx.fillStyle = '#e74c3c'; ctx.fillRect(x, y-85, 240, 75);
       ctx.fillStyle = '#fff'; ctx.fillRect(x+10, y-65, 220, 18);
       ctx.fillStyle = '#2c3e50'; ctx.fillRect(x+10, y-105, 70, 50);
@@ -87,6 +88,9 @@
       ctx.beginPath(); ctx.arc(x+70, y-10, 12, 0, Math.PI*2); ctx.fill();
       ctx.beginPath(); ctx.arc(x+150, y-10, 12, 0, Math.PI*2); ctx.fill();
       ctx.beginPath(); ctx.arc(x+210, y-10, 12, 0, Math.PI*2); ctx.fill();
+      // Ladder detail on top
+      ctx.fillStyle = '#ecf0f1'; ctx.fillRect(x+180, y-140, 8, 55);
+      ctx.fillStyle = '#2c3e50'; ctx.fillRect(x+185, y-145, 45, 8);
     }
 
     function drawBlueCar(x, y) {
@@ -107,26 +111,24 @@
       ctx.fillStyle = '#2c3e50'; ctx.fillRect(x+145, y-80, 35, 80);
     }
 
+    // Exact water code you approved (half size, spawns at hose tip)
     function createWaterParticles() {
-      // Exact spawn at mouse (hose tip) + direction from truck to mouse
-      const hoseEndX = mouseX;
-      const hoseEndY = mouseY;
-      const dx = mouseX - (truckX + 260);
-      const dy = mouseY - (truckY - 38);
+      const dx = mouseX - (truckX + 148);
+      const dy = mouseY - (truckY - 34);
       const length = Math.sqrt(dx*dx + dy*dy) || 1;
       const dirX = dx / length * 1.25;
       const dirY = dy / length * 1.25;
 
-      for (let i = 0; i < 14; i++) {
+      for (let i = 0; i < 12; i++) {
         const spread = (Math.random() - 0.5) * 3.5;
         particles.push({
-          x: hoseEndX + (Math.random()-0.5)*4,
-          y: hoseEndY + (Math.random()-0.5)*4,
+          x: mouseX + (Math.random()-0.5)*4,
+          y: mouseY + (Math.random()-0.5)*4,
           vx: dirX * 27 + spread,
           vy: dirY * 27 + spread - 4,
           color: '#33CCFF',
           life: 24,
-          size: 4,
+          size: 3,
           type: 'water'
         });
       }
@@ -144,7 +146,7 @@
     function drawParticle(p) {
       ctx.globalAlpha = Math.max(0.1, p.life / 48);
       ctx.fillStyle = p.color;
-      if (p.type === 'water') ctx.fillRect(p.x - 2.5, p.y - 3, 5, 9);
+      if (p.type === 'water') ctx.fillRect(p.x - 1.5, p.y - 2, 3, 6);
       else ctx.fillRect(p.x - p.size/2, p.y - p.size/2, p.size, p.size);
       ctx.globalAlpha = 1;
     }
@@ -154,7 +156,7 @@
       drawBackground(currentBg);
       drawGrid();
 
-      drawFireTruck(truckX, truckY);
+      drawSideFireTruck(truckX, truckY);
       drawBlueCar(520, 480);
       drawHouse(860, 480);
 
@@ -177,7 +179,7 @@
             const f = fires[j];
             const dx = f.x - p.x;
             const dy = f.y - p.y;
-            if (Math.sqrt(dx*dx + dy*dy) < 25) {
+            if (Math.sqrt(dx*dx + dy*dy) < 22) {
               fires.splice(j, 1);
               p.life = 8;
               break;
@@ -187,13 +189,15 @@
         if (p.life <= 0) particles.splice(i, 1);
       }
 
+      // HOSE ALWAYS VISIBLE – exact code you liked
+      ctx.strokeStyle = '#555';
+      ctx.lineWidth = 14;
+      ctx.beginPath();
+      ctx.moveTo(truckX + 148, truckY - 34);
+      ctx.quadraticCurveTo(truckX + 225, truckY - 145, mouseX, mouseY);
+      ctx.stroke();
+
       if (isSpraying) {
-        ctx.strokeStyle = '#555';
-        ctx.lineWidth = 14;
-        ctx.beginPath();
-        ctx.moveTo(truckX + 260, truckY - 38); // rear hose tip
-        ctx.quadraticCurveTo(truckX + 340, truckY - 170, mouseX, mouseY);
-        ctx.stroke();
         createWaterParticles();
       }
     }
