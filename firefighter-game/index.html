@@ -2,21 +2,14 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Kennard Fire Defender - Short House Test</title>
+<title>Kennard Fire Defender - Level Test</title>
 <style>
   body { margin:0; background:#000; font-family:Arial, sans-serif; overflow:hidden; }
   canvas { display:block; margin:0 auto; }
-  #overlay {
-    position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-    pointer-events: none; color: white; text-align: center;
-    text-shadow: 2px 2px 8px rgba(0,0,0,0.9);
-  }
-  button {
-    pointer-events: auto; margin: 12px; padding: 14px 32px; font-size: 22px;
-    background: #C00; color: white; border: none; border-radius: 8px; cursor: pointer;
-  }
-  button:hover { background: #F00; }
-  #ui { position: absolute; top: 15px; left: 15px; font-size: 24px; pointer-events: none; color:#FFF; }
+  #overlay { position:absolute; top:0; left:0; width:100%; height:100%; pointer-events:none; color:white; text-align:center; text-shadow:2px 2px 8px rgba(0,0,0,0.9); }
+  button { pointer-events:auto; margin:12px; padding:14px 32px; font-size:22px; background:#C00; color:white; border:none; border-radius:8px; cursor:pointer; }
+  button:hover { background:#F00; }
+  #ui { position:absolute; top:15px; left:15px; font-size:24px; color:#FFF; pointer-events:none; }
 </style>
 </head>
 <body>
@@ -25,65 +18,104 @@
   <div id="titleScreen">
     <h1 style="font-size:58px; margin-top:80px; color:#FF0;">KENNARD FIRE DEFENDER</h1>
     <div style="margin-top:30px;">
-      <button onclick="useModel(1)">Model 1 (Left Short House)</button>
-      <button onclick="useModel(2)">Model 2 (Right Short House)</button>
+      <button onclick="startLevel(1)">Level 1 - House + Sedan</button>
+      <button onclick="startLevel(2)">Level 2 - House + Tractor</button>
+      <button onclick="startLevel(3)">Level 3 - Pickup + Yacht</button>
     </div>
   </div>
 
-  <div id="levelCompleteScreen" style="display:none; margin-top:80px;">
-    <h1 id="levelTitle" style="font-size:48px; color:#0F0; margin-bottom:20px;">LEVEL COMPLETE!</h1>
+  <div id="levelCompleteScreen" style="display:none; margin-top:120px;">
+    <h1 style="font-size:48px; color:#0F0;">LEVEL COMPLETE!</h1>
     <div style="background:rgba(0,0,0,0.8); padding:25px 40px; border-radius:12px; display:inline-block; max-width:680px;">
-      <p id="encourageText" style="font-size:32px; margin:10px 0 15px;">Great Work, Kennard Fire Defender!<br>You saved the day!</p>
-      <p id="safetyTip" style="font-size:26px; line-height:1.5; margin:15px 0;"></p>
+      <p id="encourageText" style="font-size:32px; margin:10px 0;">Great Work, Kennard Fire Defender!</p>
+      <p id="safetyTip" style="font-size:26px; line-height:1.5;"></p>
     </div>
     <div style="margin-top:30px;">
-      <button onclick="resetLevel()">PLAY AGAIN</button>
+      <button onclick="nextLevel()">NEXT LEVEL</button>
+      <button onclick="resetCurrentLevel()">PLAY AGAIN</button>
     </div>
   </div>
 </div>
 
 <div id="ui">
-  Score: <span id="score">0</span>
+  Level <span id="levelNum">1</span> | Score: <span id="score">0</span>
 </div>
 
 <canvas id="game" width="1150" height="600"></canvas>
 
 <script>
-// ============== KVFD – Two Short House Models + Sedan on Ground ==============
+// ============== KVFD GAME – SECTIONS 1 & 2 WITH YOUR MODELS ==============
 const canvas = document.getElementById('game');
 const ctx = canvas.getContext('2d');
-const scoreEl = document.getElementById('score');
-
 let score = 0;
 let mouseX = 500, mouseY = 300;
 let isSpraying = false;
 let gameState = 'title';
+let currentLevel = 1;
 let fireSpots = [];
 let particles = [];
-let explosions = [];
-let currentModel = 1; // 1 or 2
 
 const truckX = 48;
 const truckY = 505;
 
-function useModel(model) {
-  currentModel = model;
+const levels = [
+  { // Level 1: Section 1 = Sedan, Section 2 = Short Blue House
+    name: "Level 1",
+    entities: [
+      {type:"sedan", section:1, x:280},
+      {type:"house", color:"#66CCFF", section:2, x:680}
+    ]
+  },
+  { // Level 2: Section 1 = Tractor, Section 2 = Short Green House
+    name: "Level 2",
+    entities: [
+      {type:"tractor", section:1, x:280},
+      {type:"house", color:"#66FF99", section:2, x:680}
+    ]
+  },
+  { // Level 3: Section 1 = Yacht, Section 2 = Pickup
+    name: "Level 3",
+    entities: [
+      {type:"boat", section:1, x:280},
+      {type:"pickup", section:2, x:680}
+    ]
+  }
+];
+
+function startLevel(lvl) {
+  currentLevel = lvl;
   document.getElementById('titleScreen').style.display = 'none';
-  startLevel();
+  document.getElementById('levelCompleteScreen').style.display = 'none';
+  loadLevel(lvl);
 }
 
-function startLevel() {
-  fireSpots = [
-    {x: 735, y: 255, w: 48, h: 72, health: 2800, maxHealth: 2800, type: 'window', points: 10},
-    {x: 855, y: 255, w: 48, h: 72, health: 2800, maxHealth: 2800, type: 'window', points: 10},
-    {x: 700, y: 138, w: 230, h: 42, health: 4200, maxHealth: 4200, type: 'roof', points: 25},
-    {x: 785, y: 415, w: 42, h: 105, health: 2200, maxHealth: 2200, type: 'door', points: 15}
-  ];
+function loadLevel(lvl) {
+  const levelData = levels[lvl-1];
+  fireSpots = [];
   particles = [];
-  explosions = [];
-  gameState = 'playing';
   score = 0;
-  scoreEl.textContent = 0;
+  document.getElementById('levelNum').textContent = lvl;
+  document.getElementById('score').textContent = 0;
+
+  levelData.entities.forEach((ent, idx) => {
+    const baseX = ent.section === 1 ? ent.x : ent.x;
+    if (ent.type === "house") {
+      fireSpots.push({x: baseX+28, y: 173, w:38, h:38, health:2800, maxHealth:2800, type:'window', points:10}); // left window sill
+      fireSpots.push({x: baseX+105, y: 173, w:38, h:38, health:2800, maxHealth:2800, type:'window', points:10}); // right window sill
+      fireSpots.push({x: baseX+55, y: 98, w:110, h:30, health:4200, maxHealth:4200, type:'roof', points:25}); // roof
+      fireSpots.push({x: baseX+78, y: 215, w:32, h:55, health:2200, maxHealth:2200, type:'door', points:15}); // door
+    } else if (ent.type === "sedan" || ent.type === "pickup") {
+      fireSpots.push({x: baseX+45, y: 155, w:38, h:28, health:2400, maxHealth:2400, type:'hood', points:10});
+      fireSpots.push({x: baseX+95, y: 155, w:35, h:28, health:2400, maxHealth:2400, type:'cab', points:10});
+    } else if (ent.type === "tractor") {
+      fireSpots.push({x: baseX+55, y: 155, w:45, h:32, health:2600, maxHealth:2600, type:'body', points:15});
+      fireSpots.push({x: baseX+105, y: 148, w:38, h:28, health:2200, maxHealth:2200, type:'cab', points:10});
+    } else if (ent.type === "boat") {
+      fireSpots.push({x: baseX+75, y: 135, w:55, h:32, health:2800, maxHealth:2800, type:'hull', points:15});
+    }
+  });
+
+  gameState = 'playing';
 }
 
 function checkWin() {
@@ -93,15 +125,23 @@ function checkWin() {
   }
 }
 
-function resetLevel() {
-  document.getElementById('levelCompleteScreen').style.display = 'none';
-  startLevel();
+function nextLevel() {
+  if (currentLevel < 3) {
+    startLevel(currentLevel + 1);
+  } else {
+    alert("Great job! You completed the test levels.\n\nWe can add more levels or difficulty settings next.");
+    document.getElementById('titleScreen').style.display = 'block';
+  }
+}
+
+function resetCurrentLevel() {
+  loadLevel(currentLevel);
 }
 
 document.addEventListener('mousemove', e => {
   const rect = canvas.getBoundingClientRect();
-  mouseX = Math.max(60, Math.min(e.clientX - rect.left, canvas.width - 30));
-  mouseY = Math.max(110, Math.min(e.clientY - rect.top, canvas.height - 90));
+  mouseX = Math.max(100, Math.min(e.clientX - rect.left, canvas.width - 30));
+  mouseY = Math.max(100, Math.min(e.clientY - rect.top, canvas.height - 100));
 });
 
 canvas.addEventListener('mousedown', () => { if (gameState === 'playing') isSpraying = true; });
@@ -116,108 +156,53 @@ class Particle {
   update() {
     this.x += this.vx; this.y += this.vy; this.life--;
     if (this.type === 'water') this.vy += 0.11;
-    if (this.type === 'fire') { this.vy -= 0.18 + Math.random() * 0.22; this.vx += (Math.random() - 0.5) * 1.8; }
-    if (this.type === 'smoke') { this.vy -= 0.05; this.vx += (Math.random() - 0.5) * 0.4; }
+    if (this.type === 'fire') { this.vy -= 0.18 + Math.random()*0.25; this.vx += (Math.random()-0.5)*1.8; }
+    if (this.type === 'smoke') { this.vy -= 0.06; this.vx += (Math.random()-0.5)*0.5; }
   }
   draw() {
     ctx.globalAlpha = Math.max(0.2, this.life / 40);
     ctx.fillStyle = this.color;
-    if (this.type === 'water') ctx.fillRect(this.x - 2, this.y - 2.5, 4, 7);
+    if (this.type === 'water') ctx.fillRect(this.x-2, this.y-3, 4, 8);
     else ctx.fillRect(this.x - this.size/2, this.y - this.size/2, this.size, this.size);
     ctx.globalAlpha = 1;
   }
 }
 
 function createFireParticles(x, y, intensity) {
-  const count = Math.max(2, Math.floor(intensity * 0.22));
+  const count = Math.max(2, Math.floor(intensity * 0.25));
   for (let i = 0; i < count; i++) {
-    const vx = (Math.random() - 0.5) * 2.6;
-    const vy = -3.2 - Math.random() * 4.4;
+    const vx = (Math.random() - 0.5) * 2.8;
+    const vy = -3.5 - Math.random() * 4.5;
     const colors = ['#FF4400', '#FF8800', '#FFCC00'];
-    particles.push(new Particle(x + (Math.random()-0.5)*30, y + (Math.random()-0.5)*18, vx, vy, colors[Math.floor(Math.random()*colors.length)], 26, 4.5 + Math.random()*6.5, 'fire'));
+    particles.push(new Particle(x + (Math.random()-0.5)*25, y + (Math.random()-0.5)*15, vx, vy, colors[Math.floor(Math.random()*3)], 28, 5 + Math.random()*7, 'fire'));
   }
 }
 
 function createWaterParticles() {
-  const count = 7;
-  for (let i = 0; i < count; i++) {
-    const spread = (Math.random() - 0.5) * 3.2;
-    const dirX = (mouseX - (truckX + 148)) * 0.042;
-    const dirY = (mouseY - (truckY - 34)) * 0.042;
-    particles.push(new Particle(mouseX + (Math.random()-0.5)*4, mouseY + (Math.random()-0.5)*4, dirX + spread, dirY + spread - 4.8, '#33CCFF', 20, 3, 'water'));
+  for (let i = 0; i < 8; i++) {
+    const spread = (Math.random() - 0.5) * 3.5;
+    const dx = (mouseX - (truckX + 148)) * 0.045;
+    const dy = (mouseY - (truckY - 34)) * 0.045;
+    particles.push(new Particle(mouseX + (Math.random()-0.5)*6, mouseY + (Math.random()-0.5)*6, dx + spread, dy + spread - 5, '#33CCFF', 22, 3.5, 'water'));
   }
 }
 
 function createSmoke(x, y) {
-  const count = 4;
-  for (let i = 0; i < count; i++) {
-    particles.push(new Particle(x + (Math.random()-0.5)*35, y + (Math.random()-0.5)*18, (Math.random()-0.5)*1.6, -0.9 - Math.random()*1.2, '#666666', 360, 8 + Math.random()*8, 'smoke'));
+  for (let i = 0; i < 5; i++) {
+    particles.push(new Particle(x + (Math.random()-0.5)*30, y + (Math.random()-0.5)*20, (Math.random()-0.5)*1.8, -1.2 - Math.random()*1.5, '#666', 380, 9, 'smoke'));
   }
 }
 
 function drawBackground() {
   const grad = ctx.createLinearGradient(0, 0, 0, 520);
-  grad.addColorStop(0, '#7BC4FF'); grad.addColorStop(1, '#C0E4FF');
+  grad.addColorStop(0, '#7BC4FF');
+  grad.addColorStop(1, '#C0E4FF');
   ctx.fillStyle = grad;
   ctx.fillRect(0, 0, canvas.width, 520);
   ctx.fillStyle = '#3D8C40';
   ctx.fillRect(0, 520, canvas.width, 80);
   ctx.fillStyle = '#777';
   ctx.fillRect(0, 510, canvas.width, 12);
-}
-
-function drawKennardShortHouse1() { // Model 1
-  const x = 695;
-  const baseY = 325;
-  ctx.fillStyle = '#66CCFF';
-  ctx.fillRect(x, baseY, 265, 195);
-  ctx.strokeStyle = '#222';
-  ctx.lineWidth = 10;
-  ctx.strokeRect(x+5, baseY, 255, 195);
-  ctx.fillStyle = '#8B2A00';
-  ctx.beginPath();
-  ctx.moveTo(x-25, baseY - 10);
-  ctx.lineTo(x+132, baseY - 60);
-  ctx.lineTo(x+290, baseY - 10);
-  ctx.fill();
-  ctx.fillStyle = '#A33';
-  ctx.fillRect(x + 175, baseY - 85, 28, 55);
-  ctx.fillStyle = '#3C2F1F';
-  ctx.fillRect(x+105, baseY + 115, 45, 80); // door centered
-  ctx.fillStyle = '#FFCC00';
-  ctx.fillRect(x+122, baseY + 165, 10, 10); // knob
-  ctx.fillStyle = '#AACCFF';
-  ctx.fillRect(x+35, baseY + 40, 55, 55);
-  ctx.fillRect(x+175, baseY + 40, 55, 55);
-  ctx.strokeRect(x+30, baseY + 35, 65, 62);
-  ctx.strokeRect(x+170, baseY + 35, 65, 62);
-}
-
-function drawKennardShortHouse2() { // Model 2
-  const x = 695;
-  const baseY = 325;
-  ctx.fillStyle = '#66FF99';
-  ctx.fillRect(x, baseY, 265, 195);
-  ctx.strokeStyle = '#222';
-  ctx.lineWidth = 10;
-  ctx.strokeRect(x+5, baseY, 255, 195);
-  ctx.fillStyle = '#8B2A00';
-  ctx.beginPath();
-  ctx.moveTo(x-25, baseY - 10);
-  ctx.lineTo(x+132, baseY - 60);
-  ctx.lineTo(x+290, baseY - 10);
-  ctx.fill();
-  ctx.fillStyle = '#A33';
-  ctx.fillRect(x + 175, baseY - 85, 28, 55);
-  ctx.fillStyle = '#3C2F1F';
-  ctx.fillRect(x+105, baseY + 115, 45, 80); // door centered
-  ctx.fillStyle = '#FFCC00';
-  ctx.fillRect(x+122, baseY + 165, 10, 10); // knob
-  ctx.fillStyle = '#AACCFF';
-  ctx.fillRect(x+35, baseY + 40, 55, 55);
-  ctx.fillRect(x+175, baseY + 40, 55, 55);
-  ctx.strokeRect(x+30, baseY + 35, 65, 62);
-  ctx.strokeRect(x+170, baseY + 35, 65, 62);
 }
 
 function drawSideFireTruck() {
@@ -233,44 +218,98 @@ function drawSideFireTruck() {
   ctx.fillRect(truckX, truckY-48, 190, 78);
   ctx.fillStyle = '#A00';
   ctx.fillRect(truckX+15, truckY-78, 88, 42);
-  ctx.fillStyle = '#113';
-  ctx.fillRect(truckX+22, truckY-73, 40, 30);
-  ctx.fillRect(truckX+68, truckY-73, 30, 30);
   ctx.fillStyle = '#FF0';
   ctx.fillRect(truckX+8, truckY-22, 175, 12);
-  ctx.fillStyle = '#CC0';
-  ctx.fillRect(truckX+105, truckY-85, 75, 12);
-  for (let i = 0; i < 6; i++) ctx.fillRect(truckX+108, truckY-82 + i*11, 68, 4);
   ctx.fillStyle = '#DDD';
   ctx.fillRect(truckX+155, truckY-75, 22, 38);
-  ctx.fillStyle = '#AAA';
-  for (let i = 0; i < 6; i++) ctx.fillRect(truckX+158, truckY-72 + i*7, 15, 3);
 }
 
-function drawSedan(x) {
-  ctx.fillStyle = 'rgba(0,0,0,0.5)';
-  ctx.fillRect(x+12, truckY+33, 118, 18);
-  ctx.fillStyle = '#1E5A9E';
-  ctx.fillRect(x+12, 348, 115, 52); // wheels on grass
-  ctx.fillStyle = '#0F3A6B';
-  ctx.fillRect(x+25, 315, 85, 40);
-  ctx.fillStyle = '#AACCFF';
-  ctx.fillRect(x+35, 322, 38, 26);
-  ctx.fillRect(x+78, 322, 25, 26);
-  ctx.fillStyle = '#111';
-  ctx.beginPath(); ctx.arc(x+38, 390, 17, 0, Math.PI*2); ctx.fill();
-  ctx.beginPath(); ctx.arc(x+98, 390, 17, 0, Math.PI*2); ctx.fill();
+function drawEntity(ent) {
+  const x = ent.x;
+  if (ent.type === "house") {
+    const baseY = 325;
+    ctx.fillStyle = ent.color;
+    ctx.fillRect(x, baseY, 265, 195);
+    ctx.strokeStyle = '#222';
+    ctx.lineWidth = 10;
+    ctx.strokeRect(x+5, baseY, 255, 195);
+    ctx.fillStyle = '#8B2A00';
+    ctx.beginPath();
+    ctx.moveTo(x-25, baseY - 10);
+    ctx.lineTo(x+132, baseY - 60);
+    ctx.lineTo(x+290, baseY - 10);
+    ctx.fill();
+    ctx.fillStyle = '#A33';
+    ctx.fillRect(x + 175, baseY - 85, 28, 55);
+    ctx.fillStyle = '#3C2F1F';
+    ctx.fillRect(x+105, baseY + 115, 45, 80);
+    ctx.fillStyle = '#FFCC00';
+    ctx.fillRect(x+122, baseY + 165, 10, 10);
+    ctx.fillStyle = '#AACCFF';
+    ctx.fillRect(x+35, baseY + 40, 55, 55);
+    ctx.fillRect(x+175, baseY + 40, 55, 55);
+  } else if (ent.type === "sedan") {
+    ctx.fillStyle = '#1E5A9E';
+    ctx.fillRect(x, 348, 125, 52);
+    ctx.fillStyle = '#0F3A6B';
+    ctx.fillRect(x+15, 315, 95, 40);
+    ctx.fillStyle = '#AACCFF';
+    ctx.fillRect(x+25, 322, 40, 26);
+    ctx.fillRect(x+75, 322, 28, 26);
+    ctx.fillStyle = '#111';
+    ctx.beginPath(); ctx.arc(x+38, 390, 19, 0, Math.PI*2); ctx.fill();
+    ctx.beginPath(); ctx.arc(x+98, 390, 19, 0, Math.PI*2); ctx.fill();
+  } else if (ent.type === "pickup") {
+    ctx.fillStyle = '#C22';
+    ctx.fillRect(x, 348, 140, 52);
+    ctx.fillStyle = '#111';
+    ctx.fillRect(x+15, 315, 95, 40);
+    ctx.fillStyle = '#AACCFF';
+    ctx.fillRect(x+25, 322, 45, 26);
+    ctx.fillRect(x+80, 322, 25, 26);
+    ctx.fillStyle = '#111';
+    ctx.beginPath(); ctx.arc(x+38, 390, 19, 0, Math.PI*2); ctx.fill();
+    ctx.beginPath(); ctx.arc(x+105, 390, 19, 0, Math.PI*2); ctx.fill();
+  } else if (ent.type === "tractor") {
+    ctx.fillStyle = '#228B22';
+    ctx.fillRect(x, 348, 135, 52);
+    ctx.fillStyle = '#FFD700';
+    ctx.fillRect(x, 360, 135, 12);
+    ctx.fillStyle = '#111';
+    ctx.fillRect(x+15, 315, 85, 40);
+    ctx.fillStyle = '#AACCFF';
+    ctx.fillRect(x+25, 322, 40, 26);
+    ctx.fillStyle = '#111';
+    ctx.beginPath(); ctx.arc(x+38, 390, 24, 0, Math.PI*2); ctx.fill();
+    ctx.beginPath(); ctx.arc(x+105, 390, 16, 0, Math.PI*2); ctx.fill();
+  } else if (ent.type === "boat") {
+    ctx.fillStyle = '#555';
+    ctx.fillRect(x, 348, 145, 28);
+    ctx.fillStyle = '#228B22';
+    ctx.beginPath();
+    ctx.moveTo(x+10, 320);
+    ctx.quadraticCurveTo(x+45, 280, x+95, 278);
+    ctx.quadraticCurveTo(x+135, 305, x+150, 325);
+    ctx.lineTo(x+10, 330);
+    ctx.fill();
+    ctx.fillStyle = '#FFF';
+    ctx.fillRect(x+55, 290, 55, 28);
+    ctx.fillStyle = '#111';
+    ctx.beginPath(); ctx.arc(x+35, 365, 16, 0, Math.PI*2); ctx.fill();
+    ctx.beginPath(); ctx.arc(x+125, 365, 16, 0, Math.PI*2); ctx.fill();
+  }
 }
 
 function loop() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   drawBackground();
-
-  if (currentModel === 1) drawKennardShortHouse1();
-  else drawKennardShortHouse2();
-
-  drawSedan(720); // right of fire truck, on ground
   drawSideFireTruck();
+
+  // Draw entities in their sections
+  if (currentLevel <= levels.length) {
+    const levelData = levels[currentLevel-1];
+    levelData.entities.forEach(ent => drawEntity(ent));
+  }
 
   ctx.fillStyle = '#FFF';
   ctx.font = 'bold 18px Arial';
@@ -280,17 +319,17 @@ function loop() {
   fireSpots.forEach(spot => {
     if (spot.health <= 0) return;
 
-    const growthRate = 0.025;
-    if (Math.random() < growthRate) spot.health = Math.min(spot.health + 8, spot.maxHealth);
+    if (Math.random() < 0.025) spot.health = Math.min(spot.health + 8, spot.maxHealth);
 
     const intensity = Math.floor(spot.health / 16);
     createFireParticles(spot.x + spot.w/2, spot.y + spot.h/2, intensity);
 
     for (let i = particles.length-1; i >= 0; i--) {
       const p = particles[i];
-      if (p.type === 'water' && p.x > spot.x && p.x < spot.x + spot.w && p.y > spot.y && p.y < spot.y + spot.h) {
-        spot.health -= 1.1;
-        spot.lastHit = Date.now();
+      if (p.type === 'water' && 
+          p.x > spot.x && p.x < spot.x + spot.w && 
+          p.y > spot.y && p.y < spot.y + spot.h) {
+        spot.health -= 1.15;
         p.life = 6;
       }
     }
@@ -298,7 +337,7 @@ function loop() {
     if (spot.health <= 0) {
       createSmoke(spot.x + spot.w/2, spot.y + spot.h/2);
       score += spot.points || 10;
-      scoreEl.textContent = score;
+      document.getElementById('score').textContent = score;
     }
   });
 
@@ -311,63 +350,26 @@ function loop() {
     if (p.life <= 0) particles.splice(i, 1);
   }
 
+  // Hose
   ctx.strokeStyle = '#333';
-  ctx.lineWidth = 12;
+  ctx.lineWidth = 13;
   ctx.lineCap = 'round';
-  ctx.shadowBlur = 10;
+  ctx.shadowBlur = 12;
   ctx.shadowColor = '#111';
   ctx.beginPath();
   ctx.moveTo(truckX + 148, truckY - 34);
-  ctx.quadraticCurveTo(truckX + 235, truckY - 150, mouseX, mouseY);
+  ctx.quadraticCurveTo(truckX + 240, truckY - 160, mouseX, mouseY);
   ctx.stroke();
   ctx.shadowBlur = 0;
 
   ctx.fillStyle = '#222';
-  ctx.fillRect(mouseX - 9, mouseY - 9, 18, 18);
-  ctx.fillStyle = '#555';
-  ctx.fillRect(mouseX - 5, mouseY - 14, 10, 8);
+  ctx.fillRect(mouseX - 10, mouseY - 10, 20, 20);
 
   if (gameState === 'playing') checkWin();
   requestAnimationFrame(loop);
 }
 
-function createFireParticles(x, y, intensity) {
-  const count = Math.max(2, Math.floor(intensity * 0.22));
-  for (let i = 0; i < count; i++) {
-    const vx = (Math.random() - 0.5) * 2.6;
-    const vy = -3.2 - Math.random() * 4.4;
-    const colors = ['#FF4400', '#FF8800', '#FFCC00'];
-    particles.push(new Particle(x + (Math.random()-0.5)*30, y + (Math.random()-0.5)*18, vx, vy, colors[Math.floor(Math.random()*colors.length)], 26, 4.5 + Math.random()*6.5, 'fire'));
-  }
-}
-
-function createWaterParticles() {
-  const count = 7;
-  for (let i = 0; i < count; i++) {
-    const spread = (Math.random() - 0.5) * 3.2;
-    const dirX = (mouseX - (truckX + 148)) * 0.042;
-    const dirY = (mouseY - (truckY - 34)) * 0.042;
-    particles.push(new Particle(mouseX + (Math.random()-0.5)*4, mouseY + (Math.random()-0.5)*4, dirX + spread, dirY + spread - 4.8, '#33CCFF', 20, 3, 'water'));
-  }
-}
-
-function createSmoke(x, y) {
-  const count = 4;
-  for (let i = 0; i < count; i++) {
-    particles.push(new Particle(x + (Math.random()-0.5)*35, y + (Math.random()-0.5)*18, (Math.random()-0.5)*1.6, -0.9 - Math.random()*1.2, '#666666', 360, 8 + Math.random()*8, 'smoke'));
-  }
-}
-
-function drawBackground() {
-  const grad = ctx.createLinearGradient(0, 0, 0, 520);
-  grad.addColorStop(0, '#7BC4FF'); grad.addColorStop(1, '#C0E4FF');
-  ctx.fillStyle = grad;
-  ctx.fillRect(0, 0, canvas.width, 520);
-  ctx.fillStyle = '#3D8C40';
-  ctx.fillRect(0, 520, canvas.width, 80);
-  ctx.fillStyle = '#777';
-  ctx.fillRect(0, 510, canvas.width, 12);
-}
+function animatedFire(ctx, x, y, time) { /* not used here but kept for models */ }
 
 loop();
 </script>
