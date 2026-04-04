@@ -3,27 +3,26 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Models Showcase - Fire Simulation Game</title>
+  <title>Fire Simulation Test - Models</title>
   <style>
-    body { font-family: Arial, sans-serif; margin: 0; padding: 20px; background: #111; color: #fff; }
-    h1, h2 { text-align: center; }
-    .canvas-container { margin: 30px auto; border: 4px solid #333; background: #222; padding: 10px; }
-    canvas { image-rendering: pixelated; display: block; margin: 0 auto; }
-    .controls { text-align: center; margin: 20px 0; }
-    button { padding: 10px 20px; margin: 5px; font-size: 16px; background: #001f3f; color: white; border: none; cursor: pointer; }
+    body { font-family: Arial, sans-serif; margin: 0; padding: 20px; background: #111; color: #fff; text-align: center; }
+    h1 { margin-bottom: 5px; }
+    .canvas-container { margin: 20px auto; border: 4px solid #333; background: #222; padding: 10px; display: inline-block; }
+    canvas { image-rendering: pixelated; }
+    .controls { margin: 15px 0; }
+    button { padding: 12px 24px; margin: 0 8px; font-size: 18px; background: #001f3f; color: white; border: none; border-radius: 6px; cursor: pointer; }
     button:hover { background: #003366; }
-    .info { max-width: 1000px; margin: 20px auto; background: #222; padding: 15px; border-radius: 8px; font-size: 15px; line-height: 1.5; }
+    .info { max-width: 1000px; margin: 15px auto; background: #222; padding: 12px; border-radius: 8px; font-size: 15px; }
   </style>
 </head>
 <body>
 
-  <h1>Models Showcase - Fire Simulation Game</h1>
-  <p class="info">Grid: 1200×600 • 40px cells • All objects mathematically aligned on ground (y=480). Fire truck upscaled. Hose space added. House larger with proper roof connection, doors & windows. Dusk grass darker green.</p>
+  <h1>Fire Simulation Test</h1>
+  <p class="info">Click "Ignite Fires" to start realistic fires at burn zones.<br>Click any flame to extinguish it. Test putting out fires!</p>
 
   <div class="controls">
-    <button onclick="changeBackground(0)">Level 1 - Day Sky</button>
-    <button onclick="changeBackground(1)">Level 2 - Sunset</button>
-    <button onclick="changeBackground(2)">Level 3 - Night</button>
+    <button onclick="igniteFires()">🔥 Ignite Fires</button>
+    <button onclick="extinguishAll()">🧯 Put Out All Fires</button>
   </div>
 
   <div class="canvas-container">
@@ -34,25 +33,21 @@
     const canvas = document.getElementById('gameCanvas');
     const ctx = canvas.getContext('2d');
     let currentBg = 0;
+    let fires = []; // {x, y, size, object}
 
     function drawGrid() {
       ctx.strokeStyle = 'rgba(255,255,255,0.15)';
-      ctx.lineWidth = 1;
-      for (let x = 0; x <= 1200; x += 40) {
-        ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, 600); ctx.stroke();
-      }
-      for (let y = 0; y <= 600; y += 40) {
-        ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(1200, y); ctx.stroke();
-      }
+      for (let x = 0; x <= 1200; x += 40) { ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, 600); ctx.stroke(); }
+      for (let y = 0; y <= 600; y += 40) { ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(1200, y); ctx.stroke(); }
     }
 
     function drawBackground(bg) {
       if (bg === 0) { // Day
         ctx.fillStyle = '#5cc8ff'; ctx.fillRect(0, 0, 1200, 480);
         ctx.fillStyle = '#4caf50'; ctx.fillRect(0, 480, 1200, 120);
-      } else if (bg === 1) { // Sunset
+      } else if (bg === 1) { // Dusk
         ctx.fillStyle = '#ff7a00'; ctx.fillRect(0, 0, 1200, 480);
-        ctx.fillStyle = '#3a8c3a'; ctx.fillRect(0, 480, 1200, 120); // darker green grass
+        ctx.fillStyle = '#3a8c3a'; ctx.fillRect(0, 480, 1200, 120);
       } else { // Night
         ctx.fillStyle = '#112233'; ctx.fillRect(0, 0, 1200, 480);
         ctx.fillStyle = '#223322'; ctx.fillRect(0, 480, 1200, 120);
@@ -60,72 +55,44 @@
     }
 
     function drawFireTruck(x, y) {
-      // Upscaled realistic fire truck (red body, ladder, lights, wheels)
-      ctx.fillStyle = '#e74c3c'; ctx.fillRect(x, y-80, 220, 70); // main body
-      ctx.fillStyle = '#2c3e50'; ctx.fillRect(x+180, y-95, 60, 45); // cab
-      // Ladder on top
+      ctx.fillStyle = '#e74c3c'; ctx.fillRect(x, y-80, 220, 70);
+      ctx.fillStyle = '#2c3e50'; ctx.fillRect(x+180, y-95, 60, 45);
       ctx.fillStyle = '#f1c40f'; ctx.fillRect(x+30, y-110, 140, 12);
-      ctx.fillStyle = '#f1c40f'; ctx.fillRect(x+40, y-125, 8, 25);
-      // Windows
       ctx.fillStyle = '#34495e'; ctx.fillRect(x+195, y-85, 35, 25);
-      // Wheels
-      ctx.fillStyle = '#2c3e50'; ctx.beginPath(); ctx.arc(x+50, y-15, 22, 0, Math.PI*2); ctx.fill();
+      ctx.fillStyle = '#2c3e50';
+      ctx.beginPath(); ctx.arc(x+50, y-15, 22, 0, Math.PI*2); ctx.fill();
       ctx.beginPath(); ctx.arc(x+140, y-15, 22, 0, Math.PI*2); ctx.fill();
       ctx.beginPath(); ctx.arc(x+200, y-15, 22, 0, Math.PI*2); ctx.fill();
-      ctx.fillStyle = '#ecf0f1'; ctx.beginPath(); ctx.arc(x+50, y-15, 11, 0, Math.PI*2); ctx.fill();
+      ctx.fillStyle = '#ecf0f1';
+      ctx.beginPath(); ctx.arc(x+50, y-15, 11, 0, Math.PI*2); ctx.fill();
       ctx.beginPath(); ctx.arc(x+140, y-15, 11, 0, Math.PI*2); ctx.fill();
       ctx.beginPath(); ctx.arc(x+200, y-15, 11, 0, Math.PI*2); ctx.fill();
-      // Fire zones
-      ctx.fillStyle = 'rgba(255, 80, 0, 0.7)'; // engine
-      ctx.fillRect(x+10, y-85, 35, 18);
-      ctx.fillStyle = 'rgba(255, 80, 0, 0.7)'; // gas tank
-      ctx.fillRect(x+185, y-55, 25, 15);
     }
 
     function drawBlueCar(x, y) {
-      ctx.fillStyle = '#3498db'; ctx.fillRect(x, y-55, 160, 55); // body
-      ctx.fillStyle = '#2c3e50'; ctx.fillRect(x+110, y-72, 55, 35); // cab
-      // Windows
-      ctx.fillStyle = '#34495e'; ctx.fillRect(x+15, y-50, 35, 22);
-      ctx.fillRect(x+60, y-50, 35, 22);
-      // Wheels
-      ctx.fillStyle = '#2c3e50'; ctx.beginPath(); ctx.arc(x+35, y-8, 18, 0, Math.PI*2); ctx.fill();
+      ctx.fillStyle = '#3498db'; ctx.fillRect(x, y-55, 160, 55);
+      ctx.fillStyle = '#2c3e50'; ctx.fillRect(x+110, y-72, 55, 35);
+      ctx.fillStyle = '#34495e'; ctx.fillRect(x+15, y-50, 35, 22); ctx.fillRect(x+60, y-50, 35, 22);
+      ctx.fillStyle = '#2c3e50';
+      ctx.beginPath(); ctx.arc(x+35, y-8, 18, 0, Math.PI*2); ctx.fill();
       ctx.beginPath(); ctx.arc(x+125, y-8, 18, 0, Math.PI*2); ctx.fill();
-      ctx.fillStyle = '#ecf0f1'; ctx.beginPath(); ctx.arc(x+35, y-8, 9, 0, Math.PI*2); ctx.fill();
-      ctx.beginPath(); ctx.arc(x+125, y-8, 9, 0, Math.PI*2); ctx.fill();
-      // Fire zones
-      ctx.fillStyle = 'rgba(255, 80, 0, 0.7)'; // engine
-      ctx.fillRect(x+8, y-60, 30, 14);
-      ctx.fillStyle = 'rgba(255, 80, 0, 0.7)'; // gas tank
-      ctx.fillRect(x+130, y-40, 22, 14);
     }
 
     function drawHouse(x, y) {
-      // Larger one-story house (liked old style)
-      ctx.fillStyle = '#f4d9b8'; ctx.fillRect(x, y-160, 200, 160); // walls
-      ctx.fillStyle = '#c0392b'; ctx.beginPath(); 
-      ctx.moveTo(x, y-160); 
-      ctx.lineTo(x+100, y-220); 
-      ctx.lineTo(x+200, y-160); 
-      ctx.fill(); // roof (touches walls)
-      // Windows (correct size for one-story)
-      ctx.fillStyle = '#34495e'; 
-      ctx.fillRect(x+25, y-130, 35, 35); // left window
-      ctx.fillRect(x+80, y-130, 35, 35); // middle window
-      ctx.fillRect(x+135, y-130, 35, 35); // right window
-      // Door (correct size)
+      ctx.fillStyle = '#f4d9b8'; ctx.fillRect(x, y-160, 200, 160);
+      ctx.fillStyle = '#c0392b'; ctx.beginPath(); ctx.moveTo(x, y-160); ctx.lineTo(x+100, y-220); ctx.lineTo(x+200, y-160); ctx.fill();
+      ctx.fillStyle = '#34495e';
+      ctx.fillRect(x+25, y-130, 35, 35); ctx.fillRect(x+80, y-130, 35, 35); ctx.fillRect(x+135, y-130, 35, 35);
+      ctx.fillRect(x+25, y-80, 35, 35); ctx.fillRect(x+80, y-80, 35, 35);
       ctx.fillStyle = '#2c3e50'; ctx.fillRect(x+145, y-80, 35, 80);
-      // Fire zones
-      ctx.fillStyle = 'rgba(255, 80, 0, 0.7)'; // bottom windows
-      ctx.fillRect(x+30, y-105, 25, 8);
-      ctx.fillRect(x+85, y-105, 25, 8);
-      ctx.fillRect(x+140, y-105, 25, 8);
-      ctx.fillStyle = 'rgba(255, 80, 0, 0.7)'; // door bottom
-      ctx.fillRect(x+150, y-15, 25, 8);
-      ctx.fillStyle = 'rgba(255, 80, 0, 0.7)'; // roof points
-      ctx.fillRect(x+45, y-210, 18, 10);
-      ctx.fillRect(x+90, y-210, 18, 10);
-      ctx.fillRect(x+135, y-210, 18, 10);
+    }
+
+    function drawFire(x, y, size) {
+      const intensity = Math.random() * 0.3 + 0.7;
+      ctx.fillStyle = `rgba(255, ${80 + Math.random()*100}, 0, ${intensity})`;
+      ctx.beginPath(); ctx.arc(x, y, size * (0.8 + Math.random()*0.4), 0, Math.PI*2); ctx.fill();
+      ctx.fillStyle = `rgba(255, 180, 0, ${intensity})`;
+      ctx.beginPath(); ctx.arc(x + Math.random()*8-4, y - size*0.6, size*0.6, 0, Math.PI*2); ctx.fill();
     }
 
     function render() {
@@ -133,16 +100,64 @@
       drawBackground(currentBg);
       drawGrid();
 
-      // Mathematically placed with hose space
-      drawFireTruck(120, 480);      // fire truck (left)
-      drawBlueCar(520, 480);        // blue car (middle - shifted right 2 squares)
-      drawHouse(860, 480);          // house (right - shifted right 2 squares)
+      drawFireTruck(120, 480);
+      drawBlueCar(520, 480);
+      drawHouse(860, 480);
+
+      // Draw active fires
+      fires.forEach((f, i) => {
+        drawFire(f.x, f.y, f.size);
+        f.size = 8 + Math.random() * 6;
+      });
     }
+
+    function igniteFires() {
+      fires = [];
+      // Fire Truck burn zones
+      fires.push({x: 170, y: 405, size: 12}); // engine
+      fires.push({x: 305, y: 435, size: 10}); // gas tank
+      // Blue Car burn zones
+      fires.push({x: 555, y: 430, size: 11}); // engine
+      fires.push({x: 630, y: 450, size: 9});  // gas tank
+      // House burn zones
+      fires.push({x: 885, y: 370, size: 10}); // window 1
+      fires.push({x: 940, y: 370, size: 10}); // window 2
+      fires.push({x: 995, y: 370, size: 10}); // window 3
+      fires.push({x: 1005, y: 410, size: 12}); // door
+      fires.push({x: 910, y: 280, size: 8});  // roof
+      fires.push({x: 960, y: 280, size: 8});  // roof
+      render();
+    }
+
+    function extinguishAll() {
+      fires = [];
+      render();
+    }
+
+    // Click on canvas to extinguish individual flames
+    canvas.addEventListener('click', (e) => {
+      const rect = canvas.getBoundingClientRect();
+      const clickX = e.clientX - rect.left;
+      const clickY = e.clientY - rect.top;
+      for (let i = fires.length - 1; i >= 0; i--) {
+        const f = fires[i];
+        const dx = f.x - clickX;
+        const dy = f.y - clickY;
+        if (Math.sqrt(dx*dx + dy*dy) < f.size + 15) {
+          fires.splice(i, 1);
+          render();
+          return;
+        }
+      }
+    });
 
     function changeBackground(bg) {
       currentBg = bg;
       render();
     }
+
+    // Auto animate fires
+    setInterval(() => { if (fires.length > 0) render(); }, 80);
 
     // Initial render
     render();
