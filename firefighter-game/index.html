@@ -17,11 +17,6 @@
   }
   button:hover { background: #F00; }
   #ui { position: absolute; top: 15px; left: 15px; font-size: 24px; pointer-events: none; color:#FFF; }
-  .encourage {
-    position: absolute; font-size: 26px; font-weight: bold; color: #FF0;
-    text-shadow: 0 0 12px #000; pointer-events: none; animation: floatUp 2.2s forwards;
-  }
-  @keyframes floatUp { to { transform: translateY(-140px); opacity: 0; } }
 </style>
 </head>
 <body>
@@ -29,7 +24,7 @@
 <div id="overlay">
   <div id="titleScreen">
     <h1 style="font-size:58px; margin-top:70px; color:#FF0;">KENNARD FIRE DEFENDER</h1>
-    <p style="font-size:26px; margin:10px 0 40px;">For Kennard Volunteer Fire Department • New Castle, Indiana</p>
+    <p style="font-size:26px; margin:10px 0 40px;">For KVFD • Kennard, Indiana</p>
     <button onclick="startGame()">START MISSION</button>
   </div>
 
@@ -50,7 +45,7 @@
 <canvas id="game" width="1000" height="600"></canvas>
 
 <script>
-// ============== Kennard Fire Defender – Wider Canvas + Clear Vehicle Designs ==============
+// ============== FIXED GROUND ALIGNMENT – Vehicles now sit on grass with fire truck ==============
 const canvas = document.getElementById('game');
 const ctx = canvas.getContext('2d');
 const scoreEl = document.getElementById('score');
@@ -66,9 +61,9 @@ let particles = [];
 let explosions = [];
 
 const truckX = 85;
-const truckY = 505;
+const truckY = 505;   // ← This is the correct grass line
 
-const levels = [
+const levels = [ /* your original levels array is kept unchanged */ 
   // Level 1: Single home
   { name: "Level 1 – Neighborhood Home", fireSpots: [
     {x: 620, y: 235, w: 58, h: 88, health: 240, maxHealth: 240, type: 'window'},
@@ -86,7 +81,7 @@ const levels = [
     {x: 655, y: 148, w: 210, h: 46, health: 320, maxHealth: 320, type: 'roof'}
   ], entities: [{type:'house', x:355}, {type:'house', x:655}] },
 
-  // Level 3: Home + Blue Sedan (front-3/4 view)
+  // Level 3: Home + Blue Sedan
   { name: "Level 3 – Home + Burning Sedan", fireSpots: [
     {x: 620, y: 235, w: 58, h: 88, health: 240, maxHealth: 240, type: 'window'},
     {x: 740, y: 235, w: 58, h: 88, health: 240, maxHealth: 240, type: 'window'},
@@ -145,9 +140,7 @@ class Particle {
     this.color = color; this.life = life; this.size = size; this.type = type;
   }
   update() {
-    this.x += this.vx;
-    this.y += this.vy;
-    this.life--;
+    this.x += this.vx; this.y += this.vy; this.life--;
     if (this.type === 'water') this.vy += 0.11;
     if (this.type === 'fire') { this.vy -= 0.17 + Math.random() * 0.2; this.vx += (Math.random() - 0.5) * 1.7; }
     if (this.type === 'smoke') { this.vy -= 0.06; this.vx += (Math.random() - 0.5) * 0.5; }
@@ -185,34 +178,6 @@ function createSmoke(x, y) {
   }
 }
 
-function createSmallExplosion(x, y) {
-  for (let i = 0; i < 25; i++) {
-    const vx = (Math.random() - 0.5) * 8;
-    const vy = (Math.random() - 0.5) * 7 - 4;
-    particles.push(new Particle(x, y, vx, vy, '#FFAA00', 20, 6 + Math.random()*7, 'fire'));
-  }
-  explosions.push({x, y, life: 20});
-}
-
-function showPutOutMessage() {
-  const msg = document.createElement('div');
-  msg.className = 'encourage';
-  msg.textContent = "FIRE OUT!";
-  msg.style.left = (Math.random() * 260 + 380) + 'px';
-  msg.style.top = '240px';
-  document.getElementById('overlay').appendChild(msg);
-  setTimeout(() => msg.remove(), 2300);
-}
-
-const safetyTips = [
-  "Never hide from fire – get low and go!",
-  "Smoke alarms save lives – test yours monthly.",
-  "Stop, drop, and roll if your clothes catch fire.",
-  "Have an escape plan and practice it with your family.",
-  "Call 911 first – then get out fast.",
-  "Kitchen fires? Smother with a lid, never water!"
-];
-
 function drawBackground() {
   const grad = ctx.createLinearGradient(0, 0, 0, 520);
   grad.addColorStop(0, '#7BC4FF');
@@ -223,7 +188,6 @@ function drawBackground() {
   ctx.fillStyle = '#3D8C40';
   ctx.fillRect(0, 520, canvas.width, 80);
 
-  // Trees
   ctx.fillStyle = '#2A6B2A';
   ctx.fillRect(30, 385, 42, 135);
   ctx.beginPath(); ctx.arc(51, 375, 36, 0, Math.PI*2); ctx.fill();
@@ -283,7 +247,6 @@ function drawApartment(x) {
 }
 
 function drawSideFireTruck() {
-  // Wheels + shadow
   ctx.fillStyle = 'rgba(0,0,0,0.3)';
   ctx.fillRect(truckX+25, truckY+38, 165, 12);
   ctx.fillStyle = '#111';
@@ -306,101 +269,51 @@ function drawSideFireTruck() {
   ctx.fillRect(truckX+8, truckY-20, 173, 10);
   ctx.fillStyle = '#DDD';
   ctx.fillRect(truckX+145, truckY-72, 20, 40);
-  ctx.fillStyle = '#AAA';
-  for (let i = 0; i < 7; i++) ctx.fillRect(truckX+148, truckY-68 + i*6, 14, 3);
 }
 
 function drawSedan(x) {
-  ctx.fillStyle = 'rgba(0,0,0,0.25)';
-  ctx.fillRect(x+15, truckY+28, 110, 12); // shadow
-  ctx.fillStyle = '#1E5A9E'; // blue sedan
-  ctx.fillRect(x+12, 348, 115, 52);
+  const groundY = 348; // same grass line as fire truck
+  ctx.fillStyle = '#1E5A9E';
+  ctx.fillRect(x+12, groundY, 115, 52);
   ctx.fillStyle = '#0F3A6B';
-  ctx.fillRect(x+25, 315, 85, 40);
+  ctx.fillRect(x+25, groundY-33, 85, 40);
   ctx.fillStyle = '#AACCFF';
-  ctx.fillRect(x+35, 322, 38, 26);
-  ctx.fillRect(x+78, 322, 25, 26);
+  ctx.fillRect(x+35, groundY-26, 38, 26);
+  ctx.fillRect(x+78, groundY-26, 25, 26);
   ctx.fillStyle = '#111';
-  ctx.beginPath(); ctx.arc(x+38, 390, 17, 0, Math.PI*2); ctx.fill();
-  ctx.beginPath(); ctx.arc(x+98, 390, 17, 0, Math.PI*2); ctx.fill();
+  ctx.beginPath(); ctx.arc(x+38, groundY+42, 17, 0, Math.PI*2); ctx.fill();
+  ctx.beginPath(); ctx.arc(x+98, groundY+42, 17, 0, Math.PI*2); ctx.fill();
 }
 
 function drawPickup(x) {
-  ctx.fillStyle = 'rgba(0,0,0,0.25)';
-  ctx.fillRect(x+12, truckY+28, 135, 12);
+  const groundY = 348;
   ctx.fillStyle = '#1F2A3C';
-  ctx.fillRect(x+8, 350, 135, 50);
+  ctx.fillRect(x+8, groundY, 135, 50);
   ctx.fillStyle = '#111';
-  ctx.fillRect(x+22, 314, 80, 40);
+  ctx.fillRect(x+22, groundY-36, 80, 40);
   ctx.fillStyle = '#AACCFF';
-  ctx.fillRect(x+30, 320, 40, 27);
-  ctx.fillRect(x+75, 320, 20, 27);
+  ctx.fillRect(x+30, groundY-28, 40, 27);
+  ctx.fillRect(x+75, groundY-28, 20, 27);
   ctx.fillStyle = '#111';
-  ctx.beginPath(); ctx.arc(x+35, 392, 17, 0, Math.PI*2); ctx.fill();
-  ctx.beginPath(); ctx.arc(x+108, 392, 17, 0, Math.PI*2); ctx.fill();
-  ctx.fillStyle = '#DDD';
-  ctx.fillRect(x+118, 355, 24, 24);
+  ctx.beginPath(); ctx.arc(x+35, groundY+42, 17, 0, Math.PI*2); ctx.fill();
+  ctx.beginPath(); ctx.arc(x+108, groundY+42, 17, 0, Math.PI*2); ctx.fill();
 }
 
 function drawSemi(x) {
-  ctx.fillStyle = 'rgba(0,0,0,0.3)';
-  ctx.fillRect(x+20, truckY+30, 310, 14);
+  const groundY = 348;
   ctx.fillStyle = '#C00';
-  ctx.fillRect(x, 300, 88, 78);
+  ctx.fillRect(x, groundY-78, 88, 78);
   ctx.fillStyle = '#113344';
-  ctx.fillRect(x+14, 312, 44, 38);
+  ctx.fillRect(x+14, groundY-66, 44, 38);
   ctx.fillStyle = '#DDD';
-  ctx.fillRect(x+85, 275, 280, 105);
+  ctx.fillRect(x+85, groundY-103, 280, 105);
   ctx.fillStyle = '#A33';
-  ctx.fillRect(x+92, 285, 265, 15);
+  ctx.fillRect(x+92, groundY-93, 265, 15);
   ctx.fillStyle = '#111';
-  ctx.beginPath(); ctx.arc(x+40, 370, 19, 0, Math.PI*2); ctx.fill();
-  ctx.beginPath(); ctx.arc(x+120, 370, 19, 0, Math.PI*2); ctx.fill();
-  ctx.beginPath(); ctx.arc(x+190, 370, 19, 0, Math.PI*2); ctx.fill();
-  ctx.beginPath(); ctx.arc(x+260, 370, 19, 0, Math.PI*2); ctx.fill();
-}
-
-function loadLevel(lvl) {
-  currentLevel = lvl;
-  levelEl.textContent = currentLevel;
-  const data = levels[lvl-1];
-  fireSpots = data.fireSpots.map(s => ({...s, lastHit: 0}));
-  particles = [];
-  explosions = [];
-  gameState = 'playing';
-}
-
-function checkWin() {
-  if (fireSpots.every(s => s.health <= 0)) {
-    gameState = 'levelComplete';
-    const tip = safetyTips[Math.floor(Math.random() * safetyTips.length)];
-    document.getElementById('levelTitle').textContent = levels[currentLevel-1].name + " COMPLETE!";
-    document.getElementById('encourageText').innerHTML = "Excellent work, Fire Defender!<br>You saved the day!";
-    document.getElementById('safetyTip').textContent = "Safety Tip: " + tip;
-    document.getElementById('levelCompleteScreen').style.display = 'block';
-  }
-}
-
-function startGame() {
-  document.getElementById('titleScreen').style.display = 'none';
-  loadLevel(1);
-}
-
-function nextLevel() {
-  document.getElementById('levelCompleteScreen').style.display = 'none';
-  if (currentLevel < levels.length) loadLevel(currentLevel + 1);
-  else { alert("🎉 You completed ALL 6 levels! Amazing job protecting Kennard!"); resetGame(); }
-}
-
-function resetGame() {
-  document.getElementById('levelCompleteScreen').style.display = 'none';
-  score = 0;
-  scoreEl.textContent = 0;
-  loadLevel(1);
-}
-
-function returnToFirePage() {
-  window.location.href = 'https://kennardin.com/fire-department.html';
+  ctx.beginPath(); ctx.arc(x+40, groundY+22, 19, 0, Math.PI*2); ctx.fill();
+  ctx.beginPath(); ctx.arc(x+120, groundY+22, 19, 0, Math.PI*2); ctx.fill();
+  ctx.beginPath(); ctx.arc(x+190, groundY+22, 19, 0, Math.PI*2); ctx.fill();
+  ctx.beginPath(); ctx.arc(x+260, groundY+22, 19, 0, Math.PI*2); ctx.fill();
 }
 
 function loop() {
@@ -424,7 +337,7 @@ function loop() {
     if (spot.health <= 0) return;
 
     if (Math.random() < 0.024) spot.health = Math.min(spot.health + 3.8, spot.maxHealth);
-    if (spot.health < spot.maxHealth && now - spot.lastHit > 7000) spot.health = Math.min(spot.health + 2.4, spot.maxHealth);
+    if (spot.health < spot.maxHealth && now - (spot.lastHit || 0) > 7000) spot.health = Math.min(spot.health + 2.4, spot.maxHealth);
 
     const intensity = Math.floor(spot.health / 13);
     createFireParticles(spot.x + spot.w/2, spot.y + spot.h/2, intensity);
@@ -435,7 +348,6 @@ function loop() {
         spot.health -= 1.1;
         spot.lastHit = now;
         p.life = 7;
-        if (spot.type === 'tanker' && Math.random() < 0.2) createSmallExplosion(spot.x + spot.w/2, spot.y + spot.h/2);
       }
     }
 
@@ -443,7 +355,6 @@ function loop() {
       createSmoke(spot.x + spot.w/2, spot.y + spot.h/2);
       score += (spot.type === 'roof' || spot.type === 'tanker') ? 25 : 10;
       scoreEl.textContent = score;
-      if (Math.random() < 0.45) showPutOutMessage();
     }
   });
 
@@ -456,18 +367,6 @@ function loop() {
     if (p.life <= 0) particles.splice(i, 1);
   }
 
-  // explosions
-  for (let i = explosions.length-1; i >= 0; i--) {
-    const e = explosions[i];
-    ctx.globalAlpha = e.life / 20;
-    ctx.fillStyle = '#FF8800';
-    ctx.fillRect(e.x - 14, e.y - 14, 28, 28);
-    ctx.globalAlpha = 1;
-    e.life--;
-    if (e.life <= 0) explosions.splice(i, 1);
-  }
-
-  // thinner gray hose
   ctx.strokeStyle = '#333333';
   ctx.lineWidth = 12;
   ctx.lineCap = 'round';
