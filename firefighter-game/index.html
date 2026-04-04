@@ -55,7 +55,7 @@
 <canvas id="game" width="1150" height="600"></canvas>
 
 <script>
-// ============== KVFD – 10 Levels, All Vehicles on Fire Truck Ground Level, Kennard Style ==============
+// ============== KVFD – FULL REDO: Short House Model Fixed, All Vehicles Adjacent to Fire Truck on Same Ground Level ==============
 const canvas = document.getElementById('game');
 const ctx = canvas.getContext('2d');
 const scoreEl = document.getElementById('score');
@@ -88,7 +88,7 @@ const safetyTipsPool = [
 ];
 
 const levels = [
-  // Level 1 - Tall Yellow House
+  // Level 1 - Tall Yellow House (unchanged, you said it's good)
   { name: "Level 1 – Yellow House", fireSpots: [
     {x: 735, y: 255, w: 48, h: 72, health: 2800, maxHealth: 2800, type: 'window', points: 10, entity: 0},
     {x: 855, y: 255, w: 48, h: 72, health: 2800, maxHealth: 2800, type: 'window', points: 10, entity: 0},
@@ -96,7 +96,7 @@ const levels = [
     {x: 785, y: 415, w: 42, h: 105, health: 2200, maxHealth: 2200, type: 'door', points: 15, entity: 0}
   ], entities: [{type:'house', x:680, color:'#FFEE66', short:false}] },
 
-  // Level 2 - Short Blue House (right) + Blue Sedan (left)
+  // Level 2 - Short Blue House (right) + Blue Sedan (left, adjacent to fire truck)
   { name: "Level 2 – Short House + Sedan", fireSpots: [
     {x: 725, y: 255, w: 48, h: 72, health: 2800, maxHealth: 2800, type: 'window', points: 10, entity: 0},
     {x: 845, y: 255, w: 48, h: 72, health: 2800, maxHealth: 2800, type: 'window', points: 10, entity: 0},
@@ -105,7 +105,7 @@ const levels = [
     {x: 275, y: 312, w: 58, h: 35, health: 2000, maxHealth: 2000, type: 'cab', points: 20, entity: 1}
   ], entities: [{type:'house', x:695, color:'#66CCFF', short:true}, {type:'sedan', x:240}] },
 
-  // Level 3 - Short House (far) + Burning Truck (close)
+  // Level 3 - Short House (far) + Burning Truck (close, adjacent to fire truck)
   { name: "Level 3 – Short House + Burning Truck", fireSpots: [
     {x: 255, y: 338, w: 120, h: 48, health: 3100, maxHealth: 3100, type: 'bed', points: 15, entity: 0},
     {x: 272, y: 306, w: 75, h: 38, health: 2500, maxHealth: 2500, type: 'cab', points: 20, entity: 0},
@@ -286,33 +286,61 @@ function drawBackground() {
   ctx.fillRect(0, 510, canvas.width, 12);
 }
 
-function drawKennardHouse(x, color, short, burned) {
+function drawKennardShortHouse(x, color, burned) {
   const alpha = burned ? 0.7 : 1;
-  const houseHeight = short ? 195 : 315;
-  const baseY = short ? 325 : 205;
+  const baseY = 325;
   ctx.globalAlpha = alpha;
   ctx.fillStyle = burned ? '#222' : color;
-  ctx.fillRect(x, baseY, 265, houseHeight);
+  ctx.fillRect(x, baseY, 265, 195);
   ctx.strokeStyle = '#222';
   ctx.lineWidth = 10;
-  ctx.strokeRect(x+5, baseY, 255, houseHeight);
+  ctx.strokeRect(x+5, baseY, 255, 195);
   ctx.fillStyle = burned ? '#111' : '#8B2A00';
   ctx.beginPath();
   ctx.moveTo(x-25, baseY - 10);
-  ctx.lineTo(x+132, short ? baseY - 60 : baseY - 100);
+  ctx.lineTo(x+132, baseY - 60);
+  ctx.lineTo(x+290, baseY - 10);
+  ctx.fill();
+  ctx.fillStyle = burned ? '#111' : '#A33';
+  ctx.fillRect(x + 175, baseY - 85, 28, 55); // chimney
+  ctx.fillStyle = burned ? '#111' : '#3C2F1F';
+  ctx.fillRect(x+105, baseY + 115, 45, 80); // door - CORRECTLY CENTERED AT BOTTOM
+  ctx.fillStyle = '#FFCC00';
+  ctx.fillRect(x+122, baseY + 170, 10, 10); // knob
+  ctx.fillStyle = burned ? '#111' : '#AACCFF';
+  ctx.fillRect(x+35, baseY + 40, 55, 55); // left window
+  ctx.fillRect(x+175, baseY + 40, 55, 55); // right window
+  ctx.strokeRect(x+30, baseY + 35, 65, 62);
+  ctx.strokeRect(x+170, baseY + 35, 65, 62);
+  ctx.globalAlpha = 1;
+}
+
+function drawKennardTallHouse(x, color, burned) {
+  const alpha = burned ? 0.7 : 1;
+  const baseY = 205;
+  ctx.globalAlpha = alpha;
+  ctx.fillStyle = burned ? '#222' : color;
+  ctx.fillRect(x, baseY, 265, 315);
+  ctx.strokeStyle = '#222';
+  ctx.lineWidth = 10;
+  ctx.strokeRect(x+5, baseY, 255, 315);
+  ctx.fillStyle = burned ? '#111' : '#8B2A00';
+  ctx.beginPath();
+  ctx.moveTo(x-25, baseY - 10);
+  ctx.lineTo(x+132, baseY - 100);
   ctx.lineTo(x+290, baseY - 10);
   ctx.fill();
   ctx.fillStyle = burned ? '#111' : '#A33';
   ctx.fillRect(x + 175, baseY - 85, 28, 55);
   ctx.fillStyle = burned ? '#111' : '#3C2F1F';
-  ctx.fillRect(x+105, baseY + (short ? 115 : 205), 45, 110);
+  ctx.fillRect(x+105, baseY + 205, 45, 110);
   ctx.fillStyle = '#FFCC00';
-  ctx.fillRect(x+122, baseY + (short ? 170 : 260), 10, 10);
+  ctx.fillRect(x+122, baseY + 260, 10, 10);
   ctx.fillStyle = burned ? '#111' : '#AACCFF';
-  ctx.fillRect(x+35, baseY + 40, 55, short ? 55 : 82);
-  ctx.fillRect(x+175, baseY + 40, 55, short ? 55 : 82);
-  ctx.strokeRect(x+30, baseY + 35, 65, short ? 62 : 92);
-  ctx.strokeRect(x+170, baseY + 35, 65, short ? 62 : 92);
+  ctx.fillRect(x+35, baseY + 40, 55, 82);
+  ctx.fillRect(x+175, baseY + 40, 55, 82);
+  ctx.strokeRect(x+30, baseY + 35, 65, 92);
+  ctx.strokeRect(x+170, baseY + 35, 65, 92);
   ctx.globalAlpha = 1;
 }
 
@@ -391,6 +419,31 @@ function drawSemi(x) {
   ctx.beginPath(); ctx.arc(x+120, 370, 19, 0, Math.PI*2); ctx.fill();
   ctx.beginPath(); ctx.arc(x+190, 370, 19, 0, Math.PI*2); ctx.fill();
   ctx.beginPath(); ctx.arc(x+260, 370, 19, 0, Math.PI*2); ctx.fill();
+}
+
+function drawTractor(x) {
+  ctx.fillStyle = 'rgba(0,0,0,0.5)';
+  ctx.fillRect(x+20, truckY+33, 140, 18);
+  ctx.fillStyle = '#1F2A3C';
+  ctx.fillRect(x+20, 348, 135, 52);
+  ctx.fillStyle = '#333';
+  ctx.fillRect(x+35, 312, 75, 40);
+  ctx.fillStyle = '#AACCFF';
+  ctx.fillRect(x+45, 318, 35, 26);
+  ctx.fillStyle = '#111';
+  ctx.beginPath(); ctx.arc(x+45, 390, 22, 0, Math.PI*2); ctx.fill(); // large rear wheel
+  ctx.beginPath(); ctx.arc(x+115, 390, 14, 0, Math.PI*2); ctx.fill(); // small front wheel
+}
+
+function drawLawnmower(x) {
+  ctx.fillStyle = 'rgba(0,0,0,0.5)';
+  ctx.fillRect(x+25, truckY+38, 95, 16);
+  ctx.fillStyle = '#228B22';
+  ctx.fillRect(x+25, 348, 95, 38);
+  ctx.fillStyle = '#111';
+  ctx.fillRect(x+35, 325, 65, 28);
+  ctx.fillStyle = '#DDD';
+  ctx.beginPath(); ctx.arc(x+45, 385, 12, 0, Math.PI*2); ctx.fill();
 }
 
 function drawBoatOnTrailer(x) {
@@ -516,7 +569,8 @@ function loop() {
 
   data.entities.forEach((ent, i) => {
     const burned = fireSpots.filter(s => s.entity === i).every(s => s.health <= 0) && fireSpots.some(s => s.entity === i && now - s.lastHit > 16000);
-    if (ent.type === 'house') drawKennardHouse(ent.x, ent.color, ent.short || false, burned);
+    if (ent.type === 'house' && ent.short) drawKennardShortHouse(ent.x, ent.color, burned);
+    if (ent.type === 'house' && !ent.short) drawKennardTallHouse(ent.x, ent.color, burned);
     if (ent.type === 'sedan') drawSedan(ent.x);
     if (ent.type === 'pickup') drawPickup(ent.x);
     if (ent.type === 'semi') drawSemi(ent.x);
