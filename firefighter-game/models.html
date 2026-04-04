@@ -108,7 +108,7 @@
     }
 
     function createWaterParticles() {
-      const hoseEndX = truckX + 260;  // exact rear hose tip on flipped truck
+      const hoseEndX = truckX + 260; // exact rear tip of flipped truck
       const hoseEndY = truckY - 38;
       const dx = mouseX - hoseEndX;
       const dy = mouseY - hoseEndY;
@@ -190,7 +190,7 @@
         ctx.strokeStyle = '#555';
         ctx.lineWidth = 14;
         ctx.beginPath();
-        ctx.moveTo(truckX + 260, truckY - 38); // rear hose tip on flipped truck
+        ctx.moveTo(truckX + 260, truckY - 38); // exact rear hose tip
         ctx.quadraticCurveTo(truckX + 340, truckY - 170, mouseX, mouseY);
         ctx.stroke();
         createWaterParticles();
