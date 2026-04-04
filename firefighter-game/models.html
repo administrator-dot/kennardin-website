@@ -41,7 +41,6 @@
 <canvas id="game" width="1200" height="600"></canvas>
 <script>
 // ============== DOUBLED PRECISION GRID (20px cells) ==============
-// 60 columns × 30 rows, ground at y=480 (24 grid units from top)
 
 const canvas = document.getElementById('game');
 const ctx = canvas.getContext('2d');
@@ -56,9 +55,9 @@ let currentLevel = 1;
 let fireSpots = [];
 let particles = [];
 
-// Grid-aligned positions (multiples of 20)
-const truckX = 100;   // was ~85 → aligned to grid
-const truckY = 480;   // ground level
+// Grid-aligned base positions
+const truckX = 100;
+const truckY = 480;
 
 const levels = [
   { name: "Level 1 – Tall Yellow House", fireSpots: [
@@ -75,14 +74,15 @@ const levels = [
     {x: 780, y: 400, w: 40, h: 120, health: 220, maxHealth: 220, type: 'door'}
   ], entities: [{type:'house', x:680, color:'#66FF99'}] },
 
+  // Level 3 – Fixed blue sedan position
   { name: "Level 3 – Tall Pink House + Sedan", fireSpots: [
     {x: 720, y: 240, w: 60, h: 80, health: 240, maxHealth: 240, type: 'window'},
     {x: 840, y: 240, w: 60, h: 80, health: 240, maxHealth: 240, type: 'window'},
     {x: 700, y: 140, w: 240, h: 60, health: 340, maxHealth: 340, type: 'roof'},
     {x: 780, y: 400, w: 40, h: 120, health: 220, maxHealth: 220, type: 'door'},
-    {x: 200, y: 340, w: 100, h: 60, health: 195, maxHealth: 195, type: 'hood'},
-    {x: 240, y: 300, w: 60, h: 50, health: 145, maxHealth: 145, type: 'cab'}
-  ], entities: [{type:'house', x:680, color:'#FF99CC'}, {type:'sedan', x:180}] },
+    {x: 220, y: 340, w: 100, h: 60, health: 195, maxHealth: 195, type: 'hood'},   // corrected car burn zones
+    {x: 255, y: 300, w: 60, h: 50, health: 145, maxHealth: 145, type: 'cab'}
+  ], entities: [{type:'house', x:680, color:'#FF99CC'}, {type:'sedan', x:195}] },   // ← Blue sedan moved to correct spot
 
   { name: "Level 4 – Tall Blue House + Pickup", fireSpots: [
     {x: 720, y: 240, w: 60, h: 80, health: 240, maxHealth: 240, type: 'window'},
@@ -155,7 +155,6 @@ function returnToFirePage() {
   window.location.href = 'https://kennardin.com/fire-department.html';
 }
 
-// Mouse handling
 document.addEventListener('mousemove', e => {
   const rect = canvas.getBoundingClientRect();
   mouseX = Math.max(60, Math.min(e.clientX - rect.left, canvas.width - 30));
@@ -275,7 +274,6 @@ function drawTallHouse(x) {
   ctx.fillRect(x+173, 263, 54, 80);
 }
 
-// Vehicle drawing functions (positions already grid-aligned in levels)
 function drawSedan(x) {
   const groundY = 348;
   ctx.fillStyle = '#1E5A9E';
@@ -343,7 +341,9 @@ function loop() {
 
     for (let i = particles.length-1; i >= 0; i--) {
       const p = particles[i];
-      if (p.type === 'water' && p.x > spot.x && p.x < spot.x + spot.w && p.y > spot.y && p.y < spot.y + spot.h) {
+      if (p.type === 'water' && 
+          p.x > spot.x && p.x < spot.x + spot.w && 
+          p.y > spot.y && p.y < spot.y + spot.h) {
         spot.health -= 1.1;
         p.life = 7;
       }
@@ -371,12 +371,11 @@ function loop() {
   ctx.shadowBlur = 10;
   ctx.shadowColor = '#111';
   ctx.beginPath();
-  ctx.moveTo(truckX + 160, truckY - 60);   // nozzle position updated for grid
+  ctx.moveTo(truckX + 160, truckY - 60);
   ctx.quadraticCurveTo(truckX + 240, truckY - 160, mouseX, mouseY);
   ctx.stroke();
   ctx.shadowBlur = 0;
 
-  // Nozzle tip
   ctx.fillStyle = '#222';
   ctx.fillRect(mouseX - 9, mouseY - 9, 18, 18);
   ctx.fillStyle = '#555';
