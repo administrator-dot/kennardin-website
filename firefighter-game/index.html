@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Kennard Fire Defender - Level Test</title>
+<title>Kennard Fire Defender - Fixed Ground Placement</title>
 <style>
   body { margin:0; background:#000; font-family:Arial, sans-serif; overflow:hidden; }
   canvas { display:block; margin:0 auto; }
@@ -18,102 +18,65 @@
   <div id="titleScreen">
     <h1 style="font-size:58px; margin-top:80px; color:#FF0;">KENNARD FIRE DEFENDER</h1>
     <div style="margin-top:30px;">
-      <button onclick="startLevel(1)">Level 1 - House + Sedan</button>
-      <button onclick="startLevel(2)">Level 2 - House + Tractor</button>
-      <button onclick="startLevel(3)">Level 3 - Pickup + Yacht</button>
+      <button onclick="startLevel(1)">Level 1 Test - Sedan + House</button>
     </div>
   </div>
 
   <div id="levelCompleteScreen" style="display:none; margin-top:120px;">
     <h1 style="font-size:48px; color:#0F0;">LEVEL COMPLETE!</h1>
     <div style="background:rgba(0,0,0,0.8); padding:25px 40px; border-radius:12px; display:inline-block; max-width:680px;">
-      <p id="encourageText" style="font-size:32px; margin:10px 0;">Great Work, Kennard Fire Defender!</p>
+      <p id="encourageText" style="font-size:32px;">Great Work, Kennard Fire Defender!</p>
       <p id="safetyTip" style="font-size:26px; line-height:1.5;"></p>
     </div>
     <div style="margin-top:30px;">
-      <button onclick="nextLevel()">NEXT LEVEL</button>
-      <button onclick="resetCurrentLevel()">PLAY AGAIN</button>
+      <button onclick="resetLevel()">PLAY AGAIN</button>
     </div>
   </div>
 </div>
 
 <div id="ui">
-  Level <span id="levelNum">1</span> | Score: <span id="score">0</span>
+  Score: <span id="score">0</span>
 </div>
 
 <canvas id="game" width="1150" height="600"></canvas>
 
 <script>
-// ============== KVFD GAME – SECTIONS 1 & 2 WITH YOUR MODELS ==============
+// ============== FINAL FIXED VERSION - ALL ON GROUND ==============
 const canvas = document.getElementById('game');
 const ctx = canvas.getContext('2d');
 let score = 0;
 let mouseX = 500, mouseY = 300;
 let isSpraying = false;
 let gameState = 'title';
-let currentLevel = 1;
 let fireSpots = [];
 let particles = [];
 
 const truckX = 48;
-const truckY = 505;
+const truckY = 505;   // fire truck ground line
 
-const levels = [
-  { // Level 1: Section 1 = Sedan, Section 2 = Short Blue House
-    name: "Level 1",
-    entities: [
-      {type:"sedan", section:1, x:280},
-      {type:"house", color:"#66CCFF", section:2, x:680}
-    ]
-  },
-  { // Level 2: Section 1 = Tractor, Section 2 = Short Green House
-    name: "Level 2",
-    entities: [
-      {type:"tractor", section:1, x:280},
-      {type:"house", color:"#66FF99", section:2, x:680}
-    ]
-  },
-  { // Level 3: Section 1 = Yacht, Section 2 = Pickup
-    name: "Level 3",
-    entities: [
-      {type:"boat", section:1, x:280},
-      {type:"pickup", section:2, x:680}
-    ]
-  }
-];
-
-function startLevel(lvl) {
-  currentLevel = lvl;
+function startLevel() {
   document.getElementById('titleScreen').style.display = 'none';
-  document.getElementById('levelCompleteScreen').style.display = 'none';
-  loadLevel(lvl);
+  loadLevel();
 }
 
-function loadLevel(lvl) {
-  const levelData = levels[lvl-1];
+function loadLevel() {
   fireSpots = [];
   particles = [];
   score = 0;
-  document.getElementById('levelNum').textContent = lvl;
   document.getElementById('score').textContent = 0;
 
-  levelData.entities.forEach((ent, idx) => {
-    const baseX = ent.section === 1 ? ent.x : ent.x;
-    if (ent.type === "house") {
-      fireSpots.push({x: baseX+28, y: 173, w:38, h:38, health:2800, maxHealth:2800, type:'window', points:10}); // left window sill
-      fireSpots.push({x: baseX+105, y: 173, w:38, h:38, health:2800, maxHealth:2800, type:'window', points:10}); // right window sill
-      fireSpots.push({x: baseX+55, y: 98, w:110, h:30, health:4200, maxHealth:4200, type:'roof', points:25}); // roof
-      fireSpots.push({x: baseX+78, y: 215, w:32, h:55, health:2200, maxHealth:2200, type:'door', points:15}); // door
-    } else if (ent.type === "sedan" || ent.type === "pickup") {
-      fireSpots.push({x: baseX+45, y: 155, w:38, h:28, health:2400, maxHealth:2400, type:'hood', points:10});
-      fireSpots.push({x: baseX+95, y: 155, w:35, h:28, health:2400, maxHealth:2400, type:'cab', points:10});
-    } else if (ent.type === "tractor") {
-      fireSpots.push({x: baseX+55, y: 155, w:45, h:32, health:2600, maxHealth:2600, type:'body', points:15});
-      fireSpots.push({x: baseX+105, y: 148, w:38, h:28, health:2200, maxHealth:2200, type:'cab', points:10});
-    } else if (ent.type === "boat") {
-      fireSpots.push({x: baseX+75, y: 135, w:55, h:32, health:2800, maxHealth:2800, type:'hull', points:15});
-    }
-  });
+  // Section 1 (left - closer to truck): Blue Sedan on grass
+  // Section 2 (right): Short Blue House on grass
+  fireSpots = [
+    // Sedan (Section 1)
+    {x: 320, y: 168, w: 45, h: 32, health: 2600, maxHealth: 2600, type:'hood', points:10},
+    {x: 380, y: 168, w: 38, h: 32, health: 2400, maxHealth: 2400, type:'cab', points:10},
+    // House (Section 2)
+    {x: 735, y: 173, w: 38, h: 38, health: 2800, maxHealth: 2800, type:'window', points:10}, // left window sill - centered
+    {x: 855, y: 173, w: 38, h: 38, health: 2800, maxHealth: 2800, type:'window', points:10}, // right window sill - centered
+    {x: 700, y: 98, w: 110, h: 35, health: 4200, maxHealth: 4200, type:'roof', points:25},   // roof centered
+    {x: 785, y: 215, w: 32, h: 55, health: 2200, maxHealth: 2200, type:'door', points:15}    // door bottom
+  ];
 
   gameState = 'playing';
 }
@@ -125,17 +88,9 @@ function checkWin() {
   }
 }
 
-function nextLevel() {
-  if (currentLevel < 3) {
-    startLevel(currentLevel + 1);
-  } else {
-    alert("Great job! You completed the test levels.\n\nWe can add more levels or difficulty settings next.");
-    document.getElementById('titleScreen').style.display = 'block';
-  }
-}
-
-function resetCurrentLevel() {
-  loadLevel(currentLevel);
+function resetLevel() {
+  document.getElementById('levelCompleteScreen').style.display = 'none';
+  loadLevel();
 }
 
 document.addEventListener('mousemove', e => {
@@ -157,7 +112,6 @@ class Particle {
     this.x += this.vx; this.y += this.vy; this.life--;
     if (this.type === 'water') this.vy += 0.11;
     if (this.type === 'fire') { this.vy -= 0.18 + Math.random()*0.25; this.vx += (Math.random()-0.5)*1.8; }
-    if (this.type === 'smoke') { this.vy -= 0.06; this.vx += (Math.random()-0.5)*0.5; }
   }
   draw() {
     ctx.globalAlpha = Math.max(0.2, this.life / 40);
@@ -224,80 +178,41 @@ function drawSideFireTruck() {
   ctx.fillRect(truckX+155, truckY-75, 22, 38);
 }
 
-function drawEntity(ent) {
-  const x = ent.x;
-  if (ent.type === "house") {
-    const baseY = 325;
-    ctx.fillStyle = ent.color;
-    ctx.fillRect(x, baseY, 265, 195);
-    ctx.strokeStyle = '#222';
-    ctx.lineWidth = 10;
-    ctx.strokeRect(x+5, baseY, 255, 195);
-    ctx.fillStyle = '#8B2A00';
-    ctx.beginPath();
-    ctx.moveTo(x-25, baseY - 10);
-    ctx.lineTo(x+132, baseY - 60);
-    ctx.lineTo(x+290, baseY - 10);
-    ctx.fill();
-    ctx.fillStyle = '#A33';
-    ctx.fillRect(x + 175, baseY - 85, 28, 55);
-    ctx.fillStyle = '#3C2F1F';
-    ctx.fillRect(x+105, baseY + 115, 45, 80);
-    ctx.fillStyle = '#FFCC00';
-    ctx.fillRect(x+122, baseY + 165, 10, 10);
-    ctx.fillStyle = '#AACCFF';
-    ctx.fillRect(x+35, baseY + 40, 55, 55);
-    ctx.fillRect(x+175, baseY + 40, 55, 55);
-  } else if (ent.type === "sedan") {
-    ctx.fillStyle = '#1E5A9E';
-    ctx.fillRect(x, 348, 125, 52);
-    ctx.fillStyle = '#0F3A6B';
-    ctx.fillRect(x+15, 315, 95, 40);
-    ctx.fillStyle = '#AACCFF';
-    ctx.fillRect(x+25, 322, 40, 26);
-    ctx.fillRect(x+75, 322, 28, 26);
-    ctx.fillStyle = '#111';
-    ctx.beginPath(); ctx.arc(x+38, 390, 19, 0, Math.PI*2); ctx.fill();
-    ctx.beginPath(); ctx.arc(x+98, 390, 19, 0, Math.PI*2); ctx.fill();
-  } else if (ent.type === "pickup") {
-    ctx.fillStyle = '#C22';
-    ctx.fillRect(x, 348, 140, 52);
-    ctx.fillStyle = '#111';
-    ctx.fillRect(x+15, 315, 95, 40);
-    ctx.fillStyle = '#AACCFF';
-    ctx.fillRect(x+25, 322, 45, 26);
-    ctx.fillRect(x+80, 322, 25, 26);
-    ctx.fillStyle = '#111';
-    ctx.beginPath(); ctx.arc(x+38, 390, 19, 0, Math.PI*2); ctx.fill();
-    ctx.beginPath(); ctx.arc(x+105, 390, 19, 0, Math.PI*2); ctx.fill();
-  } else if (ent.type === "tractor") {
-    ctx.fillStyle = '#228B22';
-    ctx.fillRect(x, 348, 135, 52);
-    ctx.fillStyle = '#FFD700';
-    ctx.fillRect(x, 360, 135, 12);
-    ctx.fillStyle = '#111';
-    ctx.fillRect(x+15, 315, 85, 40);
-    ctx.fillStyle = '#AACCFF';
-    ctx.fillRect(x+25, 322, 40, 26);
-    ctx.fillStyle = '#111';
-    ctx.beginPath(); ctx.arc(x+38, 390, 24, 0, Math.PI*2); ctx.fill();
-    ctx.beginPath(); ctx.arc(x+105, 390, 16, 0, Math.PI*2); ctx.fill();
-  } else if (ent.type === "boat") {
-    ctx.fillStyle = '#555';
-    ctx.fillRect(x, 348, 145, 28);
-    ctx.fillStyle = '#228B22';
-    ctx.beginPath();
-    ctx.moveTo(x+10, 320);
-    ctx.quadraticCurveTo(x+45, 280, x+95, 278);
-    ctx.quadraticCurveTo(x+135, 305, x+150, 325);
-    ctx.lineTo(x+10, 330);
-    ctx.fill();
-    ctx.fillStyle = '#FFF';
-    ctx.fillRect(x+55, 290, 55, 28);
-    ctx.fillStyle = '#111';
-    ctx.beginPath(); ctx.arc(x+35, 365, 16, 0, Math.PI*2); ctx.fill();
-    ctx.beginPath(); ctx.arc(x+125, 365, 16, 0, Math.PI*2); ctx.fill();
-  }
+function drawSedan(x) {
+  ctx.fillStyle = '#1E5A9E';
+  ctx.fillRect(x, 348, 125, 52);           // body on grass
+  ctx.fillStyle = '#0F3A6B';
+  ctx.fillRect(x+15, 315, 95, 35);
+  ctx.fillStyle = '#AACCFF';
+  ctx.fillRect(x+25, 322, 40, 24);
+  ctx.fillRect(x+75, 322, 28, 24);
+  ctx.fillStyle = '#111';
+  ctx.beginPath(); ctx.arc(x+38, 390, 19, 0, Math.PI*2); ctx.fill();
+  ctx.beginPath(); ctx.arc(x+98, 390, 19, 0, Math.PI*2); ctx.fill();
+}
+
+function drawHouse(x) {
+  const baseY = 325;
+  ctx.fillStyle = '#66CCFF';
+  ctx.fillRect(x, baseY, 265, 195);
+  ctx.strokeStyle = '#222';
+  ctx.lineWidth = 10;
+  ctx.strokeRect(x+5, baseY, 255, 195);
+  ctx.fillStyle = '#8B2A00';
+  ctx.beginPath();
+  ctx.moveTo(x-25, baseY - 10);
+  ctx.lineTo(x+132, baseY - 60);
+  ctx.lineTo(x+290, baseY - 10);
+  ctx.fill();
+  ctx.fillStyle = '#A33';
+  ctx.fillRect(x + 175, baseY - 85, 28, 55);
+  ctx.fillStyle = '#3C2F1F';
+  ctx.fillRect(x+105, baseY + 115, 45, 80);
+  ctx.fillStyle = '#FFCC00';
+  ctx.fillRect(x+122, baseY + 165, 10, 10);
+  ctx.fillStyle = '#AACCFF';
+  ctx.fillRect(x+35, baseY + 40, 55, 55);
+  ctx.fillRect(x+175, baseY + 40, 55, 55);
 }
 
 function loop() {
@@ -305,11 +220,9 @@ function loop() {
   drawBackground();
   drawSideFireTruck();
 
-  // Draw entities in their sections
-  if (currentLevel <= levels.length) {
-    const levelData = levels[currentLevel-1];
-    levelData.entities.forEach(ent => drawEntity(ent));
-  }
+  // Draw models on ground
+  drawSedan(280);     // Section 1 - closer to truck
+  drawHouse(680);     // Section 2 - right side
 
   ctx.fillStyle = '#FFF';
   ctx.font = 'bold 18px Arial';
@@ -326,10 +239,8 @@ function loop() {
 
     for (let i = particles.length-1; i >= 0; i--) {
       const p = particles[i];
-      if (p.type === 'water' && 
-          p.x > spot.x && p.x < spot.x + spot.w && 
-          p.y > spot.y && p.y < spot.y + spot.h) {
-        spot.health -= 1.15;
+      if (p.type === 'water' && p.x > spot.x && p.x < spot.x + spot.w && p.y > spot.y && p.y < spot.y + spot.h) {
+        spot.health -= 1.2;
         p.life = 6;
       }
     }
@@ -369,7 +280,30 @@ function loop() {
   requestAnimationFrame(loop);
 }
 
-function animatedFire(ctx, x, y, time) { /* not used here but kept for models */ }
+function createFireParticles(x, y, intensity) {
+  const count = Math.max(2, Math.floor(intensity * 0.25));
+  for (let i = 0; i < count; i++) {
+    const vx = (Math.random() - 0.5) * 2.8;
+    const vy = -3.5 - Math.random() * 4.5;
+    const colors = ['#FF4400', '#FF8800', '#FFCC00'];
+    particles.push(new Particle(x + (Math.random()-0.5)*25, y + (Math.random()-0.5)*15, vx, vy, colors[Math.floor(Math.random()*3)], 28, 5 + Math.random()*7, 'fire'));
+  }
+}
+
+function createWaterParticles() {
+  for (let i = 0; i < 8; i++) {
+    const spread = (Math.random() - 0.5) * 3.5;
+    const dx = (mouseX - (truckX + 148)) * 0.045;
+    const dy = (mouseY - (truckY - 34)) * 0.045;
+    particles.push(new Particle(mouseX + (Math.random()-0.5)*6, mouseY + (Math.random()-0.5)*6, dx + spread, dy + spread - 5, '#33CCFF', 22, 3.5, 'water'));
+  }
+}
+
+function createSmoke(x, y) {
+  for (let i = 0; i < 5; i++) {
+    particles.push(new Particle(x + (Math.random()-0.5)*30, y + (Math.random()-0.5)*20, (Math.random()-0.5)*1.8, -1.2 - Math.random()*1.5, '#666', 380, 9, 'smoke'));
+  }
+}
 
 loop();
 </script>
