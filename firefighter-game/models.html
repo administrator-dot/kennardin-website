@@ -57,14 +57,13 @@
 <div class="bottom-label">KVFD - Kennard, IN</div>
 <div class="copyright">
   © Jason Groce 2026. All Rights Reserved.<br>
-  Use of this code is prohibited without permission.<br>
-  Contact: jason@jasongroce.com for custom versions.
+  Unauthorized use prohibited.
 </div>
 
 <canvas id="game" width="1200" height="600"></canvas>
 
 <script>
-// ============== FIXED + IMPROVED: NOZZLE BUTTONS + GAME STARTS CORRECTLY ==============
+// ============== FIXED + CLEAN - GAME STARTS CORRECTLY ==============
 const canvas = document.getElementById('game');
 const ctx = canvas.getContext('2d');
 const scoreEl = document.getElementById('score');
@@ -84,22 +83,26 @@ const truckX = 100;
 const truckY = 480;
 
 const baseLevels = [
+  // Level 1 - Small Shed (close, wide works)
   { name: "Level 1 – Small Shed Fire", fireSpots: [
     {x:880,y:280,w:55,h:55,health:110,maxHealth:110,type:'window'},
     {x:900,y:255,w:65,h:40,health:130,maxHealth:130,type:'roof'},
     {x:935,y:355,w:42,h:95,health:100,maxHealth:100,type:'door'}
   ], entities: [{type:'shedWindow',x:840}, {type:'lawnMower',x:1060}] },
 
+  // Level 2 - Lean-to Shed (far right)
   { name: "Level 2 – Lean-to Shed", fireSpots: [
     {x:1020,y:265,w:65,h:40,health:140,maxHealth:140,type:'roof'},
     {x:1075,y:355,w:42,h:95,health:110,maxHealth:110,type:'door'}
   ], entities: [{type:'leanToShed',x:980}] },
 
+  // Level 3 - Garage
   { name: "Level 3 – Garage Fire", fireSpots: [
     {x:920,y:255,w:110,h:225,health:180,maxHealth:180,type:'door'},
     {x:920,y:200,w:110,h:45,health:190,maxHealth:190,type:'roof'}
   ], entities: [{type:'singleGarage',x:820}] },
 
+  // Level 4 - Tall House
   { name: "Level 4 – Tall House", fireSpots: [
     {x:900,y:240,w:60,h:90,health:170,maxHealth:170,type:'window'},
     {x:1020,y:240,w:60,h:90,health:170,maxHealth:170,type:'window'},
@@ -107,6 +110,7 @@ const baseLevels = [
     {x:960,y:410,w:50,h:110,health:150,maxHealth:150,type:'door'}
   ], entities: [{type:'house',x:860,color:'#FFEE66'}] },
 
+  // Level 5 - Tall House + Sedan
   { name: "Level 5 – Tall House + Sedan", fireSpots: [
     {x:900,y:240,w:60,h:90,health:180,maxHealth:180,type:'window'},
     {x:1020,y:240,w:60,h:90,health:180,maxHealth:180,type:'window'},
@@ -114,6 +118,7 @@ const baseLevels = [
     {x:960,y:410,w:50,h:110,health:160,maxHealth:160,type:'door'}
   ], entities: [{type:'house',x:860,color:'#FF99CC'}, {type:'sedan',x:520,yOffset:8}] },
 
+  // Level 6 - Tall House + Pickup
   { name: "Level 6 – Tall House + Pickup", fireSpots: [
     {x:900,y:240,w:60,h:90,health:190,maxHealth:190,type:'window'},
     {x:1020,y:240,w:60,h:90,health:190,maxHealth:190,type:'window'},
@@ -121,11 +126,13 @@ const baseLevels = [
     {x:960,y:410,w:50,h:110,health:170,maxHealth:170,type:'door'}
   ], entities: [{type:'house',x:860,color:'#66CCFF'}, {type:'pickup',x:590,yOffset:10}] },
 
+  // Level 7 - Mini Barn
   { name: "Level 7 – Mini Barn", fireSpots: [
     {x:880,y:255,w:78,h:225,health:210,maxHealth:210,type:'door'},
     {x:920,y:200,w:90,h:45,health:270,maxHealth:270,type:'roof'}
   ], entities: [{type:'miniBarn',x:820}] },
 
+  // Level 8 - Farm Fire
   { name: "Level 8 – Farm Fire", fireSpots: [
     {x:720,y:340,w:75,h:65,health:140,maxHealth:140,type:'hay'},
     {x:800,y:325,w:75,h:65,health:150,maxHealth:150,type:'hay'},
@@ -139,6 +146,7 @@ const baseLevels = [
     {type:'hayBale',x:880}, {type:'hayBale',x:950}
   ] },
 
+  // Level 9 - Tall House + Semi Wreck
   { name: "Level 9 – Tall House + Semi Wreck", fireSpots: [
     {x:900,y:240,w:60,h:90,health:210,maxHealth:210,type:'window'},
     {x:1020,y:240,w:60,h:90,health:210,maxHealth:210,type:'window'},
@@ -147,6 +155,7 @@ const baseLevels = [
     {x:460,y:300,w:90,h:80,health:220,maxHealth:220,type:'cab'}
   ], entities: [{type:'house',x:860,color:'#FFEE66'}, {type:'semi',x:340}] },
 
+  // Level 10 - Massive Wreck
   { name: "Level 10 – Massive Multi-Vehicle Wreck", fireSpots: [
     {x:520,y:345,w:110,h:55,health:170,maxHealth:170,type:'hood'},
     {x:550,y:310,w:70,h:45,health:130,maxHealth:130,type:'cab'},
@@ -226,7 +235,7 @@ function drawNozzleSelector() {
   const yBase = 60;
   const w = 65, h = 65;
 
-  // Wide
+  // Wide - always available
   ctx.fillStyle = currentNozzle === 'wide' ? '#FF0' : '#444';
   ctx.fillRect(30, yBase, w, h);
   ctx.fillStyle = '#000';
@@ -234,15 +243,19 @@ function drawNozzleSelector() {
   ctx.textAlign = 'center';
   ctx.fillText('W', 30 + w/2, yBase + 48);
 
-  // Tight
-  ctx.fillStyle = currentNozzle === 'tight' ? '#FF0' : '#444';
-  ctx.fillRect(30, yBase + 75, w, h);
-  ctx.fillText('T', 30 + w/2, yBase + 123);
+  // Tight - available from Level 2
+  if (currentLevel >= 2) {
+    ctx.fillStyle = currentNozzle === 'tight' ? '#FF0' : '#444';
+    ctx.fillRect(30, yBase + 75, w, h);
+    ctx.fillText('T', 30 + w/2, yBase + 123);
+  }
 
-  // Fog
-  ctx.fillStyle = currentNozzle === 'fog' ? '#FF0' : '#444';
-  ctx.fillRect(30, yBase + 150, w, h);
-  ctx.fillText('F', 30 + w/2, yBase + 198);
+  // Fog - available from Level 8
+  if (currentLevel >= 8) {
+    ctx.fillStyle = currentNozzle === 'fog' ? '#FF0' : '#444';
+    ctx.fillRect(30, yBase + 150, w, h);
+    ctx.fillText('F', 30 + w/2, yBase + 198);
+  }
 }
 
 canvas.addEventListener('click', e => {
@@ -253,12 +266,12 @@ canvas.addEventListener('click', e => {
 
   if (clickX > 30 && clickX < 95) {
     if (clickY > 60 && clickY < 125) currentNozzle = 'wide';
-    else if (clickY > 135 && clickY < 200) currentNozzle = 'tight';
-    else if (clickY > 210 && clickY < 275) currentNozzle = 'fog';
+    else if (clickY > 135 && clickY < 200 && currentLevel >= 2) currentNozzle = 'tight';
+    else if (clickY > 210 && clickY < 275 && currentLevel >= 8) currentNozzle = 'fog';
   }
 });
 
-// Realistic nozzle physics
+// Realistic water with nozzle physics
 function createWaterParticles() {
   let count = 34, spread = 6, baseSpeed = 0.042, downward = -5.2;
 
