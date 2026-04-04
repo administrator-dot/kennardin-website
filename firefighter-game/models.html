@@ -77,7 +77,7 @@
 <canvas id="game" width="1200" height="600"></canvas>
 
 <script>
-// ============== LEVEL UPDATES: LVL4 SHED+TREE+TIRESWING, LVL7 TRACTOR, LVL9 TORNADO CENTERED ==============
+// ============== ALL DRAW FUNCTIONS RESTORED + LEVEL UPDATES ==============
 const canvas = document.getElementById('game');
 const ctx = canvas.getContext('2d');
 const scoreEl = document.getElementById('score');
@@ -121,7 +121,6 @@ const baseLevels = [
     {x:945,y:460,w:40,h:20,health:60,maxHealth:100,type:'bottom'}
   ], entities: [{type:'singleGarage',x:820}] },
 
-  // Level 4 – Small Shed + Tree with Tire Swing
   { name: "Level 4 – Small Shed + Tree with Tire Swing", fireSpots: [
     {x:880,y:280,w:55,h:55,health:110,maxHealth:190,type:'window'},
     {x:900,y:255,w:65,h:40,health:120,maxHealth:200,type:'roof'},
@@ -148,7 +147,6 @@ const baseLevels = [
     {x:1150,y:280,w:45,h:120,health:100,maxHealth:180,type:'treefire2'}
   ], entities: [{type:'house',x:860,color:'#66CCFF'}, {type:'pickup',x:590,yOffset:10}, {type:'tree',x:680}, {type:'tree',x:1150}] },
 
-  // Level 7 – Mini Barn + Tractor
   { name: "Level 7 – Mini Barn", fireSpots: [
     {x:880,y:255,w:78,h:225,health:150,maxHealth:250,type:'door'},
     {x:920,y:200,w:90,h:45,health:160,maxHealth:260,type:'roof'},
@@ -171,7 +169,6 @@ const baseLevels = [
     {type:'hayBale',x:880}, {type:'hayBale',x:950}
   ] },
 
-  // Level 9 – Tornado centered (house moved left, tornado half off screen on right)
   { name: "Level 9 – Tall House with Tornado", fireSpots: [
     {x:780,y:240,w:60,h:90,health:150,maxHealth:250,type:'window1'},
     {x:900,y:240,w:60,h:90,health:150,maxHealth:250,type:'window2'},
@@ -374,7 +371,19 @@ function drawSideFireTruck() {
   ctx.fillRect(truckX + 25, truckY - 82, 12, 6);
 }
 
-// New: Small Shed for Level 4
+function drawShedWindow(x) {
+  ctx.fillStyle = '#E8D5B8'; ctx.fillRect(x+30, 255, 190, 225);
+  ctx.strokeStyle = '#222'; ctx.lineWidth = 4;
+  for (let i = 0; i < 9; i++) {
+    ctx.beginPath(); ctx.moveTo(x+38, 270 + i*24); ctx.lineTo(x+210, 270 + i*24); ctx.stroke();
+  }
+  ctx.fillStyle = '#8B2A00';
+  ctx.beginPath(); ctx.moveTo(x+10, 255); ctx.lineTo(x+125, 185); ctx.lineTo(x+240, 255); ctx.fill();
+  ctx.fillStyle = '#3C2F1F'; ctx.fillRect(x+82, 340, 48, 140);
+  ctx.fillStyle = '#AACCFF'; ctx.fillRect(x+155, 275, 52, 52);
+  ctx.strokeStyle = '#222'; ctx.lineWidth = 4; ctx.strokeRect(x+155, 275, 52, 52);
+}
+
 function drawSmallShed(x) {
   ctx.fillStyle = '#E8D5B8'; ctx.fillRect(x+30, 255, 160, 225);
   ctx.strokeStyle = '#222'; ctx.lineWidth = 4;
@@ -386,24 +395,18 @@ function drawSmallShed(x) {
   ctx.fillStyle = '#3C2F1F'; ctx.fillRect(x+72, 340, 42, 140);
 }
 
-// New: Tree with Tire Swing
-function drawTreeWithSwing(x) {
-  ctx.fillStyle = '#3C2F1F'; ctx.fillRect(x+35, 370, 18, 110);
-  ctx.fillStyle = '#1E8C2E';
-  ctx.beginPath(); ctx.moveTo(x+8, 380); ctx.lineTo(x+44, 310); ctx.lineTo(x+80, 380); ctx.fill();
-  ctx.beginPath(); ctx.moveTo(x+12, 340); ctx.lineTo(x+44, 280); ctx.lineTo(x+76, 340); ctx.fill();
-  ctx.beginPath(); ctx.moveTo(x+18, 310); ctx.lineTo(x+44, 250); ctx.lineTo(x+70, 310); ctx.fill();
-  
-  // Tire swing
-  ctx.strokeStyle = '#222'; ctx.lineWidth = 6;
-  ctx.beginPath(); ctx.moveTo(x+55, 310); ctx.lineTo(x+55, 370); ctx.stroke();
-  ctx.fillStyle = '#222';
-  ctx.beginPath(); ctx.arc(x+55, 380, 18, 0, Math.PI*2); ctx.fill();
-  ctx.fillStyle = '#555';
-  ctx.beginPath(); ctx.arc(x+55, 380, 12, 0, Math.PI*2); ctx.fill();
+function drawLeanToShed(x) {
+  ctx.fillStyle = '#E8D5B8'; ctx.fillRect(x+30, 255, 190, 225);
+  ctx.strokeStyle = '#222'; ctx.lineWidth = 4;
+  for (let i = 0; i < 9; i++) {
+    ctx.beginPath(); ctx.moveTo(x+38, 270 + i*24); ctx.lineTo(x+210, 270 + i*24); ctx.stroke();
+  }
+  ctx.fillStyle = '#8B2A00';
+  ctx.beginPath(); ctx.moveTo(x+10, 255); ctx.lineTo(x+125, 210); ctx.lineTo(x+240, 255); ctx.fill();
+  ctx.fillStyle = '#3C2F1F'; ctx.fillRect(x+82, 340, 48, 140);
 }
 
-function drawSingleGarage(x) { /* unchanged from previous */ 
+function drawSingleGarage(x) {
   ctx.fillStyle = '#E8D5B8'; ctx.fillRect(x+20, 230, 260, 250);
   ctx.strokeStyle = '#222'; ctx.lineWidth = 4;
   for (let i = 0; i < 11; i++) {
@@ -529,7 +532,23 @@ function drawTree(x) {
   ctx.beginPath(); ctx.moveTo(x+18, 310); ctx.lineTo(x+44, 250); ctx.lineTo(x+70, 310); ctx.fill();
 }
 
-// Spinning Tornado - centered / half off screen on right
+function drawTreeWithSwing(x) {
+  ctx.fillStyle = '#3C2F1F'; ctx.fillRect(x+35, 370, 18, 110);
+  ctx.fillStyle = '#1E8C2E';
+  ctx.beginPath(); ctx.moveTo(x+8, 380); ctx.lineTo(x+44, 310); ctx.lineTo(x+80, 380); ctx.fill();
+  ctx.beginPath(); ctx.moveTo(x+12, 340); ctx.lineTo(x+44, 280); ctx.lineTo(x+76, 340); ctx.fill();
+  ctx.beginPath(); ctx.moveTo(x+18, 310); ctx.lineTo(x+44, 250); ctx.lineTo(x+70, 310); ctx.fill();
+  
+  // Tire swing
+  ctx.strokeStyle = '#222'; ctx.lineWidth = 6;
+  ctx.beginPath(); ctx.moveTo(x+55, 310); ctx.lineTo(x+55, 370); ctx.stroke();
+  ctx.fillStyle = '#222';
+  ctx.beginPath(); ctx.arc(x+55, 380, 18, 0, Math.PI*2); ctx.fill();
+  ctx.fillStyle = '#555';
+  ctx.beginPath(); ctx.arc(x+55, 380, 12, 0, Math.PI*2); ctx.fill();
+}
+
+// Spinning Tornado
 function drawTornado(x) {
   tornadoAngle += 0.035;
   ctx.globalAlpha = 0.48;
@@ -555,6 +574,7 @@ function loop() {
   data.entities.forEach(ent => {
     if (ent.type === 'shedWindow') drawShedWindow(ent.x);
     if (ent.type === 'smallShed') drawSmallShed(ent.x);
+    if (ent.type === 'leanToShed') drawLeanToShed(ent.x);
     if (ent.type === 'singleGarage') drawSingleGarage(ent.x);
     if (ent.type === 'house') drawTallHouse(ent.x);
     if (ent.type === 'smallHouse') drawSmallHouse(ent.x, ent.color);
