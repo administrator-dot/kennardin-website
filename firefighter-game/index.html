@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Kennard Fire Defender - Level 2 Test</title>
+<title>Kennard Fire Defender - Level 2</title>
 <style>
   body { margin:0; background:#000; font-family:Arial, sans-serif; overflow:hidden; }
   canvas { display:block; margin:0 auto; }
@@ -49,7 +49,7 @@
 <canvas id="game" width="1150" height="600"></canvas>
 
 <script>
-// ============== KVFD – SINGLE LEVEL TEST (Short House + Car on ground) ==============
+// ============== KVFD – FRESH BUILD: Level 2 with Car on Ground Next to Fire Truck ==============
 const canvas = document.getElementById('game');
 const ctx = canvas.getContext('2d');
 const scoreEl = document.getElementById('score');
@@ -68,9 +68,9 @@ const truckY = 505;
 function startLevel() {
   document.getElementById('titleScreen').style.display = 'none';
   fireSpots = [
-    {x: 725, y: 255, w: 48, h: 72, health: 2800, maxHealth: 2800, type: 'window', points: 10}, // bottom of left window
-    {x: 845, y: 255, w: 48, h: 72, health: 2800, maxHealth: 2800, type: 'window', points: 10}, // bottom of right window
-    {x: 695, y: 178, w: 205, h: 42, health: 3800, maxHealth: 3800, type: 'roof', points: 25},   // top of roof
+    {x: 735, y: 255, w: 48, h: 72, health: 2800, maxHealth: 2800, type: 'window', points: 10}, // bottom of left window
+    {x: 855, y: 255, w: 48, h: 72, health: 2800, maxHealth: 2800, type: 'window', points: 10}, // bottom of right window
+    {x: 700, y: 138, w: 230, h: 42, health: 4200, maxHealth: 4200, type: 'roof', points: 25},   // top of roof
     {x: 785, y: 415, w: 42, h: 105, health: 2200, maxHealth: 2200, type: 'door', points: 15}    // bottom of door
   ];
   particles = [];
@@ -181,9 +181,9 @@ function drawKennardShortHouse() {
   ctx.fillStyle = '#A33';
   ctx.fillRect(x + 175, baseY - 85, 28, 55); // chimney
   ctx.fillStyle = '#3C2F1F';
-  ctx.fillRect(x+105, baseY + 115, 45, 80); // door - CORRECTLY CENTERED AT BOTTOM
+  ctx.fillRect(x+105, baseY + 115, 45, 80); // door centered at bottom
   ctx.fillStyle = '#FFCC00';
-  ctx.fillRect(x+122, baseY + 170, 10, 10); // knob (higher)
+  ctx.fillRect(x+122, baseY + 165, 10, 10); // knob higher
   ctx.fillStyle = '#AACCFF';
   ctx.fillRect(x+35, baseY + 40, 55, 55); // left window
   ctx.fillRect(x+175, baseY + 40, 55, 55); // right window
@@ -222,7 +222,7 @@ function drawSedan(x) {
   ctx.fillStyle = 'rgba(0,0,0,0.5)';
   ctx.fillRect(x+12, truckY+33, 118, 18);
   ctx.fillStyle = '#1E5A9E';
-  ctx.fillRect(x+12, 348, 115, 52); // grounded on same line as fire truck
+  ctx.fillRect(x+12, 348, 115, 52); // same ground level as fire truck
   ctx.fillStyle = '#0F3A6B';
   ctx.fillRect(x+25, 315, 85, 40);
   ctx.fillStyle = '#AACCFF';
@@ -237,7 +237,7 @@ function loop() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   drawBackground();
   drawKennardShortHouse();
-  drawSedan(240);
+  drawSedan(720); // moved right, under START button area
   drawSideFireTruck();
 
   ctx.fillStyle = '#FFF';
