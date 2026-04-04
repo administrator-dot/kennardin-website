@@ -12,7 +12,7 @@
     text-shadow: 2px 2px 8px rgba(0,0,0,0.9);
   }
   button {
-    pointer-events: auto; margin: 8px; padding: 10px 20px; font-size: 18px;
+    pointer-events: auto; margin: 12px 8px; padding: 12px 24px; font-size: 20px;
     background: #0066CC; color: white; border: none; border-radius: 8px; cursor: pointer;
   }
   button:hover { background: #0088FF; }
@@ -39,13 +39,19 @@
     <button class="difficulty-btn" onclick="startGame(3)">HARD</button>
   </div>
 
-  <div id="levelCompleteScreen" style="display:none; margin-top:120px;">
-    <h1 id="levelTitle" style="font-size:48px; color:#0F0;"></h1>
-    <p id="encourageText" style="font-size:32px; margin:20px;"></p>
-    <p id="safetyTip" style="font-size:26px; max-width:620px; margin:0 auto 30px; line-height:1.4;"></p>
-    <button onclick="nextLevel()">NEXT LEVEL</button>
-    <button onclick="resetGame()">PLAY AGAIN</button>
-    <button onclick="returnToFirePage()">RETURN TO FIRE PAGE</button>
+  <div id="levelCompleteScreen" style="display:none; margin-top:80px;">
+    <div style="background:rgba(0,0,0,0.75); padding:30px 40px; border-radius:12px; max-width:680px; margin:0 auto; text-align:center;">
+      <h1 id="levelTitle" style="font-size:48px; color:#0F0; margin-bottom:10px;"></h1>
+      <p id="encourageText" style="font-size:32px; margin:15px 0 25px; line-height:1.3;"></p>
+      <p id="safetyTip" style="font-size:24px; line-height:1.4; margin:0;"></p>
+    </div>
+    
+    <!-- Buttons moved to grass area -->
+    <div style="position:absolute; bottom:90px; left:50%; transform:translateX(-50%);">
+      <button onclick="nextLevel()">NEXT LEVEL</button>
+      <button onclick="resetGame()">PLAY AGAIN</button>
+      <button onclick="returnToFirePage()">RETURN TO FIRE PAGE</button>
+    </div>
   </div>
 </div>
 
@@ -59,7 +65,7 @@
 </div>
 
 <script>
-// ============== REMEMBERED BUILD – WIDER SCORE BOX + IMPROVED TORNADO ORBIT ==============
+// ============== FINAL BUILD – LEVEL COMPLETE BUTTONS ON GRASS + NOTABLE DARK BOX + WIDER SCORE + TORNADO ==============
 const canvas = document.getElementById('game');
 const ctx = canvas.getContext('2d');
 
@@ -509,19 +515,18 @@ function drawLawnMower(x) {
   ctx.beginPath(); ctx.arc(x+105, 465, 13, 0, Math.PI*2); ctx.fill();
 }
 
-// Dark grey vertical wedge tornado with wider top orbit (top-spin effect)
 function drawTornado(x) {
   tornadoAngle += 0.032;
-  const topTwist = Math.sin(tornadoAngle) * 22;   // wider orbit at top
+  const topTwist = Math.sin(tornadoAngle) * 22;
   const midTwist = Math.sin(tornadoAngle * 1.3) * 8;
 
   ctx.globalAlpha = 0.58;
   ctx.strokeStyle = '#444444';
   ctx.lineWidth = 34;
   ctx.beginPath();
-  ctx.moveTo(x - 38 + topTwist, 155);           // wide top with bigger movement
+  ctx.moveTo(x - 38 + topTwist, 155);
   ctx.quadraticCurveTo(x + 22 + midTwist, 240, x - 18 + midTwist * 1.2, 340);
-  ctx.quadraticCurveTo(x + 28, 410, x + 8, 480); // narrow bottom with less movement
+  ctx.quadraticCurveTo(x + 28, 410, x + 8, 480);
   ctx.stroke();
   ctx.globalAlpha = 1;
 }
@@ -530,9 +535,9 @@ function loop() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   drawBackground();
 
-  // Wider score/level box to prevent number overlap
+  // Wider score/level box
   ctx.fillStyle = 'rgba(0,0,0,0.65)';
-  ctx.fillRect(20, 18, 320, 48);   // made wider
+  ctx.fillRect(20, 18, 320, 48);
   ctx.fillStyle = '#FFFFFF';
   ctx.font = 'bold 26px Arial';
   ctx.textAlign = 'left';
