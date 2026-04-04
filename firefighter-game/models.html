@@ -52,15 +52,15 @@
     }
 
     function drawBackground(bg) {
-      if (bg === 0) { // Day
+      if (bg === 0) {
         ctx.fillStyle = '#5cc8ff'; ctx.fillRect(0, 0, 1200, 480);
         ctx.fillStyle = '#4caf50'; ctx.fillRect(0, 480, 1200, 120);
         ctx.fillStyle = '#ffeb3b'; ctx.beginPath(); ctx.arc(1000, 120, 40, 0, Math.PI*2); ctx.fill();
-      } else if (bg === 1) { // Dusk
+      } else if (bg === 1) {
         ctx.fillStyle = '#ff7a00'; ctx.fillRect(0, 0, 1200, 480);
         ctx.fillStyle = '#3a8c3a'; ctx.fillRect(0, 480, 1200, 120);
         ctx.fillStyle = '#ff9800'; ctx.beginPath(); ctx.arc(900, 180, 35, 0, Math.PI*2); ctx.fill();
-      } else { // Night
+      } else {
         ctx.fillStyle = '#112233'; ctx.fillRect(0, 0, 1200, 480);
         ctx.fillStyle = '#223322'; ctx.fillRect(0, 480, 1200, 120);
         ctx.fillStyle = '#f4f4f4'; ctx.beginPath(); ctx.arc(1000, 120, 35, 0, Math.PI*2); ctx.fill();
@@ -68,7 +68,6 @@
       }
     }
 
-    // Exact detailed fire truck from the live game
     function drawSideFireTruck(x, y) {
       ctx.fillStyle = '#e74c3c'; ctx.fillRect(x, y-85, 240, 75);
       ctx.fillStyle = '#fff'; ctx.fillRect(x+10, y-65, 220, 18);
@@ -110,7 +109,7 @@
       ctx.fillStyle = '#2c3e50'; ctx.fillRect(x+145, y-80, 35, 80);
     }
 
-    // Exact water code you liked – now with faster disappearance
+    // Smaller pixel-like water spray with multiple blue shades
     function createWaterParticles() {
       const dx = mouseX - (truckX + 148);
       const dy = mouseY - (truckY - 34);
@@ -118,16 +117,19 @@
       const dirX = dx / length * 1.25;
       const dirY = dy / length * 1.25;
 
-      for (let i = 0; i < 12; i++) {
-        const spread = (Math.random() - 0.5) * 3.5;
+      const waterBlues = ['#33CCFF', '#1E90FF', '#00BFFF', '#40E0FF'];
+
+      for (let i = 0; i < 10; i++) {   // fewer + smaller = tighter pixel spray
+        const spread = (Math.random() - 0.5) * 3;
+        const color = waterBlues[Math.floor(Math.random() * waterBlues.length)];
         particles.push({
-          x: mouseX + (Math.random()-0.5)*4,
-          y: mouseY + (Math.random()-0.5)*4,
+          x: mouseX + (Math.random()-0.5)*3,
+          y: mouseY + (Math.random()-0.5)*3,
           vx: dirX * 27 + spread,
           vy: dirY * 27 + spread - 4,
-          color: '#33CCFF',
-          life: 13,      // shorter life = disappears faster
-          size: 3,
+          color: color,
+          life: 13,
+          size: 2,          // even smaller pixel spray
           type: 'water'
         });
       }
@@ -145,7 +147,7 @@
     function drawParticle(p) {
       ctx.globalAlpha = Math.max(0.1, p.life / 48);
       ctx.fillStyle = p.color;
-      if (p.type === 'water') ctx.fillRect(p.x - 1.5, p.y - 2, 3, 6);
+      if (p.type === 'water') ctx.fillRect(p.x - 1, p.y - 1.5, 2, 3.5);
       else ctx.fillRect(p.x - p.size/2, p.y - p.size/2, p.size, p.size);
       ctx.globalAlpha = 1;
     }
@@ -188,7 +190,7 @@
         if (p.life <= 0) particles.splice(i, 1);
       }
 
-      // HOSE ALWAYS VISIBLE – exact code you liked
+      // HOSE ALWAYS VISIBLE – exact code from your good version
       ctx.strokeStyle = '#555';
       ctx.lineWidth = 14;
       ctx.beginPath();
@@ -210,7 +212,6 @@
 
     function extinguishAll() { fires = []; render(); }
 
-    // Mouse events
     canvas.addEventListener('mousemove', e => {
       const rect = canvas.getBoundingClientRect();
       mouseX = e.clientX - rect.left;
@@ -222,17 +223,13 @@
 
     canvas.addEventListener('mouseup', () => {
       isSpraying = false;
-      // QUICK CLEANUP: make any remaining water vanish fast
       for (let i = particles.length - 1; i >= 0; i--) {
         if (particles[i].type === 'water') particles[i].life = Math.min(particles[i].life, 5);
       }
       render();
     });
 
-    canvas.addEventListener('mouseleave', () => {
-      isSpraying = false;
-      render();
-    });
+    canvas.addEventListener('mouseleave', () => { isSpraying = false; render(); });
 
     function changeBackground(bg) {
       currentBg = bg;
