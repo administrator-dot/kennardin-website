@@ -40,7 +40,7 @@
 </div>
 <canvas id="game" width="1200" height="600"></canvas>
 <script>
-// ============== 20px GRID - PROGRESSIVE BUILDINGS + WRECK SCENARIO ==============
+// ============== 20px GRID - WRECK MOVED RIGHT ==============
 const canvas = document.getElementById('game');
 const ctx = canvas.getContext('2d');
 const scoreEl = document.getElementById('score');
@@ -58,20 +58,20 @@ const truckX = 100;
 const truckY = 480;
 
 const levels = [
-  // Level 1: Small Shed (no vehicles)
+  // Level 1: Small Shed
   { name: "Level 1 – Small Shed Fire", fireSpots: [
     {x: 920, y: 320, w: 80, h: 100, health: 180, maxHealth: 180, type: 'wall'},
     {x: 940, y: 260, w: 60, h: 40, health: 140, maxHealth: 140, type: 'roof'}
   ], entities: [{type:'shed', x:880, color:'#A38D6B'}] },
 
-  // Level 2: Medium Garage (no vehicles)
+  // Level 2: Medium Garage
   { name: "Level 2 – Medium Garage Fire", fireSpots: [
     {x: 900, y: 280, w: 110, h: 130, health: 220, maxHealth: 220, type: 'door'},
     {x: 920, y: 220, w: 90, h: 50, health: 180, maxHealth: 180, type: 'roof'},
     {x: 980, y: 310, w: 50, h: 80, health: 160, maxHealth: 160, type: 'window'}
   ], entities: [{type:'garage', x:860, color:'#8B9E7A'}] },
 
-  // Level 3: Tall Pink House + Sedan (sedan not on fire)
+  // Level 3: Tall Pink House + Sedan (not on fire)
   { name: "Level 3 – Tall Pink House + Sedan", fireSpots: [
     {x: 900, y: 240, w: 60, h: 90, health: 240, maxHealth: 240, type: 'window'},
     {x: 1020, y: 240, w: 60, h: 90, health: 240, maxHealth: 240, type: 'window'},
@@ -79,7 +79,7 @@ const levels = [
     {x: 960, y: 410, w: 50, h: 110, health: 220, maxHealth: 220, type: 'door'}
   ], entities: [{type:'house', x:860, color:'#FF99CC'}, {type:'sedan', x:420}] },
 
-  // Level 4: Tall Blue House + Pickup (pickup not on fire)
+  // Level 4: Tall Blue House + Pickup (not on fire)
   { name: "Level 4 – Tall Blue House + Pickup", fireSpots: [
     {x: 900, y: 240, w: 60, h: 90, health: 240, maxHealth: 240, type: 'window'},
     {x: 1020, y: 240, w: 60, h: 90, health: 240, maxHealth: 240, type: 'window'},
@@ -87,23 +87,23 @@ const levels = [
     {x: 960, y: 410, w: 50, h: 110, health: 220, maxHealth: 220, type: 'door'}
   ], entities: [{type:'house', x:860, color:'#66CCFF'}, {type:'pickup', x:520}] },
 
-  // Level 5: Semi + Sedan Wreck (both on fire - no house)
+  // Level 5: Semi & Sedan Wreck (moved right - both on fire)
   { name: "Level 5 – Semi & Sedan Wreck", fireSpots: [
-    // Semi fires
-    {x: 520, y: 300, w: 90, h: 80, health: 280, maxHealth: 280, type: 'cab'},
-    {x: 620, y: 270, w: 260, h: 105, health: 420, maxHealth: 420, type: 'tanker'},
-    // Sedan fire (crashed into semi)
-    {x: 380, y: 345, w: 105, h: 55, health: 210, maxHealth: 210, type: 'hood'},
-    {x: 405, y: 310, w: 65, h: 42, health: 160, maxHealth: 160, type: 'cab'}
-  ], entities: [{type:'semi', x:340}, {type:'sedan', x:280}] },
+    // Sedan fire (left side of wreck)
+    {x: 680, y: 345, w: 105, h: 55, health: 210, maxHealth: 210, type: 'hood'},
+    {x: 705, y: 310, w: 65, h: 42, health: 160, maxHealth: 160, type: 'cab'},
+    // Semi fire (right side of wreck)
+    {x: 820, y: 300, w: 90, h: 80, health: 280, maxHealth: 280, type: 'cab'},
+    {x: 920, y: 270, w: 260, h: 105, health: 420, maxHealth: 420, type: 'tanker'}
+  ], entities: [{type:'sedan', x:640}, {type:'semi', x:780}] },
 
-  // Level 6: Tall Green House + Two Vehicles (one on fire, one not)
+  // Level 6: Tall Green House + Vehicles
   { name: "Level 6 – Tall Green House + Vehicles", fireSpots: [
     {x: 900, y: 240, w: 60, h: 90, health: 240, maxHealth: 240, type: 'window'},
     {x: 1020, y: 240, w: 60, h: 90, health: 240, maxHealth: 240, type: 'window'},
     {x: 860, y: 140, w: 240, h: 50, health: 340, maxHealth: 340, type: 'roof'},
     {x: 960, y: 410, w: 50, h: 110, health: 220, maxHealth: 220, type: 'door'},
-    // Only sedan on fire
+    // Sedan on fire
     {x: 420, y: 350, w: 110, h: 60, health: 195, maxHealth: 195, type: 'hood'},
     {x: 450, y: 310, w: 70, h: 45, health: 145, maxHealth: 145, type: 'cab'}
   ], entities: [{type:'house', x:860, color:'#66FF99'}, {type:'sedan', x:380}, {type:'pickup', x:620}] }
