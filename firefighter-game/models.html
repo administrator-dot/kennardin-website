@@ -58,7 +58,7 @@
 </div>
 
 <script>
-// ============== WORKING BASE WITH IMPROVED DIFFICULTY SCALING ==============
+// ============== REFINED DIFFICULTY BALANCE ==============
 const canvas = document.getElementById('game');
 const ctx = canvas.getContext('2d');
 
@@ -179,20 +179,20 @@ function loadLevel(lvl) {
   fireSpots = base.fireSpots.map(s => {
     let healthMod = 1, growthMod = 1;
     if (difficulty === 1) { 
-      healthMod = 0.55;   // Easy: much lower starting health
-      growthMod = 0.45;   // Easy: grows very slowly
+      healthMod = 0.48;   // Easy: much lower starting health
+      growthMod = 0.38;   // Easy: grows very slowly
     } else if (difficulty === 2) { 
       healthMod = 1.0; 
       growthMod = 1.0; 
     } else if (difficulty === 3) { 
-      healthMod = 1.65;   // Hard: much more health
-      growthMod = 1.55;   // Hard: grows faster
+      healthMod = 1.75;   // Hard: significantly more health
+      growthMod = 1.65;   // Hard: grows noticeably faster
     }
     return { 
       ...s, 
       health: Math.floor(s.health * healthMod), 
       maxHealth: Math.floor(s.maxHealth * healthMod), 
-      growthRate: 6.8 * growthMod 
+      growthRate: 7.0 * growthMod 
     };
   });
   particles = [];
@@ -344,7 +344,6 @@ function drawSideFireTruck() {
   ctx.fillStyle = '#00F'; ctx.fillRect(truckX + 25, truckY - 82, 12, 6);
 }
 
-// All draw functions (houses, sheds, garage, barn, tractor, tornado, etc.) are included below
 function drawShedWindow(x) {
   ctx.fillStyle = '#E8D5B8'; ctx.fillRect(x+30, 255, 190, 225);
   ctx.strokeStyle = '#222'; ctx.lineWidth = 4;
