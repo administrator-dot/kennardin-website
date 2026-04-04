@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Kennard Fire Defender - Models Test</title>
+  <title>Kennard Fire Defender - Grid Test</title>
   <style>
     body { margin:0; background:#000; font-family:Arial, sans-serif; overflow:hidden; color:#fff; text-align:center; }
     canvas { display:block; margin:0 auto; image-rendering:pixelated; }
@@ -19,7 +19,7 @@
     <h1 style="font-size:58px; margin-top:40px; color:#FF0;">KENNARD FIRE DEFENDER</h1>
     <p style="font-size:26px; margin:10px 0 30px;">KVFD • Kennard, Indiana</p>
 
-    <div class="controls" style="margin-top:10px;">
+    <div class="controls">
       <button onclick="changeBackground(0)">☀️ Day</button>
       <button onclick="changeBackground(1)">🌅 Dusk</button>
       <button onclick="changeBackground(2)">🌙 Night</button>
@@ -28,7 +28,7 @@
     </div>
   </div>
 
-  <div class="info">Score: <span id="score">0</span> &nbsp;&nbsp; Level Test</div>
+  <div class="info">Score: <span id="score">0</span></div>
 
   <canvas id="gameCanvas" width="1200" height="600"></canvas>
 
@@ -37,8 +37,13 @@
     const ctx = canvas.getContext('2d');
     let currentBg = 0;
     let fires = [];
+    let particles = [];
     let isSpraying = false;
     let mouseX = 600, mouseY = 300;
+
+    // Exact truck position from your game
+    const truckX = 120;
+    const truckY = 480;
 
     function drawGrid() {
       ctx.strokeStyle = 'rgba(255,255,255,0.15)';
@@ -65,13 +70,14 @@
     }
 
     function drawFireTruck(x, y) {
-      // Detailed fire truck from your image (ladder, stripes, siren)
       ctx.fillStyle = '#e74c3c'; ctx.fillRect(x, y-85, 240, 75);
       ctx.fillStyle = '#fff'; ctx.fillRect(x+10, y-65, 220, 18);
       ctx.fillStyle = '#2c3e50'; ctx.fillRect(x+190, y-105, 70, 50);
       ctx.fillStyle = '#ecf0f1'; ctx.fillRect(x+30, y-115, 150, 18);
-      ctx.fillStyle = '#f1c40f'; ctx.fillRect(x+35, y-130, 8, 25); ctx.fillRect(x+55, y-130, 8, 25);
-      ctx.fillRect(x+75, y-130, 8, 25); ctx.fillRect(x+95, y-130, 8, 25); ctx.fillRect(x+115, y-130, 8, 25); ctx.fillRect(x+135, y-130, 8, 25);
+      ctx.fillStyle = '#f1c40f';
+      ctx.fillRect(x+35, y-130, 8, 25); ctx.fillRect(x+55, y-130, 8, 25);
+      ctx.fillRect(x+75, y-130, 8, 25); ctx.fillRect(x+95, y-130, 8, 25);
+      ctx.fillRect(x+115, y-130, 8, 25); ctx.fillRect(x+135, y-130, 8, 25);
       ctx.fillStyle = '#34495e'; ctx.fillRect(x+205, y-95, 40, 30);
       ctx.fillStyle = '#3498db'; ctx.fillRect(x+225, y-125, 18, 12);
       ctx.fillStyle = '#2c3e50';
@@ -102,14 +108,14 @@
       ctx.fillStyle = '#2c3e50'; ctx.fillRect(x+145, y-80, 35, 80);
     }
 
-    function drawWaterSpray(x1, y1, x2, y2) {
-      const dx = x2 - x1;
-      const dy = y2 - y1;
-      for (let i = 0; i < 28; i++) {
-        const t = i / 28;
-        const px = x1 + dx * t + (Math.random() * 18 - 9);
-        const py = y1 + dy * t + (Math.random() * 18 - 9);
-        ctx.fillStyle = `rgba(100, 200, 255, ${0.7 + Math.random() * 0.3})`;
+    function drawWaterSpray() {
+      for (let i = 0; i < 34; i++) {
+        const spread = (Math.random() - 0.5) * 6;
+        const dirX = (mouseX - (truckX + 145)) * 0.042;
+        const dirY = (mouseY - (truckY - 34)) * 0.042;
+        const px = mouseX + (Math.random()-0.5)*7;
+        const py = mouseY + (Math.random()-0.5)*7;
+        ctx.fillStyle = `rgba(100, 200, 255, ${0.6 + Math.random() * 0.4})`;
         ctx.fillRect(px, py, 5, 5);
       }
     }
@@ -127,7 +133,7 @@
       drawBackground(currentBg);
       drawGrid();
 
-      drawFireTruck(120, 480);
+      drawFireTruck(truckX, truckY);
       drawBlueCar(520, 480);
       drawHouse(860, 480);
 
@@ -137,10 +143,10 @@
         ctx.strokeStyle = '#555';
         ctx.lineWidth = 14;
         ctx.beginPath();
-        ctx.moveTo(320, 410); // hose from fire truck
-        ctx.quadraticCurveTo(380, 340, mouseX, mouseY);
+        ctx.moveTo(truckX + 148, truckY - 34);
+        ctx.quadraticCurveTo(truckX + 225, truckY - 145, mouseX, mouseY);
         ctx.stroke();
-        drawWaterSpray(320, 410, mouseX, mouseY);
+        drawWaterSpray();
       }
     }
 
@@ -150,11 +156,11 @@
       fires.push({x: 310, y: 435, size: 11}); // truck gas tank
       fires.push({x: 555, y: 430, size: 11}); // car engine
       fires.push({x: 630, y: 450, size: 9});  // car gas tank
-      fires.push({x: 885, y: 370, size: 10}); // house windows & door
+      fires.push({x: 885, y: 370, size: 10}); // house
       fires.push({x: 940, y: 370, size: 10});
       fires.push({x: 995, y: 370, size: 10});
       fires.push({x: 1005, y: 410, size: 12});
-      fires.push({x: 910, y: 280, size: 8});  // roof
+      fires.push({x: 910, y: 280, size: 8});
       fires.push({x: 960, y: 280, size: 8});
       render();
     }
