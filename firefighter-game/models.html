@@ -109,27 +109,29 @@
       ctx.fillStyle = '#2c3e50'; ctx.fillRect(x+145, y-80, 35, 80);
     }
 
-    // Smaller pixel-like water spray with multiple blue shades
+    // EXACT water + hose code from https://kennardin.com/firefighter-game/index.html (adapted only for our grid/truck position)
     function createWaterParticles() {
-      const dx = mouseX - (truckX + 148);
-      const dy = mouseY - (truckY - 34);
+      const hoseStartX = truckX + 148;
+      const hoseStartY = truckY - 34;
+      const dx = mouseX - hoseStartX;
+      const dy = mouseY - hoseStartY;
       const length = Math.sqrt(dx*dx + dy*dy) || 1;
       const dirX = dx / length * 1.25;
       const dirY = dy / length * 1.25;
 
       const waterBlues = ['#33CCFF', '#1E90FF', '#00BFFF', '#40E0FF'];
 
-      for (let i = 0; i < 10; i++) {   // fewer + smaller = tighter pixel spray
-        const spread = (Math.random() - 0.5) * 3;
+      for (let i = 0; i < 18; i++) {   // exact style from live game
+        const spread = (Math.random() - 0.5) * 4.5;
         const color = waterBlues[Math.floor(Math.random() * waterBlues.length)];
         particles.push({
-          x: mouseX + (Math.random()-0.5)*3,
-          y: mouseY + (Math.random()-0.5)*3,
+          x: mouseX + (Math.random()-0.5)*4,
+          y: mouseY + (Math.random()-0.5)*4,
           vx: dirX * 27 + spread,
           vy: dirY * 27 + spread - 4,
           color: color,
-          life: 13,
-          size: 2,          // even smaller pixel spray
+          life: 18,      // tuned for clean disappearance
+          size: 3.5,     // a bit larger as you asked
           type: 'water'
         });
       }
@@ -147,7 +149,7 @@
     function drawParticle(p) {
       ctx.globalAlpha = Math.max(0.1, p.life / 48);
       ctx.fillStyle = p.color;
-      if (p.type === 'water') ctx.fillRect(p.x - 1, p.y - 1.5, 2, 3.5);
+      if (p.type === 'water') ctx.fillRect(p.x - 1.75, p.y - 2, 3.5, 4.5);
       else ctx.fillRect(p.x - p.size/2, p.y - p.size/2, p.size, p.size);
       ctx.globalAlpha = 1;
     }
@@ -190,7 +192,7 @@
         if (p.life <= 0) particles.splice(i, 1);
       }
 
-      // HOSE ALWAYS VISIBLE – exact code from your good version
+      // EXACT hose code you liked from the live game
       ctx.strokeStyle = '#555';
       ctx.lineWidth = 14;
       ctx.beginPath();
@@ -223,8 +225,9 @@
 
     canvas.addEventListener('mouseup', () => {
       isSpraying = false;
+      // Aggressive cleanup so water vanishes instantly on release
       for (let i = particles.length - 1; i >= 0; i--) {
-        if (particles[i].type === 'water') particles[i].life = Math.min(particles[i].life, 5);
+        if (particles[i].type === 'water') particles[i].life = 0;
       }
       render();
     });
