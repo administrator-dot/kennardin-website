@@ -63,7 +63,7 @@
 <canvas id="game" width="1200" height="600"></canvas>
 
 <script>
-// ============== FIXED + CLEAN - GAME STARTS CORRECTLY ==============
+// ============== FIXED - FIRES AND WATER NOW WORK AFTER DIFFICULTY SELECTION ==============
 const canvas = document.getElementById('game');
 const ctx = canvas.getContext('2d');
 const scoreEl = document.getElementById('score');
@@ -75,7 +75,7 @@ let isSpraying = false;
 let gameState = 'title';
 let currentLevel = 1;
 let difficulty = 2;
-let currentNozzle = 'wide'; // Level 1 starts on wide
+let currentNozzle = 'wide';
 let fireSpots = [];
 let particles = [];
 
@@ -235,7 +235,7 @@ function drawNozzleSelector() {
   const yBase = 60;
   const w = 65, h = 65;
 
-  // Wide - always available
+  // Wide
   ctx.fillStyle = currentNozzle === 'wide' ? '#FF0' : '#444';
   ctx.fillRect(30, yBase, w, h);
   ctx.fillStyle = '#000';
@@ -243,14 +243,14 @@ function drawNozzleSelector() {
   ctx.textAlign = 'center';
   ctx.fillText('W', 30 + w/2, yBase + 48);
 
-  // Tight - available from Level 2
+  // Tight - from Level 2
   if (currentLevel >= 2) {
     ctx.fillStyle = currentNozzle === 'tight' ? '#FF0' : '#444';
     ctx.fillRect(30, yBase + 75, w, h);
     ctx.fillText('T', 30 + w/2, yBase + 123);
   }
 
-  // Fog - available from Level 8
+  // Fog - from Level 8
   if (currentLevel >= 8) {
     ctx.fillStyle = currentNozzle === 'fog' ? '#FF0' : '#444';
     ctx.fillRect(30, yBase + 150, w, h);
@@ -276,11 +276,11 @@ function createWaterParticles() {
   let count = 34, spread = 6, baseSpeed = 0.042, downward = -5.2;
 
   if (currentNozzle === 'wide') {
-    count = 48; spread = 14; baseSpeed = 0.028; // barely reaches far side
+    count = 48; spread = 14; baseSpeed = 0.028;
   } else if (currentNozzle === 'tight') {
     count = 22; spread = 2; baseSpeed = 0.062; downward = -7;
   } else if (currentNozzle === 'fog') {
-    count = 60; spread = 20; baseSpeed = 0.022; // very short range
+    count = 60; spread = 20; baseSpeed = 0.022;
   }
 
   for (let i = 0; i < count; i++) {
@@ -337,7 +337,7 @@ function drawSideFireTruck() {
   ctx.fillRect(truckX + 25, truckY - 82, 12, 6);
 }
 
-// Building functions (thinner lines, distinct designs)
+// Building functions
 function drawShedWindow(x) {
   ctx.fillStyle = '#E8D5B8'; ctx.fillRect(x+30, 255, 190, 225);
   ctx.strokeStyle = '#222'; ctx.lineWidth = 4;
@@ -368,7 +368,7 @@ function drawSingleGarage(x) {
   for (let i = 0; i < 11; i++) {
     ctx.beginPath(); ctx.moveTo(x+30, 245 + i*22); ctx.lineTo(x+270, 245 + i*22); ctx.stroke();
   }
-  ctx.fillStyle = '#777'; // silver roll-up door
+  ctx.fillStyle = '#777';
   ctx.fillRect(x+91, 255, 118, 225);
   ctx.fillStyle = '#8B2A00';
   ctx.beginPath(); ctx.moveTo(x, 230); ctx.lineTo(x+150, 160); ctx.lineTo(x+300, 230); ctx.fill();
