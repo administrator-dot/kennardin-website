@@ -18,7 +18,11 @@
   button:hover { background: #0088FF; }
   .difficulty-btn { background:#C00; }
   .difficulty-btn:hover { background: #F00; }
-  #ui { position: absolute; top: 15px; left: 15px; font-size: 24px; pointer-events: none; color:#FFF; }
+  #ui {
+    position: absolute; top: 15px; left: 15px; font-size: 24px; color:#FFF;
+    background: rgba(0,0,0,0.65); padding: 8px 16px; border-radius: 8px;
+    pointer-events: none;
+  }
   .bottom-label {
     position: absolute; bottom: 15px; right: 20px; font-size: 22px; color:#FF0;
     text-shadow: 2px 2px 6px rgba(0,0,0,0.8);
@@ -70,7 +74,7 @@
 <canvas id="game" width="1200" height="600"></canvas>
 
 <script>
-// ============== TIME OF DAY + GARAGE CLEAN + INTERESTING DETAILS + ADJUSTED FIRE SPOTS ==============
+// ============== UPDATED WITH TORNADO + TREE ON FIRE + UI IMPROVEMENTS ==============
 const canvas = document.getElementById('game');
 const ctx = canvas.getContext('2d');
 const scoreEl = document.getElementById('score');
@@ -107,10 +111,10 @@ const baseLevels = [
   ] },
 
   { name: "Level 3 – Garage Fire", fireSpots: [
-    {x:920,y:200,w:110,h:45,health:140,maxHealth:230,type:'roof'},     // roof
-    {x:920,y:255,w:55,h:225,health:80,maxHealth:140,type:'leftdoor'},  // left side of open door
-    {x:975,y:255,w:55,h:225,health:80,maxHealth:140,type:'rightdoor'}, // right side of open door
-    {x:945,y:460,w:40,h:20,health:60,maxHealth:100,type:'bottom'}      // bottom corners
+    {x:920,y:200,w:110,h:45,health:140,maxHealth:230,type:'roof'},
+    {x:920,y:255,w:55,h:225,health:80,maxHealth:140,type:'leftdoor'},
+    {x:975,y:255,w:55,h:225,health:80,maxHealth:140,type:'rightdoor'},
+    {x:945,y:460,w:40,h:20,health:60,maxHealth:100,type:'bottom'}
   ], entities: [{type:'singleGarage',x:820}] },
 
   { name: "Level 4 – Tall House", fireSpots: [
@@ -127,12 +131,13 @@ const baseLevels = [
     {x:950,y:400,w:45,h:100,health:90,maxHealth:160,type:'door'}
   ], entities: [{type:'smallHouse',x:850,color:'#FFCC99'}, {type:'sedan',x:520,yOffset:8}] },
 
-  { name: "Level 6 – Tall House + Pickup", fireSpots: [
+  { name: "Level 6 – Tall House + Pickup + Burning Tree", fireSpots: [
     {x:900,y:240,w:60,h:90,health:140,maxHealth:230,type:'window1'},
     {x:1020,y:240,w:60,h:90,health:140,maxHealth:230,type:'window2'},
     {x:860,y:140,w:240,h:50,health:180,maxHealth:280,type:'roof'},
-    {x:960,y:410,w:50,h:110,health:120,maxHealth:200,type:'door'}
-  ], entities: [{type:'house',x:860,color:'#66CCFF'}, {type:'pickup',x:590,yOffset:10}] },
+    {x:960,y:410,w:50,h:110,health:120,maxHealth:200,type:'door'},
+    {x:1150,y:280,w:45,h:120,health:100,maxHealth:180,type:'treefire'}
+  ], entities: [{type:'house',x:860,color:'#66CCFF'}, {type:'pickup',x:590,yOffset:10}, {type:'tree',x:1150}] },
 
   { name: "Level 7 – Mini Barn", fireSpots: [
     {x:880,y:255,w:78,h:225,health:150,maxHealth:250,type:'door'},
@@ -152,12 +157,12 @@ const baseLevels = [
     {type:'hayBale',x:880}, {type:'hayBale',x:950}
   ] },
 
-  { name: "Level 9 – Tall House", fireSpots: [
+  { name: "Level 9 – Tall House with Tornado", fireSpots: [
     {x:900,y:240,w:60,h:90,health:150,maxHealth:250,type:'window1'},
     {x:1020,y:240,w:60,h:90,health:150,maxHealth:250,type:'window2'},
     {x:860,y:140,w:240,h:50,health:190,maxHealth:290,type:'roof'},
     {x:960,y:410,w:50,h:110,health:130,maxHealth:220,type:'door'}
-  ], entities: [{type:'house',x:860,color:'#FFEE66'}] },
+  ], entities: [{type:'house',x:860,color:'#FFEE66'}, {type:'tornado',x:1080}] },
 
   { name: "Level 10 – Big Car Wreck", fireSpots: [
     {x:480,y:355,w:110,h:55,health:140,maxHealth:240,type:'hood'},
@@ -451,6 +456,18 @@ function drawLargeRedBarn(x) {
   ctx.globalAlpha = 1;
 }
 
+// New: Faded Tornado in background
+function drawTornado(x) {
+  ctx.globalAlpha = 0.35;
+  ctx.fillStyle = '#AAAAAA';
+  ctx.beginPath();
+  ctx.moveTo(x, 180);
+  ctx.quadraticCurveTo(x+30, 300, x-20, 420);
+  ctx.quadraticCurveTo(x+40, 380, x+10, 480);
+  ctx.fill();
+  ctx.globalAlpha = 1;
+}
+
 function drawHayBale(x) {
   ctx.fillStyle = '#E8B070'; ctx.fillRect(x, 415, 80, 60);
   ctx.strokeStyle = '#222'; ctx.lineWidth = 4;
@@ -528,6 +545,7 @@ function loop() {
     if (ent.type === 'pickup') drawPickup(ent.x, ent.yOffset || 0);
     if (ent.type === 'semi') drawSemi(ent.x);
     if (ent.type === 'tree') drawTree(ent.x);
+    if (ent.type === 'tornado') drawTornado(ent.x);
   });
 
   drawSideFireTruck();
