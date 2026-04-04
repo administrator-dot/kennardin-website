@@ -41,7 +41,6 @@
     let isSpraying = false;
     let mouseX = 600, mouseY = 300;
 
-    // Exact truck position from your game
     const truckX = 120;
     const truckY = 480;
 
@@ -108,24 +107,30 @@
       ctx.fillStyle = '#2c3e50'; ctx.fillRect(x+145, y-80, 35, 80);
     }
 
-    function drawWaterSpray() {
+    function createWaterParticles() {
       for (let i = 0; i < 34; i++) {
         const spread = (Math.random() - 0.5) * 6;
         const dirX = (mouseX - (truckX + 145)) * 0.042;
         const dirY = (mouseY - (truckY - 34)) * 0.042;
-        const px = mouseX + (Math.random()-0.5)*7;
-        const py = mouseY + (Math.random()-0.5)*7;
-        ctx.fillStyle = `rgba(100, 200, 255, ${0.6 + Math.random() * 0.4})`;
-        ctx.fillRect(px, py, 5, 5);
+        particles.push({x: mouseX + (Math.random()-0.5)*7, y: mouseY + (Math.random()-0.5)*7, vx: dirX + spread, vy: dirY + spread - 5.2, color: '#33CCFF', life: 35, size: 4, type: 'water'});
       }
     }
 
-    function drawFire(x, y, size) {
-      const intensity = Math.random() * 0.4 + 0.8;
-      ctx.fillStyle = `rgba(255, ${60 + Math.random()*120}, 0, ${intensity})`;
-      ctx.beginPath(); ctx.arc(x, y, size * (0.9 + Math.random()*0.5), 0, Math.PI*2); ctx.fill();
-      ctx.fillStyle = `rgba(255, 200, 0, ${intensity * 0.8})`;
-      ctx.beginPath(); ctx.arc(x + Math.random()*10-5, y - size*0.7, size*0.7, 0, Math.PI*2); ctx.fill();
+    function createFireParticles(x, y, intensity) {
+      for (let i = 0; i < intensity; i++) {
+        const vx = (Math.random() - 0.5) * 3.4;
+        const vy = -3.8 - Math.random() * 5.8;
+        const colors = ['#FF1100', '#FF5500', '#FFAA00'];
+        particles.push({x: x + (Math.random()-0.5)*48, y: y + (Math.random()-0.5)*35, vx: vx, vy: vy, color: colors[Math.floor(Math.random()*colors.length)], life: 48, size: 7 + Math.random()*13, type: 'fire'});
+      }
+    }
+
+    function drawParticle(p) {
+      ctx.globalAlpha = Math.max(0.1, p.life / 48);
+      ctx.fillStyle = p.color;
+      if (p.type === 'water') ctx.fillRect(p.x - 2.5, p.y - 3, 5, 9);
+      else ctx.fillRect(p.x - p.size/2, p.y - p.size/2, p.size, p.size);
+      ctx.globalAlpha = 1;
     }
 
     function render() {
@@ -137,7 +142,22 @@
       drawBlueCar(520, 480);
       drawHouse(860, 480);
 
-      fires.forEach(f => drawFire(f.x, f.y, f.size));
+      fires.forEach(f => {
+        createFireParticles(f.x, f.y, 8);
+      });
+
+      particles.forEach((p, i) => {
+        p.x += p.vx;
+        p.y += p.vy;
+        if (p.type === 'water') p.vy += 0.11;
+        if (p.type === 'fire') {
+          p.vy -= 0.17 + Math.random() * 0.2;
+          p.vx += (Math.random() - 0.5) * 1.7;
+        }
+        p.life--;
+        drawParticle(p);
+        if (p.life <= 0) particles.splice(i, 1);
+      });
 
       if (isSpraying) {
         ctx.strokeStyle = '#555';
@@ -146,22 +166,23 @@
         ctx.moveTo(truckX + 148, truckY - 34);
         ctx.quadraticCurveTo(truckX + 225, truckY - 145, mouseX, mouseY);
         ctx.stroke();
-        drawWaterSpray();
+        createWaterParticles();
       }
     }
 
     function igniteFires() {
-      fires = [];
-      fires.push({x: 170, y: 405, size: 13}); // truck engine
-      fires.push({x: 310, y: 435, size: 11}); // truck gas tank
-      fires.push({x: 555, y: 430, size: 11}); // car engine
-      fires.push({x: 630, y: 450, size: 9});  // car gas tank
-      fires.push({x: 885, y: 370, size: 10}); // house
-      fires.push({x: 940, y: 370, size: 10});
-      fires.push({x: 995, y: 370, size: 10});
-      fires.push({x: 1005, y: 410, size: 12});
-      fires.push({x: 910, y: 280, size: 8});
-      fires.push({x: 960, y: 280, size: 8});
+      fires = [
+        {x: 170, y: 405, size: 13},
+        {x: 310, y: 435, size: 11},
+        {x: 555, y: 430, size: 11},
+        {x: 630, y: 450, size: 9},
+        {x: 885, y: 370, size: 10},
+        {x: 940, y: 370, size: 10},
+        {x: 995, y: 370, size: 10},
+        {x: 1005, y: 410, size: 12},
+        {x: 910, y: 280, size: 8},
+        {x: 960, y: 280, size: 8}
+      ];
       render();
     }
 
@@ -186,7 +207,7 @@
         const f = fires[i];
         const dx = f.x - clickX;
         const dy = f.y - clickY;
-        if (Math.sqrt(dx*dx + dy*dy) < f.size + 20) {
+        if (Math.sqrt(dx*dx + dy*dy) < f.size + 25) {
           fires.splice(i, 1);
           render();
           return;
@@ -199,7 +220,7 @@
       render();
     }
 
-    setInterval(() => { if (fires.length > 0) render(); }, 70);
+    setInterval(() => { if (fires.length > 0 || isSpraying) render(); }, 30);
     render();
   </script>
 </body>
