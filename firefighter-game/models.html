@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Kennard Fire Defender - 20px Grid</title>
+<title>Kennard Fire Defender - 20px Grid (Model)</title>
 <style>
   body { margin:0; background:#000; font-family:Arial, sans-serif; overflow:hidden; }
   canvas { display:block; margin:0 auto; }
@@ -40,7 +40,7 @@
 </div>
 <canvas id="game" width="1200" height="600"></canvas>
 <script>
-// ============== DOUBLED PRECISION 20px GRID SYSTEM ==============
+// ============== 20px GRID + NEW FIRE TRUCK + NO BROWN PORCH ==============
 const canvas = document.getElementById('game');
 const ctx = canvas.getContext('2d');
 const scoreEl = document.getElementById('score');
@@ -54,9 +54,8 @@ let currentLevel = 1;
 let fireSpots = [];
 let particles = [];
 
-// New 20px grid positions - all aligned to multiples of 20
-const truckX = 100;   // 5 * 20
-const truckY = 480;   // ground level (24 * 20)
+const truckX = 100;
+const truckY = 480;
 
 const levels = [
   { name: "Level 1 – Tall Yellow House", fireSpots: [
@@ -194,8 +193,8 @@ function createFireParticles(x, y, intensity) {
 function createWaterParticles() {
   for (let i = 0; i < 34; i++) {
     const spread = (Math.random() - 0.5) * 6;
-    const dirX = (mouseX - (truckX + 160)) * 0.042;
-    const dirY = (mouseY - (truckY - 40)) * 0.042;
+    const dirX = (mouseX - (truckX + 165)) * 0.042;
+    const dirY = (mouseY - (truckY - 45)) * 0.042;
     particles.push(new Particle(mouseX + (Math.random()-0.5)*8, mouseY + (Math.random()-0.5)*8, dirX + spread, dirY + spread - 5.2, '#33CCFF', 35, 4, 'water'));
   }
 }
@@ -212,60 +211,93 @@ function drawBackground() {
   grad.addColorStop(1, '#C0E4FF');
   ctx.fillStyle = grad;
   ctx.fillRect(0, 0, canvas.width, 520);
-  ctx.fillStyle = '#3D8C40'; // grass
+  ctx.fillStyle = '#3D8C40';
   ctx.fillRect(0, 480, canvas.width, 120);
 }
 
+// ================== NEW CARTOON FIRE TRUCK ==================
 function drawSideFireTruck() {
+  // Shadow
   ctx.fillStyle = 'rgba(0,0,0,0.3)';
-  ctx.fillRect(truckX+25, truckY+38, 170, 14);
+  ctx.fillRect(truckX + 20, truckY + 42, 185, 16);
+
+  // Wheels
   ctx.fillStyle = '#111';
-  ctx.beginPath(); ctx.arc(truckX+48, truckY+30, 28, 0, Math.PI*2); ctx.fill();
-  ctx.beginPath(); ctx.arc(truckX+128, truckY+30, 28, 0, Math.PI*2); ctx.fill();
+  ctx.beginPath(); ctx.arc(truckX + 52, truckY + 38, 26, 0, Math.PI*2); ctx.fill();
+  ctx.beginPath(); ctx.arc(truckX + 135, truckY + 38, 26, 0, Math.PI*2); ctx.fill();
   ctx.fillStyle = '#DDD';
-  ctx.beginPath(); ctx.arc(truckX+48, truckY+30, 15, 0, Math.PI*2); ctx.fill();
-  ctx.beginPath(); ctx.arc(truckX+128, truckY+30, 15, 0, Math.PI*2); ctx.fill();
-  ctx.fillStyle = '#C00';
-  ctx.fillRect(truckX, truckY-48, 190, 78);
-  ctx.fillStyle = '#A00';
-  ctx.fillRect(truckX+15, truckY-80, 88, 42);
-  ctx.fillStyle = '#113344';
-  ctx.fillRect(truckX+22, truckY-75, 40, 30);
-  ctx.fillRect(truckX+68, truckY-75, 30, 30);
-  ctx.fillStyle = '#222';
-  ctx.fillRect(truckX+105, truckY-42, 78, 55);
+  ctx.beginPath(); ctx.arc(truckX + 52, truckY + 38, 13, 0, Math.PI*2); ctx.fill();
+  ctx.beginPath(); ctx.arc(truckX + 135, truckY + 38, 13, 0, Math.PI*2); ctx.fill();
+
+  // Main body
+  ctx.fillStyle = '#E22';
+  ctx.fillRect(truckX + 8, truckY - 48, 195, 82);
+
+  // Cab
+  ctx.fillStyle = '#C11';
+  ctx.fillRect(truckX + 18, truckY - 78, 72, 38);
+
+  // Windows
+  ctx.fillStyle = '#AACCFF';
+  ctx.fillRect(truckX + 26, truckY - 72, 28, 24);
+  ctx.fillRect(truckX + 58, truckY - 72, 26, 24);
+
+  // Yellow stripe
   ctx.fillStyle = '#FF0';
-  ctx.fillRect(truckX+10, truckY-22, 175, 12);
-  ctx.fillStyle = '#DDD';
-  ctx.fillRect(truckX+150, truckY-75, 22, 42);
+  ctx.fillRect(truckX + 12, truckY - 18, 185, 14);
+
+  // Ladder on top
+  ctx.fillStyle = '#DD0';
+  ctx.fillRect(truckX + 85, truckY - 88, 118, 12);
+  ctx.fillStyle = '#BB0';
+  for (let i = 0; i < 7; i++) {
+    ctx.fillRect(truckX + 92 + i*16, truckY - 92, 6, 20);
+  }
+
+  // Rear compartment
+  ctx.fillStyle = '#B22';
+  ctx.fillRect(truckX + 145, truckY - 45, 55, 38);
+
+  // Light bar
+  ctx.fillStyle = '#00F';
+  ctx.fillRect(truckX + 25, truckY - 82, 12, 6);
 }
 
+// ================== HOUSE (NO BROWN PORCH) ==================
 function drawTallHouse(x) {
   ctx.fillStyle = '#E8D5B8';
   ctx.fillRect(x, 200, 270, 320);
+
   ctx.strokeStyle = '#C9B89A';
   ctx.lineWidth = 4;
   for (let i = 0; i < 13; i++) {
     ctx.beginPath(); ctx.moveTo(x+12, 212 + i*24); ctx.lineTo(x+258, 212 + i*24); ctx.stroke();
   }
+
+  // Roof
   ctx.fillStyle = '#8B2A00';
   ctx.beginPath();
   ctx.moveTo(x-25, 190);
   ctx.lineTo(x+135, 100);
   ctx.lineTo(x+290, 190);
   ctx.fill();
+
   ctx.fillStyle = '#A33';
   ctx.fillRect(x+175, 115, 32, 60);
-  ctx.fillStyle = '#6B4E2A';
-  ctx.fillRect(x+35, 460, 100, 60);
+
+  // Door (no brown porch)
   ctx.fillStyle = '#3C2F1F';
   ctx.fillRect(x+105, 405, 48, 115);
+
   ctx.fillStyle = '#FFCC00';
   ctx.fillRect(x+122, 465, 10, 10);
+
+  // Windows
   ctx.strokeStyle = '#222';
   ctx.lineWidth = 8;
   ctx.strokeRect(x+30, 255, 68, 95);
   ctx.strokeRect(x+172, 255, 68, 95);
+
   ctx.fillStyle = '#AACCFF';
   ctx.fillRect(x+35, 260, 58, 85);
   ctx.fillRect(x+177, 260, 58, 85);
@@ -370,8 +402,8 @@ function loop() {
   ctx.shadowBlur = 12;
   ctx.shadowColor = '#111';
   ctx.beginPath();
-  ctx.moveTo(truckX + 155, truckY - 42);
-  ctx.quadraticCurveTo(truckX + 240, truckY - 160, mouseX, mouseY);
+  ctx.moveTo(truckX + 168, truckY - 45);
+  ctx.quadraticCurveTo(truckX + 255, truckY - 165, mouseX, mouseY);
   ctx.stroke();
   ctx.shadowBlur = 0;
 
