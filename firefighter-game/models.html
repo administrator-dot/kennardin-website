@@ -12,7 +12,7 @@
     text-shadow: 2px 2px 8px rgba(0,0,0,0.9);
   }
   button {
-    pointer-events: auto; margin: 12px 8px; padding: 12px 24px; font-size: 20px;
+    pointer-events: auto; margin: 8px 12px; padding: 12px 26px; font-size: 20px;
     background: #0066CC; color: white; border: none; border-radius: 8px; cursor: pointer;
   }
   button:hover { background: #0088FF; }
@@ -40,14 +40,14 @@
   </div>
 
   <div id="levelCompleteScreen" style="display:none; margin-top:80px;">
-    <div style="background:rgba(0,0,0,0.75); padding:30px 40px; border-radius:12px; max-width:680px; margin:0 auto; text-align:center;">
-      <h1 id="levelTitle" style="font-size:48px; color:#0F0; margin-bottom:10px;"></h1>
+    <div style="background:rgba(0,0,0,0.75); padding:30px 50px; border-radius:12px; max-width:720px; margin:0 auto; text-align:center;">
+      <h1 id="levelTitle" style="font-size:48px; color:#0F0; margin-bottom:12px;"></h1>
       <p id="encourageText" style="font-size:32px; margin:15px 0 25px; line-height:1.3;"></p>
-      <p id="safetyTip" style="font-size:24px; line-height:1.4; margin:0;"></p>
+      <p id="safetyTip" style="font-size:24px; line-height:1.45; margin:0;"></p>
     </div>
     
-    <!-- Buttons moved to grass area -->
-    <div style="position:absolute; bottom:90px; left:50%; transform:translateX(-50%);">
+    <!-- Buttons placed right under the canvas on the grass area -->
+    <div style="position:absolute; bottom:85px; left:50%; transform:translateX(-50%); white-space:nowrap;">
       <button onclick="nextLevel()">NEXT LEVEL</button>
       <button onclick="resetGame()">PLAY AGAIN</button>
       <button onclick="returnToFirePage()">RETURN TO FIRE PAGE</button>
@@ -65,7 +65,7 @@
 </div>
 
 <script>
-// ============== FINAL BUILD – LEVEL COMPLETE BUTTONS ON GRASS + NOTABLE DARK BOX + WIDER SCORE + TORNADO ==============
+// ============== FINAL BUILD – PER-LEVEL TIPS + FINAL MESSAGE + BUTTONS UNDER CANVAS ==============
 const canvas = document.getElementById('game');
 const ctx = canvas.getContext('2d');
 
@@ -82,6 +82,19 @@ let particles = [];
 
 const truckX = 100;
 const truckY = 480;
+
+const safetyTips = [
+  "Never play with matches or lighters.",
+  "If your clothes catch fire, stop, drop, and roll.",
+  "Have a family escape plan and practice it.",
+  "Check smoke alarms every month.",
+  "Keep a fire extinguisher accessible and know how to use it.",
+  "Stay low and crawl under smoke to escape.",
+  "Never hide from fire — get low and go!",
+  "Don't overload electrical outlets.",
+  "Keep flammable items away from heat sources.",
+  "Thank a firefighter when you see one — they risk their lives for us!"
+];
 
 const baseLevels = [
   { name: "Level 1 – Small Shed Fire", fireSpots: [
@@ -202,9 +215,18 @@ function loadLevel(lvl) {
 function checkWin() {
   if (fireSpots.every(s => s.health <= 0)) {
     gameState = 'levelComplete';
+    
+    const isFinalLevel = currentLevel === baseLevels.length;
+    
     document.getElementById('levelTitle').textContent = baseLevels[currentLevel-1].name + " COMPLETE!";
-    document.getElementById('encourageText').innerHTML = "Thank you for playing!<br>Try a harder level next time.<br>And remember to thank a firefighter when you see one!";
-    document.getElementById('safetyTip').textContent = "Safety Tip: Never hide from fire – get low and go!";
+    
+    if (isFinalLevel) {
+      document.getElementById('encourageText').innerHTML = "Thank you for playing!<br>Try a harder difficulty next time.<br>And remember to thank a firefighter when you see one!";
+    } else {
+      document.getElementById('encourageText').innerHTML = "Great Work, Kennard Fire Defender!<br>You saved the day!";
+    }
+    
+    document.getElementById('safetyTip').textContent = safetyTips[currentLevel-1];
     document.getElementById('levelCompleteScreen').style.display = 'block';
   }
 }
@@ -544,7 +566,7 @@ function loop() {
   ctx.fillText(`Score: ${score}`, 35, 48);
   ctx.fillText(`Level: ${currentLevel}`, 195, 48);
 
-  // Day / Dusk / Night buttons
+  // Time buttons
   ctx.fillStyle = '#0066CC';
   ctx.fillRect(980, 18, 62, 38);
   ctx.fillRect(1048, 18, 62, 38);
