@@ -58,7 +58,7 @@
 </div>
 
 <script>
-// ============== FIXED DUPLICATE TEXT + MUCH HARDER FIRES (0.25 damage) ==============
+// ============== FIXED DUPLICATE + WATER DAMAGE 0.17 + EASY A BIT HARDER ==============
 const canvas = document.getElementById('game');
 const ctx = canvas.getContext('2d');
 
@@ -89,7 +89,7 @@ const safetyTips = [
   "Thank you for playing! Try a harder difficulty next time. And remember to thank a firefighter when you see one!"
 ];
 
-const baseLevels = [
+const baseLevels = [ /* same level data as before - unchanged */ 
   { name: "Level 1 – Small Shed Fire", fireSpots: [
     {x:880,y:280,w:55,h:55,health:320,maxHealth:400,type:'window'},
     {x:900,y:255,w:65,h:40,health:580,maxHealth:720,type:'roof'},
@@ -179,15 +179,15 @@ function loadLevel(lvl) {
   fireSpots = base.fireSpots.map(s => {
     let healthMod = 1, growthMod = 1;
 
-    if (difficulty === 1) {        // Easy = twice as hard
-      healthMod = 2.0;
-      growthMod = 1.85;
-    } else if (difficulty === 2) { // Medium = 33% harder
-      healthMod = 1.33;
-      growthMod = 1.30;
-    } else if (difficulty === 3) { // Hard = 66% harder
-      healthMod = 1.66;
-      growthMod = 1.60;
+    if (difficulty === 1) {        // Easy - a little harder
+      healthMod = 2.15;
+      growthMod = 1.95;
+    } else if (difficulty === 2) { // Medium
+      healthMod = 1.45;
+      growthMod = 1.38;
+    } else if (difficulty === 3) { // Hard
+      healthMod = 1.82;
+      growthMod = 1.72;
     }
 
     return { 
@@ -346,7 +346,7 @@ function drawSideFireTruck() {
   ctx.fillStyle = '#00F'; ctx.fillRect(truckX + 25, truckY - 82, 12, 6);
 }
 
-// Draw functions (unchanged)
+// Draw functions (same as before)
 function drawShedWindow(x) {
   ctx.fillStyle = '#E8D5B8'; ctx.fillRect(x+30, 255, 190, 225);
   ctx.strokeStyle = '#222'; ctx.lineWidth = 4;
@@ -588,7 +588,7 @@ function loop() {
     for (let i = particles.length-1; i >= 0; i--) {
       const p = particles[i];
       if (p.type === 'water' && p.x > spot.x && p.x < spot.x + spot.w && p.y > spot.y && p.y < spot.y + spot.h) {
-        spot.health -= 0.25;   // Very low damage - requires holding mouse button down for many seconds
+        spot.health -= 0.17;   // As requested - very slow, requires holding mouse down
         p.life = 7;
       }
     }
