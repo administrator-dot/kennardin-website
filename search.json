@@ -2,66 +2,71 @@
   {
     "title": "Home",
     "url": "index.html",
-    "content": "welcome Kennard Indiana Henry County Greensboro Township bids clerk utilities livestream YouTube council"
+    "content": "home welcome kennard indiana town board clerk treasurer jan lockridge police fire utilities bids minutes agendas contact faq local schools churches business copenhaver court tornado history"
   },
   {
     "title": "Town Board",
     "url": "town-board.html",
-    "content": "Steve Worsham Holly Lee Jason Groce Steve Holly Jason Groce Worsham Lee council members president vice president town board meeting public comment citizens address council jason groce holly lee steve worsham jason groce"
+    "content": "town board council jason groce holly lee steve worsham president clerk treasurer jan lockridge public meeting kennard indiana"
   },
   {
     "title": "Minutes & Agendas",
     "url": "minutes-agendas.html",
-    "content": "minutes agendas 2025 2026 YouTube videos Google Drive meeting records"
+    "content": "minutes agendas town council meetings youtube 2025 2026 clerk treasurer jan lockridge kennard indiana"
   },
   {
     "title": "Town Ordinances",
     "url": "town-ordinances.html",
-    "content": "ordinances violations pay online fines"
+    "content": "town ordinances burning atv golf carts paygov traffic tickets kennard indiana"
   },
   {
     "title": "Town Utilities",
     "url": "town-utilities.html",
-    "content": "utilities water sewer gas Duke Energy Fountain Town Gas pay online"
+    "content": "town utilities wastewater trash duke energy fountain town gas best way paygov clerk treasurer jan lockridge kennard indiana"
   },
   {
     "title": "Police Department",
     "url": "police-department.html",
-    "content": "sheriff Henry County Sheriff non-emergency 765-521-7032 police department law enforcement 911 emergency safety tips traffic speed limit parks"
+    "content": "police department kpd henry county sheriff non emergency kennard indiana safety 25 mph 35 mph clerk jan lockridge"
   },
   {
     "title": "Fire Department",
     "url": "fire-department.html",
-    "content": "Ron Huffman fire chief VFD volunteer fire department 911 emergency medical"
+    "content": "fire department volunteer fire chief ron huffman vfd@kennardin.com kennard indiana"
   },
   {
-    "title": "Contact",
-    "url": "contact.html",
-    "content": "clerk treasurer Jan Lockridge 765-785-2331 text 765-524-0646 clerk@kennardin.com VFD@kennardin.com fire department police sheriff Henry County Sheriff non-emergency"
-  },
-  {
-    "title": "Bids & Info",
-    "url": "bids-info.html",
-    "content": "bids sealed bids USPS repair bid Post Office Town Hall maintenance LED lights door closers"
-  },
-  {
-    "title": "Kennard Community",
+    "title": "Kennard",
     "url": "kennard.html",
-    "content": "history tornado 1974 Kennard Elementary School Charles A Beard Knightstown parks housing boom COVID medical volunteer"
+    "content": "kennard history founding 1882 tornado 1974 canning factory copenhaver court tulip city hollanda farm greensboro township henry county"
   },
   {
     "title": "Local Schools",
     "url": "local-schools.html",
-    "content": "Charles A Beard Memorial School Corporation Knightstown Shenandoah New Castle Eastern Hancock schools report cards"
+    "content": "local schools knightstown shenandoah eastern hancock new castle charles a beard kennard elementary k-6 1974 tornado 2013 closure bus stop jason groce holly lee steve worsham"
   },
   {
     "title": "Local Churches",
     "url": "local-churches.html",
-    "content": "Kennard Baptist Church Kennard Friends Church"
+    "content": "local churches kennard friends church kennard baptist church 101 n vine st 6931 w county road 100 south"
   },
   {
     "title": "Local Business",
     "url": "local-business.html",
-    "content": "United States Post Office USPS 100 North Main Street"
+    "content": "local business post office usps 100 n main st blessing pantry kennard krusaders"
+  },
+  {
+    "title": "Contact",
+    "url": "contact.html",
+    "content": "contact clerk treasurer jan lockridge phone 765-785-2331 text 765-524-0646 vfd@kennardin.com planning department building department election information henry county"
+  },
+  {
+    "title": "FAQ",
+    "url": "faq.html",
+    "content": "faq frequently asked questions wastewater trash animal control clerk treasurer jan lockridge police fire"
+  },
+  {
+    "title": "Bids & Info",
+    "url": "bids-info.html",
+    "content": "bids info sealed bids post office town hall maintenance led lights door closers clerk treasurer jan lockridge"
   }
 ]
