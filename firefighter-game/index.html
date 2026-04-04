@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Fire Truck Simulation - Day / Dusk / Night</title>
+  <title>Fire Truck Simulation</title>
   <style>
     body { font-family: Arial, sans-serif; margin: 0; padding: 20px; background: #111; color: #fff; text-align: center; }
     h1 { margin-bottom: 5px; }
@@ -37,13 +37,7 @@
     const ctx = canvas.getContext('2d');
     let currentBg = 0;
     let fires = [];
-    let waterSpray = []; // {x, y, vx, vy}
-
-    function drawGrid() {
-      ctx.strokeStyle = 'rgba(255,255,255,0.15)';
-      for (let x = 0; x <= 1200; x += 40) { ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, 600); ctx.stroke(); }
-      for (let y = 0; y <= 600; y += 40) { ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(1200, y); ctx.stroke(); }
-    }
+    let waterSpray = [];
 
     function drawBackground(bg) {
       if (bg === 0) { // Day
@@ -63,7 +57,6 @@
     }
 
     function drawFireTruck(x, y) {
-      // Detailed red ladder fire truck
       ctx.fillStyle = '#e74c3c'; ctx.fillRect(x, y-95, 260, 85);
       ctx.fillStyle = '#2c3e50'; ctx.fillRect(x+200, y-115, 80, 55);
       ctx.fillStyle = '#ecf0f1'; ctx.fillRect(x+215, y-105, 35, 30);
@@ -77,14 +70,13 @@
       ctx.beginPath(); ctx.arc(x+55, y-15, 12, 0, Math.PI*2); ctx.fill();
       ctx.beginPath(); ctx.arc(x+155, y-15, 12, 0, Math.PI*2); ctx.fill();
       ctx.beginPath(); ctx.arc(x+225, y-15, 12, 0, Math.PI*2); ctx.fill();
-      // Blue light
       ctx.fillStyle = '#3498db'; ctx.fillRect(x+240, y-135, 18, 12);
 
-      // Hose coming out of truck (visible white hose with red stripe)
+      // Hose
       ctx.strokeStyle = '#ecf0f1';
       ctx.lineWidth = 14;
       ctx.beginPath();
-      ctx.moveTo(x + 240, y - 40); // hose exit point on truck
+      ctx.moveTo(x + 240, y - 40);
       ctx.quadraticCurveTo(x + 320, y - 30, x + 380, y - 60);
       ctx.stroke();
       ctx.strokeStyle = '#e74c3c';
@@ -95,9 +87,23 @@
       ctx.stroke();
     }
 
-    function drawBlueCar(x, y) { ... } // same as before
+    function drawBlueCar(x, y) {
+      ctx.fillStyle = '#3498db'; ctx.fillRect(x, y-55, 160, 55);
+      ctx.fillStyle = '#2c3e50'; ctx.fillRect(x+110, y-72, 55, 35);
+      ctx.fillStyle = '#34495e'; ctx.fillRect(x+15, y-50, 35, 22); ctx.fillRect(x+60, y-50, 35, 22);
+      ctx.fillStyle = '#2c3e50';
+      ctx.beginPath(); ctx.arc(x+35, y-8, 18, 0, Math.PI*2); ctx.fill();
+      ctx.beginPath(); ctx.arc(x+125, y-8, 18, 0, Math.PI*2); ctx.fill();
+    }
 
-    function drawHouse(x, y) { ... } // same as before
+    function drawHouse(x, y) {
+      ctx.fillStyle = '#f4d9b8'; ctx.fillRect(x, y-160, 200, 160);
+      ctx.fillStyle = '#c0392b'; ctx.beginPath(); ctx.moveTo(x, y-160); ctx.lineTo(x+100, y-220); ctx.lineTo(x+200, y-160); ctx.fill();
+      ctx.fillStyle = '#34495e';
+      ctx.fillRect(x+25, y-130, 35, 35); ctx.fillRect(x+80, y-130, 35, 35); ctx.fillRect(x+135, y-130, 35, 35);
+      ctx.fillRect(x+25, y-80, 35, 35); ctx.fillRect(x+80, y-80, 35, 35);
+      ctx.fillStyle = '#2c3e50'; ctx.fillRect(x+145, y-80, 35, 80);
+    }
 
     function drawFire(x, y, size) {
       const intensity = Math.random() * 0.3 + 0.7;
@@ -115,7 +121,7 @@
         ctx.globalAlpha = 1;
         p.x += p.vx;
         p.y += p.vy;
-        p.vy += 0.3; // gravity
+        p.vy += 0.3;
         if (p.x > 1200 || p.y > 600) waterSpray.splice(i, 1);
       });
     }
@@ -123,19 +129,15 @@
     function render() {
       ctx.clearRect(0, 0, 1200, 600);
       drawBackground(currentBg);
-      drawGrid();
-
       drawFireTruck(120, 480);
       drawBlueCar(520, 480);
       drawHouse(860, 480);
-
       fires.forEach(f => drawFire(f.x, f.y, f.size));
       drawWaterSpray();
     }
 
     function igniteFires() {
       fires = [];
-      // Fires ONLY on blue car and house
       fires.push({x: 555, y: 430, size: 11}); // car engine
       fires.push({x: 630, y: 450, size: 9});  // car gas tank
       fires.push({x: 885, y: 370, size: 10}); // house window 1
@@ -153,7 +155,6 @@
       render();
     }
 
-    // Click to extinguish + trigger water spray from hose
     canvas.addEventListener('click', (e) => {
       const rect = canvas.getBoundingClientRect();
       const clickX = e.clientX - rect.left;
@@ -164,10 +165,9 @@
         const dx = f.x - clickX;
         const dy = f.y - clickY;
         if (Math.sqrt(dx*dx + dy*dy) < f.size + 20) {
-          // Start water spray from hose exit point toward the flame
-          const hoseX = 120 + 240; // hose exit on fire truck
+          const hoseX = 120 + 240;
           const hoseY = 480 - 40;
-          for (let i = 0; i < 18; i++) {
+          for (let j = 0; j < 18; j++) {
             waterSpray.push({
               x: hoseX,
               y: hoseY,
