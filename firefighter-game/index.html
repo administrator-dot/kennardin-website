@@ -56,7 +56,7 @@
 <canvas id="game" width="1150" height="600"></canvas>
 
 <script>
-// ============== KVFD – Fixed Start + Difficulty Buttons Work ==============
+// ============== KVFD – Fully Working Hose + Water + Difficulty Start ==============
 const canvas = document.getElementById('game');
 const ctx = canvas.getContext('2d');
 const scoreEl = document.getElementById('score');
@@ -148,6 +148,9 @@ function loadLevel(lvl) {
   particles = [];
   explosions = [];
   gameState = 'playing';
+  // Ensure mouse is ready
+  mouseX = 500;
+  mouseY = 300;
 }
 
 function checkWin() {
@@ -179,7 +182,37 @@ function returnToFirePage() {
   window.location.href = 'https://kennardin.com/fire-department.html';
 }
 
-// Optimized particle functions
+// Mouse control
+document.addEventListener('mousemove', e => {
+  const rect = canvas.getBoundingClientRect();
+  mouseX = Math.max(60, Math.min(e.clientX - rect.left, canvas.width - 30));
+  mouseY = Math.max(110, Math.min(e.clientY - rect.top, canvas.height - 90));
+});
+
+canvas.addEventListener('mousedown', () => { if (gameState === 'playing') isSpraying = true; });
+canvas.addEventListener('mouseup', () => isSpraying = false);
+canvas.addEventListener('mouseleave', () => isSpraying = false);
+
+class Particle {
+  constructor(x, y, vx, vy, color, life, size, type) {
+    this.x = x; this.y = y; this.vx = vx; this.vy = vy;
+    this.color = color; this.life = life; this.size = size; this.type = type;
+  }
+  update() {
+    this.x += this.vx; this.y += this.vy; this.life--;
+    if (this.type === 'water') this.vy += 0.11;
+    if (this.type === 'fire') { this.vy -= 0.23 + Math.random() * 0.29; this.vx += (Math.random() - 0.5) * 2.2; }
+    if (this.type === 'smoke') { this.vy -= 0.06; this.vx += (Math.random() - 0.5) * 0.5; }
+  }
+  draw() {
+    ctx.globalAlpha = Math.max(0.1, this.life / 48);
+    ctx.fillStyle = this.color;
+    if (this.type === 'water') ctx.fillRect(this.x - 2.5, this.y - 3, 5, 9);
+    else ctx.fillRect(this.x - this.size/2, this.y - this.size/2, this.size, this.size);
+    ctx.globalAlpha = 1;
+  }
+}
+
 function createFireParticles(x, y, intensity) {
   const count = Math.max(3, Math.floor(intensity * 0.4));
   for (let i = 0; i < count; i++) {
@@ -215,26 +248,6 @@ function createSmallExplosion(x, y) {
     particles.push(new Particle(x, y, vx, vy, '#FFAA00', 19, 6 + Math.random()*7, 'fire'));
   }
   explosions.push({x, y, life: 19});
-}
-
-class Particle {
-  constructor(x, y, vx, vy, color, life, size, type) {
-    this.x = x; this.y = y; this.vx = vx; this.vy = vy;
-    this.color = color; this.life = life; this.size = size; this.type = type;
-  }
-  update() {
-    this.x += this.vx; this.y += this.vy; this.life--;
-    if (this.type === 'water') this.vy += 0.11;
-    if (this.type === 'fire') { this.vy -= 0.23 + Math.random() * 0.29; this.vx += (Math.random() - 0.5) * 2.2; }
-    if (this.type === 'smoke') { this.vy -= 0.06; this.vx += (Math.random() - 0.5) * 0.5; }
-  }
-  draw() {
-    ctx.globalAlpha = Math.max(0.1, this.life / 48);
-    ctx.fillStyle = this.color;
-    if (this.type === 'water') ctx.fillRect(this.x - 2.5, this.y - 3, 5, 9);
-    else ctx.fillRect(this.x - this.size/2, this.y - this.size/2, this.size, this.size);
-    ctx.globalAlpha = 1;
-  }
 }
 
 function drawBackground() {
