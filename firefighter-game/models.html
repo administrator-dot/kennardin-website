@@ -68,7 +68,7 @@
       }
     }
 
-    // Exact detailed fire truck from the live game[](https://kennardin.com/firefighter-game/index.html)
+    // Exact detailed fire truck from the live game
     function drawSideFireTruck(x, y) {
       ctx.fillStyle = '#e74c3c'; ctx.fillRect(x, y-85, 240, 75);
       ctx.fillStyle = '#fff'; ctx.fillRect(x+10, y-65, 220, 18);
@@ -88,7 +88,6 @@
       ctx.beginPath(); ctx.arc(x+70, y-10, 12, 0, Math.PI*2); ctx.fill();
       ctx.beginPath(); ctx.arc(x+150, y-10, 12, 0, Math.PI*2); ctx.fill();
       ctx.beginPath(); ctx.arc(x+210, y-10, 12, 0, Math.PI*2); ctx.fill();
-      // Ladder detail on top
       ctx.fillStyle = '#ecf0f1'; ctx.fillRect(x+180, y-140, 8, 55);
       ctx.fillStyle = '#2c3e50'; ctx.fillRect(x+185, y-145, 45, 8);
     }
@@ -111,7 +110,7 @@
       ctx.fillStyle = '#2c3e50'; ctx.fillRect(x+145, y-80, 35, 80);
     }
 
-    // Exact water code you approved (half size, spawns at hose tip)
+    // Exact water code you liked – now with faster disappearance
     function createWaterParticles() {
       const dx = mouseX - (truckX + 148);
       const dy = mouseY - (truckY - 34);
@@ -127,7 +126,7 @@
           vx: dirX * 27 + spread,
           vy: dirY * 27 + spread - 4,
           color: '#33CCFF',
-          life: 24,
+          life: 13,      // shorter life = disappears faster
           size: 3,
           type: 'water'
         });
@@ -197,27 +196,21 @@
       ctx.quadraticCurveTo(truckX + 225, truckY - 145, mouseX, mouseY);
       ctx.stroke();
 
-      if (isSpraying) {
-        createWaterParticles();
-      }
+      if (isSpraying) createWaterParticles();
     }
 
     function igniteFires() {
       fires = [
-        {x: 555, y: 430, size: 11},
-        {x: 630, y: 450, size: 9},
-        {x: 885, y: 370, size: 10},
-        {x: 940, y: 370, size: 10},
-        {x: 995, y: 370, size: 10},
-        {x: 1005, y: 410, size: 12},
-        {x: 910, y: 280, size: 8},
-        {x: 960, y: 280, size: 8}
+        {x: 555, y: 430}, {x: 630, y: 450},
+        {x: 885, y: 370}, {x: 940, y: 370}, {x: 995, y: 370},
+        {x: 1005, y: 410}, {x: 910, y: 280}, {x: 960, y: 280}
       ];
       render();
     }
 
     function extinguishAll() { fires = []; render(); }
 
+    // Mouse events
     canvas.addEventListener('mousemove', e => {
       const rect = canvas.getBoundingClientRect();
       mouseX = e.clientX - rect.left;
@@ -226,15 +219,27 @@
     });
 
     canvas.addEventListener('mousedown', () => { isSpraying = true; render(); });
-    canvas.addEventListener('mouseup', () => { isSpraying = false; render(); });
-    canvas.addEventListener('mouseleave', () => { isSpraying = false; render(); });
+
+    canvas.addEventListener('mouseup', () => {
+      isSpraying = false;
+      // QUICK CLEANUP: make any remaining water vanish fast
+      for (let i = particles.length - 1; i >= 0; i--) {
+        if (particles[i].type === 'water') particles[i].life = Math.min(particles[i].life, 5);
+      }
+      render();
+    });
+
+    canvas.addEventListener('mouseleave', () => {
+      isSpraying = false;
+      render();
+    });
 
     function changeBackground(bg) {
       currentBg = bg;
       render();
     }
 
-    setInterval(() => { if (fires.length > 0 || isSpraying) render(); }, 30);
+    setInterval(() => { if (fires.length > 0 || particles.length > 0 || isSpraying) render(); }, 30);
     render();
   </script>
 </body>
