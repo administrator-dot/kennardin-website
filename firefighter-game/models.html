@@ -39,7 +39,7 @@
     let fires = [];
     let particles = [];
     let isSpraying = false;
-    let mouseX = 600, mouseY = 300;
+    let mouseX = 700, mouseY = 350;
 
     const truckX = 120;
     const truckY = 480;
@@ -109,10 +109,10 @@
 
     function createWaterParticles() {
       for (let i = 0; i < 34; i++) {
-        const spread = (Math.random() - 0.5) * 6;
-        const dirX = (mouseX - (truckX + 165)) * 0.055;   // increased clockwise angle
-        const dirY = (mouseY - (truckY - 38)) * 0.042;
-        particles.push({x: mouseX + (Math.random()-0.5)*7, y: mouseY + (Math.random()-0.5)*7, vx: dirX + spread, vy: dirY + spread - 5.2, color: '#33CCFF', life: 35, size: 4, type: 'water'});
+        const spread = (Math.random() - 0.5) * 8;
+        const dirX = (mouseX - (truckX + 165)) * 0.058;
+        const dirY = (mouseY - (truckY - 38)) * 0.058;
+        particles.push({x: mouseX + (Math.random()-0.5)*8, y: mouseY + (Math.random()-0.5)*8, vx: dirX + spread, vy: dirY + spread - 6, color: '#33CCFF', life: 38, size: 5, type: 'water'});
       }
     }
 
@@ -121,7 +121,7 @@
         const vx = (Math.random() - 0.5) * 3.4;
         const vy = -3.8 - Math.random() * 5.8;
         const colors = ['#FF1100', '#FF5500', '#FFAA00'];
-        particles.push({x: x + (Math.random()-0.5)*48, y: y + (Math.random()-0.5)*35, vx: vx, vy: vy, color: colors[Math.floor(Math.random()*colors.length)], life: 48, size: 7 + Math.random()*13, type: 'fire'});
+        particles.push({x: x + (Math.random()-0.5)*48, y: y + (Math.random()-0.5)*35, vx: vx, vy: vy, color: colors[Math.floor(Math.random()*colors.length)], life: 48, size: 8 + Math.random()*13, type: 'fire'});
       }
     }
 
@@ -142,11 +142,10 @@
       drawBlueCar(520, 480);
       drawHouse(860, 480);
 
-      fires.forEach(f => {
-        createFireParticles(f.x, f.y, 8);
-      });
+      fires.forEach(f => createFireParticles(f.x, f.y, 8));
 
-      particles.forEach((p, i) => {
+      for (let i = particles.length - 1; i >= 0; i--) {
+        const p = particles[i];
         p.x += p.vx;
         p.y += p.vy;
         if (p.type === 'water') p.vy += 0.11;
@@ -156,15 +155,29 @@
         }
         p.life--;
         drawParticle(p);
+
+        // Water hits fire
+        if (p.type === 'water') {
+          for (let j = fires.length - 1; j >= 0; j--) {
+            const f = fires[j];
+            const dx = f.x - p.x;
+            const dy = f.y - p.y;
+            if (Math.sqrt(dx*dx + dy*dy) < 22) {
+              fires.splice(j, 1);
+              p.life = 8;
+              break;
+            }
+          }
+        }
         if (p.life <= 0) particles.splice(i, 1);
-      });
+      }
 
       if (isSpraying) {
         ctx.strokeStyle = '#555';
         ctx.lineWidth = 14;
         ctx.beginPath();
         ctx.moveTo(truckX + 148, truckY - 34);
-        ctx.quadraticCurveTo(truckX + 240, truckY - 160, mouseX, mouseY);  // more clockwise curve
+        ctx.quadraticCurveTo(truckX + 225, truckY - 165, mouseX, mouseY);
         ctx.stroke();
         createWaterParticles();
       }
@@ -172,13 +185,13 @@
 
     function igniteFires() {
       fires = [
-        {x: 555, y: 430, size: 11}, // car engine
-        {x: 630, y: 450, size: 9},  // car gas tank
-        {x: 885, y: 370, size: 10}, // house windows & door
+        {x: 555, y: 430, size: 11},
+        {x: 630, y: 450, size: 9},
+        {x: 885, y: 370, size: 10},
         {x: 940, y: 370, size: 10},
         {x: 995, y: 370, size: 10},
         {x: 1005, y: 410, size: 12},
-        {x: 910, y: 280, size: 8},  // roof
+        {x: 910, y: 280, size: 8},
         {x: 960, y: 280, size: 8}
       ];
       render();
@@ -196,22 +209,6 @@
     canvas.addEventListener('mousedown', () => { isSpraying = true; render(); });
     canvas.addEventListener('mouseup', () => { isSpraying = false; render(); });
     canvas.addEventListener('mouseleave', () => { isSpraying = false; render(); });
-
-    canvas.addEventListener('click', e => {
-      const rect = canvas.getBoundingClientRect();
-      const clickX = e.clientX - rect.left;
-      const clickY = e.clientY - rect.top;
-      for (let i = fires.length - 1; i >= 0; i--) {
-        const f = fires[i];
-        const dx = f.x - clickX;
-        const dy = f.y - clickY;
-        if (Math.sqrt(dx*dx + dy*dy) < f.size + 25) {
-          fires.splice(i, 1);
-          render();
-          return;
-        }
-      }
-    });
 
     function changeBackground(bg) {
       currentBg = bg;
