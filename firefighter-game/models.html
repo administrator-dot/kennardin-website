@@ -113,18 +113,18 @@
       const dx = mouseX - hoseEndX;
       const dy = mouseY - hoseEndY;
       const length = Math.sqrt(dx*dx + dy*dy) || 1;
-      const dirX = dx / length * 1.15;
-      const dirY = dy / length * 1.15;
+      const dirX = dx / length * 1.2;
+      const dirY = dy / length * 1.2;
 
-      for (let i = 0; i < 16; i++) {  // smaller stream
-        const spread = (Math.random() - 0.5) * 4;
+      for (let i = 0; i < 14; i++) {  // smaller stream
+        const spread = (Math.random() - 0.5) * 3.5;
         particles.push({
-          x: hoseEndX + (Math.random()-0.5)*6,
-          y: hoseEndY + (Math.random()-0.5)*6,
-          vx: dirX * 24 + spread,
-          vy: dirY * 24 + spread - 4,
+          x: mouseX + (Math.random()-0.5)*4,
+          y: mouseY + (Math.random()-0.5)*4,
+          vx: dirX * 26 + spread,
+          vy: dirY * 26 + spread - 5,
           color: '#33CCFF',
-          life: 26,
+          life: 24,
           size: 4,
           type: 'water'
         });
@@ -157,7 +157,7 @@
       drawBlueCar(520, 480);
       drawHouse(860, 480);
 
-      fires.forEach(f => createFireParticles(f.x, f.y, 6));  // toned-down flames
+      fires.forEach(f => createFireParticles(f.x, f.y, 6));
 
       for (let i = particles.length - 1; i >= 0; i--) {
         const p = particles[i];
