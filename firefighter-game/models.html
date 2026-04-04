@@ -12,13 +12,12 @@
     text-shadow: 2px 2px 8px rgba(0,0,0,0.9);
   }
   button {
-    pointer-events: auto; margin: 12px; padding: 16px 32px; font-size: 22px;
-    background: #C00; color: white; border: none; border-radius: 10px; cursor: pointer;
-    min-width: 220px;
+    pointer-events: auto; margin: 8px; padding: 10px 20px; font-size: 18px;
+    background: #0066CC; color: white; border: none; border-radius: 8px; cursor: pointer;
   }
-  button:hover { background: #F00; }
-  .difficulty-btn { background:#0066CC; }
-  .difficulty-btn:hover { background:#0088FF; }
+  button:hover { background: #0088FF; }
+  .difficulty-btn { background:#C00; }
+  .difficulty-btn:hover { background: #F00; }
   #ui { position: absolute; top: 15px; left: 15px; font-size: 24px; pointer-events: none; color:#FFF; }
   .bottom-label {
     position: absolute; bottom: 15px; right: 20px; font-size: 22px; color:#FF0;
@@ -61,10 +60,17 @@
   A donation to the KVFD is always appreciated.
 </div>
 
+<!-- Time of Day Buttons -->
+<div style="position:absolute; top:15px; right:20px;">
+  <button onclick="setTimeOfDay(0)">Day</button>
+  <button onclick="setTimeOfDay(1)">Dusk</button>
+  <button onclick="setTimeOfDay(2)">Night</button>
+</div>
+
 <canvas id="game" width="1200" height="600"></canvas>
 
 <script>
-// ============== FIXED - CAR & TREE TOUCH, GARAGE OPEN WITH RED SPORTSCAR, ALL ON GRASS ==============
+// ============== TIME OF DAY + GARAGE CLEANED + INTERESTING DETAILS ADDED ==============
 const canvas = document.getElementById('game');
 const ctx = canvas.getContext('2d');
 const scoreEl = document.getElementById('score');
@@ -76,6 +82,7 @@ let isSpraying = false;
 let gameState = 'title';
 let currentLevel = 1;
 let difficulty = 2;
+let timeOfDay = 0; // 0=Day, 1=Dusk, 2=Night
 let fireSpots = [];
 let particles = [];
 
@@ -102,7 +109,7 @@ const baseLevels = [
   { name: "Level 3 – Garage Fire", fireSpots: [
     {x:920,y:255,w:110,h:225,health:130,maxHealth:220,type:'door'},
     {x:920,y:200,w:110,h:45,health:140,maxHealth:230,type:'roof'},
-    {x:1020,y:340,w:55,h:60,health:80,maxHealth:140,type:'sportscar'}
+    {x:980,y:340,w:40,h:40,health:70,maxHealth:120,type:'toolbox'}   // added interest
   ], entities: [{type:'singleGarage',x:820}] },
 
   { name: "Level 4 – Tall House", fireSpots: [
@@ -163,6 +170,12 @@ const baseLevels = [
     {type:'semi',x:780}
   ] }
 ];
+
+let currentSky = 0; // 0=Day, 1=Dusk, 2=Night
+
+function setTimeOfDay(mode) {
+  currentSky = mode;
+}
 
 function startGame(diff) {
   difficulty = diff;
@@ -272,11 +285,28 @@ function createSmoke(x, y) {
 }
 
 function drawBackground() {
+  let skyColor1, skyColor2, sunColor, sunX, sunY;
+  if (currentSky === 0) { // Day
+    skyColor1 = '#7BC4FF'; skyColor2 = '#C0E4FF';
+    sunColor = '#FFDD00'; sunX = 300; sunY = 120;
+  } else if (currentSky === 1) { // Dusk
+    skyColor1 = '#FF8800'; skyColor2 = '#FFBB66';
+    sunColor = '#FFAA00'; sunX = 900; sunY = 140;
+  } else { // Night
+    skyColor1 = '#112244'; skyColor2 = '#223366';
+    sunColor = '#EEEEEE'; sunX = 600; sunY = 130;
+  }
+
   const grad = ctx.createLinearGradient(0, 0, 0, 520);
-  grad.addColorStop(0, '#7BC4FF');
-  grad.addColorStop(1, '#C0E4FF');
+  grad.addColorStop(0, skyColor1);
+  grad.addColorStop(1, skyColor2);
   ctx.fillStyle = grad;
   ctx.fillRect(0, 0, canvas.width, 520);
+
+  // Sun / Moon
+  ctx.fillStyle = sunColor;
+  ctx.beginPath(); ctx.arc(sunX, sunY, 45, 0, Math.PI*2); ctx.fill();
+
   ctx.fillStyle = '#3D8C40';
   ctx.fillRect(0, 480, canvas.width, 120);
 }
@@ -345,16 +375,6 @@ function drawSingleGarage(x) {
   // Open wide centered door
   ctx.fillStyle = '#555';
   ctx.fillRect(x+91, 255, 118, 225);
-
-  // Red sportscar rear (centered in open door)
-  ctx.fillStyle = '#C00';
-  ctx.fillRect(x+165, 340, 95, 55);   // body
-  ctx.fillStyle = '#111';
-  ctx.fillRect(x+190, 355, 25, 18);   // rear window
-  ctx.fillStyle = '#AACCFF';
-  ctx.fillRect(x+200, 360, 12, 8);    // taillight
-  ctx.fillStyle = '#111';
-  ctx.beginPath(); ctx.arc(x+175, 390, 14, 0, Math.PI*2); ctx.fill(); // rear wheel
 
   ctx.fillStyle = '#8B2A00';
   ctx.beginPath(); ctx.moveTo(x, 230); ctx.lineTo(x+150, 160); ctx.lineTo(x+300, 230); ctx.fill();
