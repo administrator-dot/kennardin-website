@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Kennard Fire Defender - Models (Final Fixes)</title>
+<title>Kennard Fire Defender - Improved Models</title>
 <style>
   body { margin:0; background:#111; font-family:Arial, sans-serif; color:white; text-align:center; }
   h1 { color:#FF0; margin:30px 0 10px; }
@@ -14,19 +14,19 @@
 </style>
 </head>
 <body>
-<h1>Improved Models with Animated Fires</h1>
+<h1>Improved Models with Larger Wheels & Rounder Shapes</h1>
 <p>Click any model to enlarge. Tell me which ones you like (e.g. "Model 1, 2, 5, 7, 9, 10").</p>
 
 <div class="grid" id="grid"></div>
 
 <script>
-// ============== FINAL MODELS WITH YOUR REQUESTED FIXES ==============
+// ============== MODELS WITH LARGER WHEELS + ROUNDER SHAPES + JOHN DEERE TRACTOR ==============
 const models = [
   {id:1, name:"Short Blue House", color:"#66CCFF", type:"house"},
   {id:2, name:"Short Green House", color:"#66FF99", type:"house"},
   {id:3, name:"Blue Sedan", type:"sedan"},
   {id:4, name:"Red Pickup", type:"pickup"},
-  {id:5, name:"Green Tractor", type:"tractor"},
+  {id:5, name:"John Deere Style Tractor", type:"tractor"},
   {id:6, name:"Red Rider Lawn Mower", type:"lawnmower"},
   {id:7, name:"Yacht on Trailer", type:"boat"},
   {id:8, name:"Mobile Home RV", type:"mobilehome"},
@@ -84,8 +84,8 @@ function createModelCanvas(m) {
       ctx.fillRect(55, 148, 40, 24);
       ctx.fillRect(105, 148, 28, 24);
       ctx.fillStyle = '#111';
-      ctx.beginPath(); ctx.arc(58, 205, 16, 0, Math.PI*2); ctx.fill();
-      ctx.beginPath(); ctx.arc(123, 205, 16, 0, Math.PI*2); ctx.fill();
+      ctx.beginPath(); ctx.arc(58, 205, 19, 0, Math.PI*2); ctx.fill(); // larger wheel
+      ctx.beginPath(); ctx.arc(123, 205, 19, 0, Math.PI*2); ctx.fill();
       animatedFire(ctx, 65, 155, time);
       animatedFire(ctx, 115, 155, time);
     } 
@@ -98,12 +98,13 @@ function createModelCanvas(m) {
       ctx.fillRect(58, 148, 45, 24);
       ctx.fillRect(110, 148, 22, 24);
       ctx.fillStyle = '#111';
-      ctx.beginPath(); ctx.arc(55, 205, 16, 0, Math.PI*2); ctx.fill();
-      ctx.beginPath(); ctx.arc(125, 205, 16, 0, Math.PI*2); ctx.fill();
+      ctx.beginPath(); ctx.arc(55, 205, 19, 0, Math.PI*2); ctx.fill();
+      ctx.beginPath(); ctx.arc(125, 205, 19, 0, Math.PI*2); ctx.fill();
       animatedFire(ctx, 70, 155, time);
       animatedFire(ctx, 118, 155, time);
     } 
     else if (m.type === "tractor") {
+      // John Deere style - rounded shapes
       ctx.fillStyle = '#228B22';
       ctx.fillRect(35, 165, 135, 52);
       ctx.fillStyle = '#FFD700';
@@ -113,8 +114,8 @@ function createModelCanvas(m) {
       ctx.fillStyle = '#AACCFF';
       ctx.fillRect(58, 147, 38, 26);
       ctx.fillStyle = '#111';
-      ctx.beginPath(); ctx.arc(52, 205, 23, 0, Math.PI*2); ctx.fill();
-      ctx.beginPath(); ctx.arc(122, 205, 14, 0, Math.PI*2); ctx.fill();
+      ctx.beginPath(); ctx.arc(52, 205, 24, 0, Math.PI*2); ctx.fill(); // large rear wheel
+      ctx.beginPath(); ctx.arc(122, 205, 16, 0, Math.PI*2); ctx.fill(); // front wheel
       animatedFire(ctx, 70, 155, time);
       animatedFire(ctx, 112, 155, time);
     } 
@@ -126,14 +127,13 @@ function createModelCanvas(m) {
       ctx.fillStyle = '#DDD';
       ctx.fillRect(65, 152, 40, 18);
       ctx.fillStyle = '#111';
-      ctx.beginPath(); ctx.arc(58, 200, 13, 0, Math.PI*2); ctx.fill(); // small front wheel
-      ctx.beginPath(); ctx.arc(105, 200, 17, 0, Math.PI*2); ctx.fill(); // larger rear wheel
+      ctx.beginPath(); ctx.arc(58, 200, 14, 0, Math.PI*2); ctx.fill(); // small front wheel
+      ctx.beginPath(); ctx.arc(105, 200, 19, 0, Math.PI*2); ctx.fill(); // larger rear wheel
       animatedFire(ctx, 80, 162, time);
     } 
     else if (m.type === "boat") {
-      // yacht style
       ctx.fillStyle = '#555';
-      ctx.fillRect(38, 175, 145, 25); // trailer
+      ctx.fillRect(38, 175, 145, 25);
       ctx.fillStyle = '#228B22';
       ctx.beginPath();
       ctx.moveTo(45, 155);
@@ -141,12 +141,11 @@ function createModelCanvas(m) {
       ctx.quadraticCurveTo(155, 145, 162, 160);
       ctx.lineTo(45, 165);
       ctx.fill();
-      // raised cabin for yacht look
       ctx.fillStyle = '#FFF';
       ctx.fillRect(75, 130, 55, 25);
       ctx.fillStyle = '#111';
-      ctx.beginPath(); ctx.arc(55, 198, 15, 0, Math.PI*2); ctx.fill();
-      ctx.beginPath(); ctx.arc(145, 198, 15, 0, Math.PI*2); ctx.fill();
+      ctx.beginPath(); ctx.arc(55, 198, 16, 0, Math.PI*2); ctx.fill();
+      ctx.beginPath(); ctx.arc(145, 198, 16, 0, Math.PI*2); ctx.fill();
       animatedFire(ctx, 95, 135, time);
     } 
     else if (m.type === "mobilehome") {
@@ -157,8 +156,8 @@ function createModelCanvas(m) {
       ctx.fillStyle = '#AACCFF';
       ctx.fillRect(105, 155, 55, 32);
       ctx.fillStyle = '#111';
-      ctx.beginPath(); ctx.arc(48, 205, 17, 0, Math.PI*2); ctx.fill();
-      ctx.beginPath(); ctx.arc(135, 205, 17, 0, Math.PI*2); ctx.fill();
+      ctx.beginPath(); ctx.arc(48, 205, 18, 0, Math.PI*2); ctx.fill();
+      ctx.beginPath(); ctx.arc(135, 205, 18, 0, Math.PI*2); ctx.fill();
       animatedFire(ctx, 75, 165, time);
     } 
     else if (m.type === "sportscar") {
@@ -173,11 +172,11 @@ function createModelCanvas(m) {
       ctx.fillStyle = '#111';
       ctx.fillRect(48, 145, 90, 32);
       ctx.fillStyle = '#AACCFF';
-      ctx.fillRect(58, 150, 32, 18); // shrunk windows
+      ctx.fillRect(58, 150, 32, 18);
       ctx.fillRect(108, 150, 22, 18);
       ctx.fillStyle = '#111';
-      ctx.beginPath(); ctx.arc(63, 205, 16, 0, Math.PI*2); ctx.fill();
-      ctx.beginPath(); ctx.arc(125, 205, 16, 0, Math.PI*2); ctx.fill();
+      ctx.beginPath(); ctx.arc(63, 205, 18, 0, Math.PI*2); ctx.fill();
+      ctx.beginPath(); ctx.arc(125, 205, 18, 0, Math.PI*2); ctx.fill();
       animatedFire(ctx, 72, 155, time);
     } 
     else if (m.type === "shed") {
