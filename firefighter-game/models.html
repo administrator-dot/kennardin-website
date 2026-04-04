@@ -6,21 +6,30 @@
   <title>Fire Simulation Test - Models</title>
   <style>
     body { font-family: Arial, sans-serif; margin: 0; padding: 20px; background: #111; color: #fff; text-align: center; }
-    h1 { margin-bottom: 5px; }
+    h1 { margin: 10px 0 5px; }
+    .subtitle { font-size: 18px; margin-bottom: 15px; color: #ccc; }
     .canvas-container { margin: 20px auto; border: 4px solid #333; background: #222; padding: 10px; display: inline-block; }
     canvas { image-rendering: pixelated; }
     .controls { margin: 15px 0; }
     button { padding: 12px 24px; margin: 0 8px; font-size: 18px; background: #001f3f; color: white; border: none; border-radius: 6px; cursor: pointer; }
     button:hover { background: #003366; }
-    .info { max-width: 1000px; margin: 15px auto; background: #222; padding: 12px; border-radius: 8px; font-size: 15px; }
+    .tips { max-width: 1000px; margin: 15px auto; background: #222; padding: 15px; border-radius: 8px; font-size: 16px; line-height: 1.5; }
   </style>
 </head>
 <body>
 
   <h1>Fire Simulation Test</h1>
-  <p class="info">Click "Ignite Fires" to start realistic fires at burn zones.<br>Click any flame to extinguish it. Test putting out fires!</p>
+  <p class="subtitle">Day • Dusk • Night — Realistic Fire Truck + Burn Zones</p>
+
+  <div class="tips">
+    <strong>Tips:</strong> Click <strong>Ignite Fires</strong> to start fires at real burn zones.<br>
+    Click any individual flame to put it out. Use <strong>Put Out All</strong> to clear everything.
+  </div>
 
   <div class="controls">
+    <button onclick="changeBackground(0)">☀️ Day</button>
+    <button onclick="changeBackground(1)">🌅 Dusk</button>
+    <button onclick="changeBackground(2)">🌙 Night</button>
     <button onclick="igniteFires()">🔥 Ignite Fires</button>
     <button onclick="extinguishAll()">🧯 Put Out All Fires</button>
   </div>
@@ -33,7 +42,7 @@
     const canvas = document.getElementById('gameCanvas');
     const ctx = canvas.getContext('2d');
     let currentBg = 0;
-    let fires = []; // {x, y, size, object}
+    let fires = [];
 
     function drawGrid() {
       ctx.strokeStyle = 'rgba(255,255,255,0.15)';
@@ -45,31 +54,48 @@
       if (bg === 0) { // Day
         ctx.fillStyle = '#5cc8ff'; ctx.fillRect(0, 0, 1200, 480);
         ctx.fillStyle = '#4caf50'; ctx.fillRect(0, 480, 1200, 120);
+        // Sun
+        ctx.fillStyle = '#ffeb3b'; ctx.beginPath(); ctx.arc(1000, 120, 40, 0, Math.PI*2); ctx.fill();
       } else if (bg === 1) { // Dusk
         ctx.fillStyle = '#ff7a00'; ctx.fillRect(0, 0, 1200, 480);
         ctx.fillStyle = '#3a8c3a'; ctx.fillRect(0, 480, 1200, 120);
+        // Sunset sun
+        ctx.fillStyle = '#ff9800'; ctx.beginPath(); ctx.arc(900, 180, 35, 0, Math.PI*2); ctx.fill();
       } else { // Night
         ctx.fillStyle = '#112233'; ctx.fillRect(0, 0, 1200, 480);
         ctx.fillStyle = '#223322'; ctx.fillRect(0, 480, 1200, 120);
+        // Moon
+        ctx.fillStyle = '#f4f4f4'; ctx.beginPath(); ctx.arc(1000, 120, 35, 0, Math.PI*2); ctx.fill();
+        ctx.fillStyle = '#112233'; ctx.beginPath(); ctx.arc(1020, 115, 25, 0, Math.PI*2); ctx.fill();
+        // Stars
+        ctx.fillStyle = '#fff'; ctx.fillRect(200, 80, 4, 4); ctx.fillRect(450, 50, 3, 3); ctx.fillRect(650, 110, 4, 4);
+        ctx.fillRect(800, 70, 3, 3); ctx.fillRect(1100, 140, 4, 4);
       }
     }
 
     function drawFireTruck(x, y) {
-      ctx.fillStyle = '#e74c3c'; ctx.fillRect(x, y-80, 220, 70);
-      ctx.fillStyle = '#2c3e50'; ctx.fillRect(x+180, y-95, 60, 45);
-      ctx.fillStyle = '#f1c40f'; ctx.fillRect(x+30, y-110, 140, 12);
-      ctx.fillStyle = '#34495e'; ctx.fillRect(x+195, y-85, 35, 25);
-      ctx.fillStyle = '#2c3e50';
-      ctx.beginPath(); ctx.arc(x+50, y-15, 22, 0, Math.PI*2); ctx.fill();
-      ctx.beginPath(); ctx.arc(x+140, y-15, 22, 0, Math.PI*2); ctx.fill();
-      ctx.beginPath(); ctx.arc(x+200, y-15, 22, 0, Math.PI*2); ctx.fill();
-      ctx.fillStyle = '#ecf0f1';
-      ctx.beginPath(); ctx.arc(x+50, y-15, 11, 0, Math.PI*2); ctx.fill();
-      ctx.beginPath(); ctx.arc(x+140, y-15, 11, 0, Math.PI*2); ctx.fill();
-      ctx.beginPath(); ctx.arc(x+200, y-15, 11, 0, Math.PI*2); ctx.fill();
+      // Realistic fire truck based on your image (top one)
+      ctx.fillStyle = '#e74c3c'; ctx.fillRect(x, y-85, 240, 75); // body
+      ctx.fillStyle = '#fff'; ctx.fillRect(x+10, y-65, 220, 18); // white stripe
+      ctx.fillStyle = '#2c3e50'; ctx.fillRect(x+190, y-105, 70, 50); // cab
+      // Ladder
+      ctx.fillStyle = '#ecf0f1'; ctx.fillRect(x+30, y-115, 150, 18);
+      ctx.fillRect(x+35, y-130, 8, 25); ctx.fillRect(x+55, y-130, 8, 25); ctx.fillRect(x+75, y-130, 8, 25);
+      ctx.fillRect(x+95, y-130, 8, 25); ctx.fillRect(x+115, y-130, 8, 25); ctx.fillRect(x+135, y-130, 8, 25);
+      // Windows
+      ctx.fillStyle = '#34495e'; ctx.fillRect(x+205, y-95, 40, 30);
+      // Wheels
+      ctx.fillStyle = '#2c3e50'; ctx.beginPath(); ctx.arc(x+50, y-10, 24, 0, Math.PI*2); ctx.fill();
+      ctx.beginPath(); ctx.arc(x+130, y-10, 24, 0, Math.PI*2); ctx.fill();
+      ctx.beginPath(); ctx.arc(x+200, y-10, 24, 0, Math.PI*2); ctx.fill();
+      ctx.fillStyle = '#ecf0f1'; ctx.beginPath(); ctx.arc(x+50, y-10, 12, 0, Math.PI*2); ctx.fill();
+      ctx.beginPath(); ctx.arc(x+130, y-10, 12, 0, Math.PI*2); ctx.fill();
+      ctx.beginPath(); ctx.arc(x+200, y-10, 12, 0, Math.PI*2); ctx.fill();
+      // Siren light
+      ctx.fillStyle = '#3498db'; ctx.fillRect(x+225, y-125, 18, 12);
     }
 
-    function drawBlueCar(x, y) {
+    function drawBlueCar(x, y) { /* same as before */ 
       ctx.fillStyle = '#3498db'; ctx.fillRect(x, y-55, 160, 55);
       ctx.fillStyle = '#2c3e50'; ctx.fillRect(x+110, y-72, 55, 35);
       ctx.fillStyle = '#34495e'; ctx.fillRect(x+15, y-50, 35, 22); ctx.fillRect(x+60, y-50, 35, 22);
@@ -78,7 +104,7 @@
       ctx.beginPath(); ctx.arc(x+125, y-8, 18, 0, Math.PI*2); ctx.fill();
     }
 
-    function drawHouse(x, y) {
+    function drawHouse(x, y) { /* same larger house as last version */ 
       ctx.fillStyle = '#f4d9b8'; ctx.fillRect(x, y-160, 200, 160);
       ctx.fillStyle = '#c0392b'; ctx.beginPath(); ctx.moveTo(x, y-160); ctx.lineTo(x+100, y-220); ctx.lineTo(x+200, y-160); ctx.fill();
       ctx.fillStyle = '#34495e';
@@ -104,62 +130,42 @@
       drawBlueCar(520, 480);
       drawHouse(860, 480);
 
-      // Draw active fires
-      fires.forEach((f, i) => {
-        drawFire(f.x, f.y, f.size);
-        f.size = 8 + Math.random() * 6;
-      });
+      fires.forEach(f => drawFire(f.x, f.y, f.size));
     }
 
     function igniteFires() {
       fires = [];
-      // Fire Truck burn zones
-      fires.push({x: 170, y: 405, size: 12}); // engine
-      fires.push({x: 305, y: 435, size: 10}); // gas tank
-      // Blue Car burn zones
+      // Fire Truck
+      fires.push({x: 170, y: 405, size: 13}); // engine
+      fires.push({x: 310, y: 435, size: 11}); // gas tank
+      // Blue Car
       fires.push({x: 555, y: 430, size: 11}); // engine
       fires.push({x: 630, y: 450, size: 9});  // gas tank
-      // House burn zones
-      fires.push({x: 885, y: 370, size: 10}); // window 1
-      fires.push({x: 940, y: 370, size: 10}); // window 2
-      fires.push({x: 995, y: 370, size: 10}); // window 3
-      fires.push({x: 1005, y: 410, size: 12}); // door
-      fires.push({x: 910, y: 280, size: 8});  // roof
-      fires.push({x: 960, y: 280, size: 8});  // roof
+      // House
+      fires.push({x: 885, y: 370, size: 10}); fires.push({x: 940, y: 370, size: 10});
+      fires.push({x: 995, y: 370, size: 10}); fires.push({x: 1005, y: 410, size: 12});
+      fires.push({x: 910, y: 280, size: 8}); fires.push({x: 960, y: 280, size: 8});
       render();
     }
 
-    function extinguishAll() {
-      fires = [];
-      render();
-    }
+    function extinguishAll() { fires = []; render(); }
 
-    // Click on canvas to extinguish individual flames
     canvas.addEventListener('click', (e) => {
       const rect = canvas.getBoundingClientRect();
       const clickX = e.clientX - rect.left;
       const clickY = e.clientY - rect.top;
       for (let i = fires.length - 1; i >= 0; i--) {
         const f = fires[i];
-        const dx = f.x - clickX;
-        const dy = f.y - clickY;
-        if (Math.sqrt(dx*dx + dy*dy) < f.size + 15) {
-          fires.splice(i, 1);
-          render();
-          return;
+        const dx = f.x - clickX; const dy = f.y - clickY;
+        if (Math.sqrt(dx*dx + dy*dy) < f.size + 18) {
+          fires.splice(i, 1); render(); return;
         }
       }
     });
 
-    function changeBackground(bg) {
-      currentBg = bg;
-      render();
-    }
+    function changeBackground(bg) { currentBg = bg; render(); }
 
-    // Auto animate fires
     setInterval(() => { if (fires.length > 0) render(); }, 80);
-
-    // Initial render
     render();
   </script>
 </body>
