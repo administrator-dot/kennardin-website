@@ -19,6 +19,7 @@
   .difficulty-btn:hover { background: #F00; }
   .copyright {
     position: absolute; bottom: 8px; left: 20px; font-size: 14px; color:#888;
+    text-align: left;
   }
 </style>
 </head>
@@ -40,7 +41,7 @@
       <p id="safetyTip" style="font-size:24px; line-height:1.45; margin:0;"></p>
     </div>
     
-    <!-- Buttons centered in green grass (last working position) -->
+    <!-- Buttons centered in the green grass -->
     <div style="position:absolute; bottom:68px; left:50%; transform:translateX(-50%); white-space:nowrap; z-index:20;">
       <button onclick="nextLevel()">NEXT LEVEL</button>
       <button onclick="resetGame()">PLAY AGAIN</button>
@@ -53,11 +54,11 @@
 
 <div class="copyright">
   Free for public use.<br>
-  A donation to the KVFD is always appreciated.
+  If you enjoyed please consider a donation to the Kennard Volunteer Fire Department.
 </div>
 
 <script>
-// ============== CLEAN COPYRIGHT + BUTTONS IN GREEN GRASS + ALL DRAWINGS + FIRES + DIFFICULTY ==============
+// ============== FULL WORKING VERSION - All drawings, fires, difficulty, buttons in grass ==============
 const canvas = document.getElementById('game');
 const ctx = canvas.getContext('2d');
 
