@@ -77,7 +77,7 @@
 <canvas id="game" width="1200" height="600"></canvas>
 
 <script>
-// ============== TORNADO FIXED + CLEAR UI + SPINNING ==============
+// ============== LEVEL UPDATES: LVL4 SHED+TREE+TIRESWING, LVL7 TRACTOR, LVL9 TORNADO CENTERED ==============
 const canvas = document.getElementById('game');
 const ctx = canvas.getContext('2d');
 const scoreEl = document.getElementById('score');
@@ -89,7 +89,7 @@ let isSpraying = false;
 let gameState = 'title';
 let currentLevel = 1;
 let difficulty = 2;
-let timeOfDay = 0; // 0=Day, 1=Dusk, 2=Night
+let timeOfDay = 0;
 let tornadoAngle = 0;
 let fireSpots = [];
 let particles = [];
@@ -121,12 +121,16 @@ const baseLevels = [
     {x:945,y:460,w:40,h:20,health:60,maxHealth:100,type:'bottom'}
   ], entities: [{type:'singleGarage',x:820}] },
 
-  { name: "Level 4 – Tall House", fireSpots: [
-    {x:900,y:240,w:60,h:90,health:120,maxHealth:210,type:'window1'},
-    {x:1020,y:240,w:60,h:90,health:120,maxHealth:210,type:'window2'},
-    {x:860,y:140,w:240,h:50,health:160,maxHealth:260,type:'roof'},
-    {x:960,y:410,w:50,h:110,health:100,maxHealth:180,type:'door'}
-  ], entities: [{type:'house',x:860,color:'#FFEE66'}] },
+  // Level 4 – Small Shed + Tree with Tire Swing
+  { name: "Level 4 – Small Shed + Tree with Tire Swing", fireSpots: [
+    {x:880,y:280,w:55,h:55,health:110,maxHealth:190,type:'window'},
+    {x:900,y:255,w:65,h:40,health:120,maxHealth:200,type:'roof'},
+    {x:935,y:355,w:42,h:95,health:90,maxHealth:160,type:'door'},
+    {x:720,y:310,w:38,h:95,health:95,maxHealth:170,type:'treefire'}
+  ], entities: [
+    {type:'smallShed',x:820},
+    {type:'treeWithSwing',x:620}
+  ] },
 
   { name: "Level 5 – Small House + Sedan", fireSpots: [
     {x:920,y:260,w:50,h:70,health:100,maxHealth:180,type:'window1'},
@@ -144,10 +148,15 @@ const baseLevels = [
     {x:1150,y:280,w:45,h:120,health:100,maxHealth:180,type:'treefire2'}
   ], entities: [{type:'house',x:860,color:'#66CCFF'}, {type:'pickup',x:590,yOffset:10}, {type:'tree',x:680}, {type:'tree',x:1150}] },
 
+  // Level 7 – Mini Barn + Tractor
   { name: "Level 7 – Mini Barn", fireSpots: [
     {x:880,y:255,w:78,h:225,health:150,maxHealth:250,type:'door'},
-    {x:920,y:200,w:90,h:45,health:160,maxHealth:260,type:'roof'}
-  ], entities: [{type:'miniBarn',x:820}] },
+    {x:920,y:200,w:90,h:45,health:160,maxHealth:260,type:'roof'},
+    {x:620,y:425,w:110,h:70,health:130,maxHealth:210,type:'tractor'}
+  ], entities: [
+    {type:'miniBarn',x:820},
+    {type:'tractor',x:520}
+  ] },
 
   { name: "Level 8 – Farm Fire", fireSpots: [
     {x:720,y:410,w:75,h:65,health:100,maxHealth:180,type:'hay1'},
@@ -162,12 +171,13 @@ const baseLevels = [
     {type:'hayBale',x:880}, {type:'hayBale',x:950}
   ] },
 
+  // Level 9 – Tornado centered (house moved left, tornado half off screen on right)
   { name: "Level 9 – Tall House with Tornado", fireSpots: [
-    {x:900,y:240,w:60,h:90,health:150,maxHealth:250,type:'window1'},
-    {x:1020,y:240,w:60,h:90,health:150,maxHealth:250,type:'window2'},
-    {x:860,y:140,w:240,h:50,health:190,maxHealth:290,type:'roof'},
-    {x:960,y:410,w:50,h:110,health:130,maxHealth:220,type:'door'}
-  ], entities: [{type:'house',x:860,color:'#FFEE66'}, {type:'tornado',x:1050}] },  // centered to the right of house
+    {x:780,y:240,w:60,h:90,health:150,maxHealth:250,type:'window1'},
+    {x:900,y:240,w:60,h:90,health:150,maxHealth:250,type:'window2'},
+    {x:740,y:140,w:240,h:50,health:190,maxHealth:290,type:'roof'},
+    {x:840,y:410,w:50,h:110,health:130,maxHealth:220,type:'door'}
+  ], entities: [{type:'house',x:740,color:'#FFEE66'}, {type:'tornado',x:1080}] },
 
   { name: "Level 10 – Big Car Wreck", fireSpots: [
     {x:480,y:355,w:110,h:55,health:140,maxHealth:240,type:'hood'},
@@ -295,15 +305,15 @@ function createSmoke(x, y) {
 
 function drawBackground() {
   let sky1, sky2, sunColor, sunX, sunY, grassColor;
-  if (timeOfDay === 0) { // Day
+  if (timeOfDay === 0) {
     sky1 = '#7BC4FF'; sky2 = '#C0E4FF';
     sunColor = '#FFDD00'; sunX = 300; sunY = 120;
     grassColor = '#3D8C40';
-  } else if (timeOfDay === 1) { // Dusk
+  } else if (timeOfDay === 1) {
     sky1 = '#FF8800'; sky2 = '#FFBB66';
     sunColor = '#FFAA00'; sunX = 900; sunY = 140;
     grassColor = '#2A6B2F';
-  } else { // Night
+  } else {
     sky1 = '#112244'; sky2 = '#223366';
     sunColor = '#EEEEEE'; sunX = 600; sunY = 130;
     grassColor = '#1F4A22';
@@ -315,15 +325,12 @@ function drawBackground() {
   ctx.fillStyle = grad;
   ctx.fillRect(0, 0, canvas.width, 520);
 
-  // Sun / Moon
   ctx.fillStyle = sunColor;
   ctx.beginPath(); ctx.arc(sunX, sunY, 45, 0, Math.PI*2); ctx.fill();
 
-  // Grass
   ctx.fillStyle = grassColor;
   ctx.fillRect(0, 480, canvas.width, 120);
 
-  // Stars at night
   if (timeOfDay === 2) {
     ctx.fillStyle = '#FFFFFF';
     ctx.globalAlpha = 0.8;
@@ -367,31 +374,36 @@ function drawSideFireTruck() {
   ctx.fillRect(truckX + 25, truckY - 82, 12, 6);
 }
 
-function drawShedWindow(x) {
-  ctx.fillStyle = '#E8D5B8'; ctx.fillRect(x+30, 255, 190, 225);
+// New: Small Shed for Level 4
+function drawSmallShed(x) {
+  ctx.fillStyle = '#E8D5B8'; ctx.fillRect(x+30, 255, 160, 225);
   ctx.strokeStyle = '#222'; ctx.lineWidth = 4;
-  for (let i = 0; i < 9; i++) {
-    ctx.beginPath(); ctx.moveTo(x+38, 270 + i*24); ctx.lineTo(x+210, 270 + i*24); ctx.stroke();
+  for (let i = 0; i < 8; i++) {
+    ctx.beginPath(); ctx.moveTo(x+38, 270 + i*26); ctx.lineTo(x+180, 270 + i*26); ctx.stroke();
   }
   ctx.fillStyle = '#8B2A00';
-  ctx.beginPath(); ctx.moveTo(x+10, 255); ctx.lineTo(x+125, 185); ctx.lineTo(x+240, 255); ctx.fill();
-  ctx.fillStyle = '#3C2F1F'; ctx.fillRect(x+82, 340, 48, 140);
-  ctx.fillStyle = '#AACCFF'; ctx.fillRect(x+155, 275, 52, 52);
-  ctx.strokeStyle = '#222'; ctx.lineWidth = 4; ctx.strokeRect(x+155, 275, 52, 52);
+  ctx.beginPath(); ctx.moveTo(x+10, 255); ctx.lineTo(x+110, 195); ctx.lineTo(x+200, 255); ctx.fill();
+  ctx.fillStyle = '#3C2F1F'; ctx.fillRect(x+72, 340, 42, 140);
 }
 
-function drawLeanToShed(x) {
-  ctx.fillStyle = '#E8D5B8'; ctx.fillRect(x+30, 255, 190, 225);
-  ctx.strokeStyle = '#222'; ctx.lineWidth = 4;
-  for (let i = 0; i < 9; i++) {
-    ctx.beginPath(); ctx.moveTo(x+38, 270 + i*24); ctx.lineTo(x+210, 270 + i*24); ctx.stroke();
-  }
-  ctx.fillStyle = '#8B2A00';
-  ctx.beginPath(); ctx.moveTo(x+10, 255); ctx.lineTo(x+125, 210); ctx.lineTo(x+240, 255); ctx.fill();
-  ctx.fillStyle = '#3C2F1F'; ctx.fillRect(x+82, 340, 48, 140);
+// New: Tree with Tire Swing
+function drawTreeWithSwing(x) {
+  ctx.fillStyle = '#3C2F1F'; ctx.fillRect(x+35, 370, 18, 110);
+  ctx.fillStyle = '#1E8C2E';
+  ctx.beginPath(); ctx.moveTo(x+8, 380); ctx.lineTo(x+44, 310); ctx.lineTo(x+80, 380); ctx.fill();
+  ctx.beginPath(); ctx.moveTo(x+12, 340); ctx.lineTo(x+44, 280); ctx.lineTo(x+76, 340); ctx.fill();
+  ctx.beginPath(); ctx.moveTo(x+18, 310); ctx.lineTo(x+44, 250); ctx.lineTo(x+70, 310); ctx.fill();
+  
+  // Tire swing
+  ctx.strokeStyle = '#222'; ctx.lineWidth = 6;
+  ctx.beginPath(); ctx.moveTo(x+55, 310); ctx.lineTo(x+55, 370); ctx.stroke();
+  ctx.fillStyle = '#222';
+  ctx.beginPath(); ctx.arc(x+55, 380, 18, 0, Math.PI*2); ctx.fill();
+  ctx.fillStyle = '#555';
+  ctx.beginPath(); ctx.arc(x+55, 380, 12, 0, Math.PI*2); ctx.fill();
 }
 
-function drawSingleGarage(x) {
+function drawSingleGarage(x) { /* unchanged from previous */ 
   ctx.fillStyle = '#E8D5B8'; ctx.fillRect(x+20, 230, 260, 250);
   ctx.strokeStyle = '#222'; ctx.lineWidth = 4;
   for (let i = 0; i < 11; i++) {
@@ -399,7 +411,6 @@ function drawSingleGarage(x) {
   }
   ctx.fillStyle = '#555';
   ctx.fillRect(x+91, 255, 118, 225);
-
   ctx.fillStyle = '#8B2A00';
   ctx.beginPath(); ctx.moveTo(x, 230); ctx.lineTo(x+150, 160); ctx.lineTo(x+300, 230); ctx.fill();
 }
@@ -518,19 +529,19 @@ function drawTree(x) {
   ctx.beginPath(); ctx.moveTo(x+18, 310); ctx.lineTo(x+44, 250); ctx.lineTo(x+70, 310); ctx.fill();
 }
 
-// Spinning Tornado (visible to the right of the house)
+// Spinning Tornado - centered / half off screen on right
 function drawTornado(x) {
-  tornadoAngle += 0.03; // slow spin
-  ctx.globalAlpha = 0.45;
+  tornadoAngle += 0.035;
+  ctx.globalAlpha = 0.48;
   ctx.strokeStyle = '#BBBBBB';
-  ctx.lineWidth = 24;
+  ctx.lineWidth = 26;
   ctx.save();
-  ctx.translate(x, 280);
-  ctx.rotate(tornadoAngle * 0.3);
+  ctx.translate(x, 290);
+  ctx.rotate(tornadoAngle * 0.25);
   ctx.beginPath();
-  ctx.moveTo(0, -120);
-  ctx.quadraticCurveTo(40, -40, -25, 60);
-  ctx.quadraticCurveTo(45, 120, 10, 180);
+  ctx.moveTo(0, -140);
+  ctx.quadraticCurveTo(45, -50, -30, 70);
+  ctx.quadraticCurveTo(50, 130, 15, 195);
   ctx.stroke();
   ctx.restore();
   ctx.globalAlpha = 1;
@@ -543,7 +554,7 @@ function loop() {
   const data = baseLevels[currentLevel-1];
   data.entities.forEach(ent => {
     if (ent.type === 'shedWindow') drawShedWindow(ent.x);
-    if (ent.type === 'leanToShed') drawLeanToShed(ent.x);
+    if (ent.type === 'smallShed') drawSmallShed(ent.x);
     if (ent.type === 'singleGarage') drawSingleGarage(ent.x);
     if (ent.type === 'house') drawTallHouse(ent.x);
     if (ent.type === 'smallHouse') drawSmallHouse(ent.x, ent.color);
@@ -555,6 +566,7 @@ function loop() {
     if (ent.type === 'pickup') drawPickup(ent.x, ent.yOffset || 0);
     if (ent.type === 'semi') drawSemi(ent.x);
     if (ent.type === 'tree') drawTree(ent.x);
+    if (ent.type === 'treeWithSwing') drawTreeWithSwing(ent.x);
     if (ent.type === 'tornado') drawTornado(ent.x);
   });
 
