@@ -12,7 +12,7 @@
     text-shadow: 2px 2px 8px rgba(0,0,0,0.9);
   }
   button {
-    pointer-events: auto; margin: 12px 8px; padding: 14px 28px; font-size: 20px;
+    pointer-events: auto; margin: 12px; padding: 14px 32px; font-size: 22px;
     background: #C00; color: white; border: none; border-radius: 8px; cursor: pointer;
   }
   button:hover { background: #F00; }
@@ -23,9 +23,14 @@
 
 <div id="overlay">
   <div id="titleScreen">
-    <h1 style="font-size:58px; margin-top:80px; color:#FF0;">KENNARD FIRE DEFENDER</h1>
-    <p style="font-size:26px; margin:20px 0 60px;">For Kennard Volunteer Fire Department • Kennard, Indiana</p>
-    <button onclick="startGame()" style="font-size:22px; padding:16px 40px;">START MISSION</button>
+    <h1 style="font-size:58px; margin-top:60px; color:#FF0;">KENNARD FIRE DEFENDER</h1>
+    <p style="font-size:26px; margin:20px 0 40px;">For KVFD • Kennard, Indiana</p>
+    <div style="margin-top:30px;">
+      <button onclick="startWithDifficulty(1)">EASY</button>
+      <button onclick="startWithDifficulty(2)">MEDIUM</button>
+      <button onclick="startWithDifficulty(3)">HARD</button>
+      <button onclick="startWithDifficulty(4)">EXPERT</button>
+    </div>
   </div>
 
   <div id="levelCompleteScreen" style="display:none; margin-top:80px;">
@@ -43,23 +48,25 @@
 </div>
 
 <div id="ui">
-  Score: <span id="score">0</span> &nbsp;&nbsp;&nbsp; Level: <span id="level">1</span>
+  Score: <span id="score">0</span> &nbsp;&nbsp;&nbsp; Level: <span id="level">1</span> &nbsp;&nbsp;&nbsp; Difficulty: <span id="difficulty">Easy</span>
 </div>
 
 <canvas id="game" width="1150" height="600"></canvas>
 
 <script>
-// ============== KVFD – Optimized (50% fewer particles) + Grounded Vehicles ==============
+// ============== KVFD – Optimized + Difficulty Menu ==============
 const canvas = document.getElementById('game');
 const ctx = canvas.getContext('2d');
 const scoreEl = document.getElementById('score');
 const levelEl = document.getElementById('level');
+const diffEl = document.getElementById('difficulty');
 
 let score = 0;
 let mouseX = 500, mouseY = 300;
 let isSpraying = false;
 let gameState = 'title';
 let currentLevel = 1;
+let currentDifficulty = 1; // 1=easy, 2=medium, 3=hard, 4=expert
 let fireSpots = [];
 let particles = [];
 let explosions = [];
@@ -79,7 +86,7 @@ const safetyTipsPool = [
   "If your home fills with smoke, crawl low where the air is cleaner."
 ];
 
-const levels = [
+const levels = [ /* same level data as before */ 
   { name: "Level 1 – Yellow House", fireSpots: [
     {x: 720, y: 228, w: 58, h: 88, health: 4200, maxHealth: 4200, type: 'window', entity: 0},
     {x: 840, y: 228, w: 58, h: 88, health: 4200, maxHealth: 4200, type: 'window', entity: 0},
@@ -124,81 +131,90 @@ const levels = [
   ], entities: [{type:'sedan', x:650}, {type:'pickup', x:790}] }
 ];
 
-document.addEventListener('mousemove', e => {
-  const rect = canvas.getBoundingClientRect();
-  mouseX = Math.max(60, Math.min(e.clientX - rect.left, canvas.width - 30));
-  mouseY = Math.max(110, Math.min(e.clientY - rect.top, canvas.height - 90));
-});
+function startWithDifficulty(diff) {
+  currentDifficulty = diff;
+  diffEl.textContent = ['Easy','Medium','Hard','Expert'][diff-1];
+  document.getElementById('titleScreen').style.display = 'none';
+  loadLevel(1);
+}
 
-canvas.addEventListener('mousedown', () => { if (gameState === 'playing') isSpraying = true; });
-canvas.addEventListener('mouseup', () => isSpraying = false);
-canvas.addEventListener('mouseleave', () => isSpraying = false);
+function loadLevel(lvl) {
+  currentLevel = lvl;
+  levelEl.textContent = currentLevel;
+  const data = levels[lvl-1];
+  fireSpots = data.fireSpots.map(s => ({...s, lastHit: Date.now(), lastSpread: Date.now()}));
+  particles = [];
+  explosions = [];
+  gameState = 'playing';
+}
 
-class Particle {
-  constructor(x, y, vx, vy, color, life, size, type) {
-    this.x = x; this.y = y; this.vx = vx; this.vy = vy;
-    this.color = color; this.life = life; this.size = size; this.type = type;
-  }
-  update() {
-    this.x += this.vx; this.y += this.vy; this.life--;
-    if (this.type === 'water') this.vy += 0.11;
-    if (this.type === 'fire') { this.vy -= 0.23 + Math.random() * 0.29; this.vx += (Math.random() - 0.5) * 2.2; }
-    if (this.type === 'smoke') { this.vy -= 0.06; this.vx += (Math.random() - 0.5) * 0.5; }
-  }
-  draw() {
-    ctx.globalAlpha = Math.max(0.1, this.life / 48);
-    ctx.fillStyle = this.color;
-    if (this.type === 'water') ctx.fillRect(this.x - 2.5, this.y - 3, 5, 9);
-    else ctx.fillRect(this.x - this.size/2, this.y - this.size/2, this.size, this.size);
-    ctx.globalAlpha = 1;
+function checkWin() {
+  if (fireSpots.every(s => s.health <= 0)) {
+    gameState = 'levelComplete';
+    const tipIndex = (currentLevel - 1) % safetyTipsPool.length;
+    const tip = safetyTipsPool[tipIndex];
+    document.getElementById('levelTitle').textContent = levels[currentLevel-1].name + " COMPLETE!";
+    document.getElementById('encourageText').innerHTML = "Excellent work, Fire Defender!<br>You saved the day!";
+    document.getElementById('safetyTip').textContent = "Safety Tip: " + tip;
+    document.getElementById('levelCompleteScreen').style.display = 'block';
   }
 }
 
+function startGame() { /* not used anymore */ }
+
+function nextLevel() {
+  document.getElementById('levelCompleteScreen').style.display = 'none';
+  if (currentLevel < levels.length) loadLevel(currentLevel + 1);
+  else { alert("🎉 You completed all levels! Great job!"); resetGame(); }
+}
+
+function resetGame() {
+  document.getElementById('levelCompleteScreen').style.display = 'none';
+  score = 0;
+  scoreEl.textContent = 0;
+  loadLevel(1);
+}
+
+function returnToFirePage() {
+  window.location.href = 'https://kennardin.com/fire-department.html';
+}
+
+// === Particle functions with heavy reduction ===
 function createFireParticles(x, y, intensity) {
-  const count = Math.floor(intensity * 0.5); // ~50% reduction
+  const count = Math.max(3, Math.floor(intensity * 0.4)); // big reduction
   for (let i = 0; i < count; i++) {
-    const vx = (Math.random() - 0.5) * 3.8;
-    const vy = -4.2 - Math.random() * 6;
-    const colors = ['#FF1100', '#FF5500', '#FFAA00', '#FF3300', '#FF7700'];
-    particles.push(new Particle(x + (Math.random()-0.5)*45, y + (Math.random()-0.5)*35, vx, vy, colors[Math.floor(Math.random()*colors.length)], 45 + Math.random()*35, 7 + Math.random()*12, 'fire'));
+    const vx = (Math.random() - 0.5) * 3.5;
+    const vy = -3.8 - Math.random() * 5.5;
+    const colors = ['#FF1100', '#FF5500', '#FFAA00'];
+    particles.push(new Particle(x + (Math.random()-0.5)*40, y + (Math.random()-0.5)*30, vx, vy, colors[Math.floor(Math.random()*colors.length)], 35, 6 + Math.random()*9, 'fire'));
   }
 }
 
 function createWaterParticles() {
-  const count = 14; // reduced from 28
+  const count = 12; // reduced
   for (let i = 0; i < count; i++) {
-    const spread = (Math.random() - 0.5) * 4.5;
+    const spread = (Math.random() - 0.5) * 4;
     const dirX = (mouseX - (truckX + 148)) * 0.042;
     const dirY = (mouseY - (truckY - 34)) * 0.042;
-    particles.push(new Particle(mouseX + (Math.random()-0.5)*6, mouseY + (Math.random()-0.5)*6, dirX + spread, dirY + spread - 5.5, '#33CCFF', 28, 3.5, 'water'));
+    particles.push(new Particle(mouseX + (Math.random()-0.5)*5, mouseY + (Math.random()-0.5)*5, dirX + spread, dirY + spread - 5.5, '#33CCFF', 25, 3.5, 'water'));
   }
 }
 
 function createSmoke(x, y) {
-  const count = 9; // reduced
+  const count = 8;
   for (let i = 0; i < count; i++) {
-    particles.push(new Particle(x + (Math.random()-0.5)*50, y + (Math.random()-0.5)*28, (Math.random()-0.5)*2.4, -1.1 - Math.random()*1.7, '#666666', 520, 11 + Math.random()*14, 'smoke'));
+    particles.push(new Particle(x + (Math.random()-0.5)*45, y + (Math.random()-0.5)*25, (Math.random()-0.5)*2.2, -1.0 - Math.random()*1.6, '#666666', 480, 10 + Math.random()*12, 'smoke'));
   }
 }
 
 function createSmallExplosion(x, y) {
-  const count = 15; // reduced
+  const count = 12;
   for (let i = 0; i < count; i++) {
-    const vx = (Math.random() - 0.5) * 8;
-    const vy = (Math.random() - 0.5) * 7 - 3.5;
-    particles.push(new Particle(x, y, vx, vy, '#FFAA00', 20, 6 + Math.random()*7, 'fire'));
+    const vx = (Math.random() - 0.5) * 7.5;
+    const vy = (Math.random() - 0.5) * 6.5 - 3;
+    particles.push(new Particle(x, y, vx, vy, '#FFAA00', 18, 5 + Math.random()*6, 'fire'));
   }
-  explosions.push({x, y, life: 20});
-}
-
-function showPutOutMessage() {
-  const msg = document.createElement('div');
-  msg.className = 'encourage';
-  msg.textContent = "FIRE OUT!";
-  msg.style.left = (Math.random() * 320 + 420) + 'px';
-  msg.style.top = '240px';
-  document.getElementById('overlay').appendChild(msg);
-  setTimeout(() => msg.remove(), 2300);
+  explosions.push({x, y, life: 18});
 }
 
 function drawBackground() {
@@ -318,50 +334,6 @@ function drawSemi(x) {
   ctx.beginPath(); ctx.arc(x+260, 370, 19, 0, Math.PI*2); ctx.fill();
 }
 
-function loadLevel(lvl) {
-  currentLevel = lvl;
-  levelEl.textContent = currentLevel;
-  const data = levels[lvl-1];
-  fireSpots = data.fireSpots.map(s => ({...s, lastHit: Date.now(), lastSpread: Date.now()}));
-  particles = [];
-  explosions = [];
-  gameState = 'playing';
-}
-
-function checkWin() {
-  if (fireSpots.every(s => s.health <= 0)) {
-    gameState = 'levelComplete';
-    const tipIndex = (currentLevel - 1) % safetyTipsPool.length;
-    const tip = safetyTipsPool[tipIndex];
-    document.getElementById('levelTitle').textContent = levels[currentLevel-1].name + " COMPLETE!";
-    document.getElementById('encourageText').innerHTML = "Excellent work, Fire Defender!<br>You saved the day!";
-    document.getElementById('safetyTip').textContent = "Safety Tip: " + tip;
-    document.getElementById('levelCompleteScreen').style.display = 'block';
-  }
-}
-
-function startGame() {
-  document.getElementById('titleScreen').style.display = 'none';
-  loadLevel(1);
-}
-
-function nextLevel() {
-  document.getElementById('levelCompleteScreen').style.display = 'none';
-  if (currentLevel < levels.length) loadLevel(currentLevel + 1);
-  else { alert("🎉 You completed all levels! Great job protecting Kennard!"); resetGame(); }
-}
-
-function resetGame() {
-  document.getElementById('levelCompleteScreen').style.display = 'none';
-  score = 0;
-  scoreEl.textContent = 0;
-  loadLevel(1);
-}
-
-function returnToFirePage() {
-  window.location.href = 'https://kennardin.com/fire-department.html';
-}
-
 function loop() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   drawBackground();
@@ -379,7 +351,6 @@ function loop() {
 
   drawSideFireTruck();
 
-  // KVFD text bottom right
   ctx.fillStyle = '#FFF';
   ctx.font = 'bold 18px Arial';
   ctx.textAlign = 'right';
@@ -388,23 +359,26 @@ function loop() {
   fireSpots.forEach(spot => {
     if (spot.health <= 0) return;
 
-    if (Math.random() < 0.034) spot.health = Math.min(spot.health + 8, spot.maxHealth);
+    const growthRate = currentDifficulty === 4 ? 0.045 : currentDifficulty === 3 ? 0.038 : 0.028;
+    if (Math.random() < growthRate) spot.health = Math.min(spot.health + 9, spot.maxHealth);
 
-    if (now - spot.lastSpread > (currentLevel >= 5 ? 6500 : 8000) && spot.health > spot.maxHealth * 0.32) {
-      fireSpots.push({...spot, x: spot.x + (Math.random()*100 - 50), y: spot.y + (Math.random()*80 - 40), health: currentLevel >= 5 ? 240 : 190, lastSpread: now});
+    const reigniteTime = currentDifficulty >= 3 ? 6200 : 8500;
+    if (now - spot.lastSpread > reigniteTime && spot.health > spot.maxHealth * 0.35) {
+      fireSpots.push({...spot, x: spot.x + (Math.random()*100 - 50), y: spot.y + (Math.random()*80 - 40), health: currentDifficulty === 4 ? 280 : 200, lastSpread: now});
       spot.lastSpread = now;
     }
 
-    const intensity = Math.floor(spot.health / 9);
+    const intensity = Math.floor(spot.health / 10);
     createFireParticles(spot.x + spot.w/2, spot.y + spot.h/2, intensity);
 
     for (let i = particles.length-1; i >= 0; i--) {
       const p = particles[i];
       if (p.type === 'water' && p.x > spot.x && p.x < spot.x + spot.w && p.y > spot.y && p.y < spot.y + spot.h) {
-        spot.health -= 0.75;
+        const damage = currentDifficulty === 4 ? 0.55 : currentDifficulty === 3 ? 0.68 : 0.82;
+        spot.health -= damage;
         spot.lastHit = now;
         p.life = 7;
-        if (spot.type === 'tanker' && Math.random() < 0.32) createSmallExplosion(spot.x + spot.w/2, spot.y + spot.h/2);
+        if (spot.type === 'tanker' && Math.random() < 0.25) createSmallExplosion(spot.x + spot.w/2, spot.y + spot.h/2);
       }
     }
 
@@ -412,7 +386,7 @@ function loop() {
       createSmoke(spot.x + spot.w/2, spot.y + spot.h/2);
       score += (spot.type === 'roof' || spot.type === 'tanker') ? 25 : 10;
       scoreEl.textContent = score;
-      if (Math.random() < 0.45) showPutOutMessage();
+      if (Math.random() < 0.4) showPutOutMessage();
     }
   });
 
