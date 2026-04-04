@@ -17,10 +17,6 @@
   button:hover { background: #0088FF; }
   .difficulty-btn { background:#C00; }
   .difficulty-btn:hover { background: #F00; }
-  .bottom-label {
-    position: absolute; bottom: 15px; right: 20px; font-size: 22px; color:#FF0;
-    text-shadow: 2px 2px 6px rgba(0,0,0,0.8);
-  }
 </style>
 </head>
 <body>
@@ -41,7 +37,6 @@
       <p id="safetyTip" style="font-size:24px; line-height:1.45; margin:0;"></p>
     </div>
     
-    <!-- Buttons in original position under the dark box -->
     <div style="margin-top:25px;">
       <button onclick="nextLevel()">NEXT LEVEL</button>
       <button onclick="resetGame()">PLAY AGAIN</button>
@@ -52,9 +47,8 @@
 
 <canvas id="game" width="1200" height="600"></canvas>
 
-<div class="bottom-label">KVFD - Kennard, IN</div>
-
 <script>
+// ============== KVFD text removed from bottom right corner (now only on screen via canvas) ==============
 const canvas = document.getElementById('game');
 const ctx = canvas.getContext('2d');
 
@@ -500,6 +494,12 @@ function loop() {
   });
 
   drawSideFireTruck();
+
+  // KVFD text is now drawn on the canvas (inside the playable screen area)
+  ctx.fillStyle = '#FF0';
+  ctx.font = 'bold 22px Arial';
+  ctx.textAlign = 'right';
+  ctx.fillText('KVFD - Kennard, IN', 1180, 580);
 
   fireSpots.forEach(spot => {
     if (spot.health <= 0) return;
