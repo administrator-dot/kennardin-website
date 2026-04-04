@@ -12,7 +12,7 @@
     text-shadow: 2px 2px 8px rgba(0,0,0,0.9);
   }
   button {
-    pointer-events: auto; margin: 15px; padding: 14px 28px; font-size: 20px;
+    pointer-events: auto; margin: 12px 8px; padding: 14px 28px; font-size: 20px;
     background: #C00; color: white; border: none; border-radius: 8px; cursor: pointer;
   }
   button:hover { background: #F00; }
@@ -33,15 +33,17 @@
     <button onclick="startGame()" style="font-size:22px; padding:16px 40px;">START MISSION</button>
   </div>
 
-  <div id="levelCompleteScreen" style="display:none; margin-top:120px;">
-    <h1 id="levelTitle" style="font-size:48px; color:#0F0;"></h1>
-    <div style="background:rgba(0,0,0,0.75); padding:20px 40px; border-radius:12px; display:inline-block; max-width:620px; margin:20px auto;">
-      <p id="encourageText" style="font-size:32px; margin:10px 0;"></p>
-      <p id="safetyTip" style="font-size:26px; line-height:1.4; margin:10px 0;"></p>
+  <div id="levelCompleteScreen" style="display:none; margin-top:80px;">
+    <h1 id="levelTitle" style="font-size:48px; color:#0F0; margin-bottom:20px;"></h1>
+    <div style="background:rgba(0,0,0,0.8); padding:25px 40px; border-radius:12px; display:inline-block; max-width:680px;">
+      <p id="encourageText" style="font-size:32px; margin:10px 0 15px;"></p>
+      <p id="safetyTip" style="font-size:26px; line-height:1.5; margin:15px 0;"></p>
     </div>
-    <button onclick="nextLevel()">NEXT LEVEL</button>
-    <button onclick="resetGame()">PLAY AGAIN</button>
-    <button onclick="returnToFirePage()">RETURN TO FIRE PAGE</button>
+    <div style="margin-top:30px;">
+      <button onclick="nextLevel()">NEXT LEVEL</button>
+      <button onclick="resetGame()">PLAY AGAIN</button>
+      <button onclick="returnToFirePage()">RETURN TO FIRE PAGE</button>
+    </div>
   </div>
 </div>
 
@@ -52,7 +54,7 @@
 <canvas id="game" width="1150" height="600"></canvas>
 
 <script>
-// ============== Kennard Fire Defender – FINAL POLISH (Grounded Short House + No Driveways + Opaque Safety Tips) ==============
+// ============== Kennard Fire Defender – Final Version with All Fixes ==============
 const canvas = document.getElementById('game');
 const ctx = canvas.getContext('2d');
 const scoreEl = document.getElementById('score');
@@ -70,6 +72,18 @@ let explosions = [];
 const truckX = 48;
 const truckY = 505;
 
+const safetyTipsPool = [
+  "Never hide from fire – get low and go!",
+  "Smoke alarms save lives – test yours monthly.",
+  "Stop, drop, and roll if your clothes catch fire.",
+  "Have an escape plan and practice it with your family.",
+  "Call 911 first – then get out fast.",
+  "For grease fires: Smother with a lid – never use water!",
+  "Outdoor fires: Keep a hose or water nearby and never leave them unattended.",
+  "Electrical fires: Unplug if safe, then use a fire extinguisher – never water.",
+  "If your home fills with smoke, crawl low where the air is cleaner."
+];
+
 const levels = [
   { name: "Level 1 – Yellow House", fireSpots: [
     {x: 720, y: 228, w: 58, h: 88, health: 420, maxHealth: 420, type: 'window', entity: 0},
@@ -78,7 +92,7 @@ const levels = [
   ], entities: [{type:'house', x:680, color:'#FFEE66', short:false}] },
 
   { name: "Level 2 – Short House + Full House", fireSpots: [
-    {x: 380, y: 268, w: 55, h: 65, health: 400, maxHealth: 400, type: 'window', entity: 0}, // short house (grounded)
+    {x: 380, y: 268, w: 55, h: 65, health: 400, maxHealth: 400, type: 'window', entity: 0},
     {x: 470, y: 268, w: 55, h: 65, health: 400, maxHealth: 400, type: 'window', entity: 0},
     {x: 355, y: 193, w: 210, h: 46, health: 520, maxHealth: 520, type: 'roof', entity: 0},
     {x: 720, y: 228, w: 55, h: 85, health: 410, maxHealth: 410, type: 'window', entity: 1},
@@ -103,9 +117,9 @@ const levels = [
   ], entities: [{type:'house', x:680, color:'#FF99CC', short:false}, {type:'pickup', x:170}] },
 
   { name: "Level 5 – Semi Tanker Fire", fireSpots: [
-    {x: 135, y: 300, w: 85, h: 75, health: 410, maxHealth: 410, type: 'cab', entity: 0},
-    {x: 225, y: 275, w: 270, h: 102, health: 630, maxHealth: 630, type: 'tanker', entity: 0}
-  ], entities: [{type:'semi', x:105}] },
+    {x: 520, y: 300, w: 85, h: 75, health: 420, maxHealth: 420, type: 'cab', entity: 0},
+    {x: 610, y: 275, w: 270, h: 102, health: 640, maxHealth: 640, type: 'tanker', entity: 0}
+  ], entities: [{type:'semi', x:480}] },
 
   { name: "Level 6 – Wrecked Cars on Grass", fireSpots: [
     {x: 680, y: 345, w: 105, h: 55, health: 320, maxHealth: 320, type: 'hood', entity: 0},
@@ -188,15 +202,6 @@ function showPutOutMessage() {
   setTimeout(() => msg.remove(), 2300);
 }
 
-const safetyTips = [
-  "Never hide from fire – get low and go!",
-  "Smoke alarms save lives – test yours monthly.",
-  "Stop, drop, and roll if your clothes catch fire.",
-  "Have an escape plan and practice it with your family.",
-  "Call 911 first – then get out fast.",
-  "Kitchen fires? Smother with a lid, never water!"
-];
-
 function drawBackground() {
   const grad = ctx.createLinearGradient(0, 0, 0, 520);
   grad.addColorStop(0, '#7BC4FF'); grad.addColorStop(1, '#C0E4FF');
@@ -204,15 +209,14 @@ function drawBackground() {
   ctx.fillRect(0, 0, canvas.width, 520);
   ctx.fillStyle = '#3D8C40';
   ctx.fillRect(0, 520, canvas.width, 80);
-  // sidewalk only (no driveways)
   ctx.fillStyle = '#777';
-  ctx.fillRect(0, 510, canvas.width, 12);
+  ctx.fillRect(0, 510, canvas.width, 12); // sidewalk only
 }
 
 function drawSouthParkHouse(x, color, short, burned) {
   const alpha = burned ? 0.7 : 1;
-  const houseHeight = short ? 195 : 315;   // short house is one-story and sits directly on grass
-  const baseY = short ? 325 : 205;         // short house starts lower so it touches ground
+  const houseHeight = short ? 195 : 315;
+  const baseY = short ? 325 : 205;
   ctx.globalAlpha = alpha;
   ctx.fillStyle = burned ? '#222' : color;
   ctx.fillRect(x, baseY, 265, houseHeight);
@@ -226,14 +230,11 @@ function drawSouthParkHouse(x, color, short, burned) {
   ctx.lineTo(x+290, baseY - 10);
   ctx.fill();
   ctx.fillStyle = burned ? '#111' : '#A33';
-  ctx.fillRect(x+175, baseY - 80, 30, 60);
-  // porch removed completely
-  // door
+  ctx.fillRect(x+175, short ? 155 : 115, 30, 60);
   ctx.fillStyle = burned ? '#111' : '#3C2F1F';
-  ctx.fillRect(x+105, baseY + 205, 45, 110);
+  ctx.fillRect(x+105, baseY + (short ? 115 : 205), 45, 110);
   ctx.fillStyle = '#FFCC00';
-  ctx.fillRect(x+122, baseY + 260, 10, 10);
-  // windows
+  ctx.fillRect(x+122, baseY + (short ? 170 : 260), 10, 10);
   ctx.fillStyle = burned ? '#111' : '#AACCFF';
   ctx.fillRect(x+35, baseY + 40, 55, short ? 55 : 82);
   ctx.fillRect(x+175, baseY + 40, 55, short ? 55 : 82);
@@ -331,7 +332,8 @@ function loadLevel(lvl) {
 function checkWin() {
   if (fireSpots.every(s => s.health <= 0)) {
     gameState = 'levelComplete';
-    const tip = safetyTips[Math.floor(Math.random() * safetyTips.length)];
+    const tipIndex = (currentLevel - 1) % safetyTipsPool.length;
+    const tip = safetyTipsPool[tipIndex];
     document.getElementById('levelTitle').textContent = levels[currentLevel-1].name + " COMPLETE!";
     document.getElementById('encourageText').innerHTML = "Excellent work, Fire Defender!<br>You saved the day!";
     document.getElementById('safetyTip').textContent = "Safety Tip: " + tip;
@@ -381,23 +383,23 @@ function loop() {
   fireSpots.forEach(spot => {
     if (spot.health <= 0) return;
 
-    if (Math.random() < 0.032) spot.health = Math.min(spot.health + 7, spot.maxHealth);
+    if (Math.random() < 0.034) spot.health = Math.min(spot.health + 8, spot.maxHealth);
 
-    if (now - spot.lastSpread > (currentLevel >= 5 ? 6800 : 8200) && spot.health > spot.maxHealth * 0.35) {
-      fireSpots.push({...spot, x: spot.x + (Math.random()*98 - 49), y: spot.y + (Math.random()*78 - 39), health: currentLevel >= 5 ? 230 : 180, lastSpread: now});
+    if (now - spot.lastSpread > (currentLevel >= 5 ? 6500 : 8000) && spot.health > spot.maxHealth * 0.32) {
+      fireSpots.push({...spot, x: spot.x + (Math.random()*100 - 50), y: spot.y + (Math.random()*80 - 40), health: currentLevel >= 5 ? 240 : 190, lastSpread: now});
       spot.lastSpread = now;
     }
 
-    const intensity = Math.floor(spot.health / 10);
+    const intensity = Math.floor(spot.health / 9);
     createFireParticles(spot.x + spot.w/2, spot.y + spot.h/2, intensity);
 
     for (let i = particles.length-1; i >= 0; i--) {
       const p = particles[i];
       if (p.type === 'water' && p.x > spot.x && p.x < spot.x + spot.w && p.y > spot.y && p.y < spot.y + spot.h) {
-        spot.health -= 0.78;
+        spot.health -= 0.75;
         spot.lastHit = now;
         p.life = 7;
-        if (spot.type === 'tanker' && Math.random() < 0.3) createSmallExplosion(spot.x + spot.w/2, spot.y + spot.h/2);
+        if (spot.type === 'tanker' && Math.random() < 0.32) createSmallExplosion(spot.x + spot.w/2, spot.y + spot.h/2);
       }
     }
 
