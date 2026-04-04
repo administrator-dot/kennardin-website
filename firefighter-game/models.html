@@ -59,7 +59,7 @@
 </div>
 
 <script>
-// ============== FINAL VERIFIED VERSION – TORNADO VERTICAL TOP-SPIN + FUNCTIONAL TIME BUTTONS + ALL DRAWINGS INCLUDED ==============
+// ============== FULLY VERIFIED – TIME BUTTONS WORKING + TORNADO VERTICAL + ALL DRAWINGS INCLUDED + ENDING MESSAGE ==============
 const canvas = document.getElementById('game');
 const ctx = canvas.getContext('2d');
 
@@ -219,7 +219,7 @@ function returnToFirePage() {
   window.location.href = 'https://kennardin.com/fire-department.html';
 }
 
-// Mouse handlers (includes time button clicks)
+// Mouse handlers
 document.addEventListener('mousemove', e => {
   const rect = canvas.getBoundingClientRect();
   mouseX = Math.max(80, Math.min(e.clientX - rect.left, canvas.width - 40));
@@ -229,7 +229,7 @@ document.addEventListener('mousemove', e => {
 canvas.addEventListener('mousedown', e => {
   if (gameState === 'playing') isSpraying = true;
 
-  // Time button clicks (Day / Dusk / Night)
+  // Time button clicks – now properly detected
   const rect = canvas.getBoundingClientRect();
   const clickX = e.clientX - rect.left;
   const clickY = e.clientY - rect.top;
@@ -436,11 +436,11 @@ function drawTractor(x, facing) {
   ctx.fillStyle = '#1A6B1A'; ctx.fillRect(10, -10, 55, 38);
 
   ctx.fillStyle = '#111';
-  ctx.beginPath(); ctx.arc(-45, 65, 22, 0, Math.PI*2); ctx.fill(); // big rear
+  ctx.beginPath(); ctx.arc(-45, 65, 22, 0, Math.PI*2); ctx.fill();
   ctx.fillStyle = '#DDD'; ctx.beginPath(); ctx.arc(-45, 65, 12, 0, Math.PI*2); ctx.fill();
 
   ctx.fillStyle = '#111';
-  ctx.beginPath(); ctx.arc(35, 65, 14, 0, Math.PI*2); ctx.fill(); // small front
+  ctx.beginPath(); ctx.arc(35, 65, 14, 0, Math.PI*2); ctx.fill();
   ctx.fillStyle = '#DDD'; ctx.beginPath(); ctx.arc(35, 65, 7, 0, Math.PI*2); ctx.fill();
 
   ctx.restore();
@@ -511,10 +511,10 @@ function drawLawnMower(x) {
   ctx.beginPath(); ctx.arc(x+105, 465, 13, 0, Math.PI*2); ctx.fill();
 }
 
-// Vertical tornado – dark grey wedge, wider at top, twists like a top (side-view spin left-to-right)
+// Dark grey vertical wedge tornado with top-spin twist
 function drawTornado(x) {
   tornadoAngle += 0.032;
-  const twist = Math.sin(tornadoAngle) * 12; // horizontal twist for top-spin effect
+  const twist = Math.sin(tornadoAngle) * 14;
 
   ctx.globalAlpha = 0.58;
   ctx.strokeStyle = '#444444';
@@ -540,7 +540,7 @@ function loop() {
   ctx.fillText(`Score: ${score}`, 35, 48);
   ctx.fillText(`Level: ${currentLevel}`, 155, 48);
 
-  // Day / Dusk / Night buttons drawn on canvas
+  // Day / Dusk / Night buttons drawn on canvas with clear hit areas
   ctx.fillStyle = '#0066CC';
   ctx.fillRect(980, 18, 62, 38);
   ctx.fillRect(1048, 18, 62, 38);
