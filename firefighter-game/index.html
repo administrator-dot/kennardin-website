@@ -56,7 +56,7 @@
 <canvas id="game" width="1150" height="600"></canvas>
 
 <script>
-// ============== KVFD – Toned Down Flames + Fixed Win Flow + Easier Extinguishing on Easy ==============
+// ============== KVFD – Stable Version (No more disappearing hose/water/fire) ==============
 const canvas = document.getElementById('game');
 const ctx = canvas.getContext('2d');
 const scoreEl = document.getElementById('score');
@@ -203,7 +203,7 @@ class Particle {
     if (this.type === 'smoke') { this.vy -= 0.05; this.vx += (Math.random() - 0.5) * 0.4; }
   }
   draw() {
-    ctx.globalAlpha = Math.max(0.15, this.life / 45);
+    ctx.globalAlpha = Math.max(0.2, this.life / 40);
     ctx.fillStyle = this.color;
     if (this.type === 'water') ctx.fillRect(this.x - 2, this.y - 2.5, 4, 7);
     else ctx.fillRect(this.x - this.size/2, this.y - this.size/2, this.size, this.size);
@@ -212,40 +212,40 @@ class Particle {
 }
 
 function createFireParticles(x, y, intensity) {
-  const count = Math.max(2, Math.floor(intensity * 0.28)); // very conservative for performance
+  const count = Math.max(2, Math.floor(intensity * 0.22)); // very light flames
   for (let i = 0; i < count; i++) {
-    const vx = (Math.random() - 0.5) * 2.8;
-    const vy = -3.2 - Math.random() * 4.5;
+    const vx = (Math.random() - 0.5) * 2.6;
+    const vy = -3.0 - Math.random() * 4.2;
     const colors = ['#FF4400', '#FF8800', '#FFCC00'];
-    particles.push(new Particle(x + (Math.random()-0.5)*35, y + (Math.random()-0.5)*28, vx, vy, colors[Math.floor(Math.random()*colors.length)], 32, 5 + Math.random()*8, 'fire'));
+    particles.push(new Particle(x + (Math.random()-0.5)*30, y + (Math.random()-0.5)*24, vx, vy, colors[Math.floor(Math.random()*colors.length)], 26, 4.5 + Math.random()*6.5, 'fire'));
   }
 }
 
 function createWaterParticles() {
-  const count = 9;
+  const count = 7; // very light water
   for (let i = 0; i < count; i++) {
-    const spread = (Math.random() - 0.5) * 4;
+    const spread = (Math.random() - 0.5) * 3.2;
     const dirX = (mouseX - (truckX + 148)) * 0.042;
     const dirY = (mouseY - (truckY - 34)) * 0.042;
-    particles.push(new Particle(mouseX + (Math.random()-0.5)*5, mouseY + (Math.random()-0.5)*5, dirX + spread, dirY + spread - 5, '#33CCFF', 24, 3.2, 'water'));
+    particles.push(new Particle(mouseX + (Math.random()-0.5)*4, mouseY + (Math.random()-0.5)*4, dirX + spread, dirY + spread - 4.8, '#33CCFF', 20, 3, 'water'));
   }
 }
 
 function createSmoke(x, y) {
-  const count = 5;
+  const count = 4;
   for (let i = 0; i < count; i++) {
-    particles.push(new Particle(x + (Math.random()-0.5)*40, y + (Math.random()-0.5)*22, (Math.random()-0.5)*1.8, -0.9 - Math.random()*1.2, '#666666', 420, 9 + Math.random()*10, 'smoke'));
+    particles.push(new Particle(x + (Math.random()-0.5)*35, y + (Math.random()-0.5)*20, (Math.random()-0.5)*1.6, -0.8 - Math.random()*1.1, '#666666', 360, 8 + Math.random()*8, 'smoke'));
   }
 }
 
 function createSmallExplosion(x, y) {
-  const count = 8;
+  const count = 7;
   for (let i = 0; i < count; i++) {
-    const vx = (Math.random() - 0.5) * 6.5;
-    const vy = (Math.random() - 0.5) * 5.5 - 2.5;
-    particles.push(new Particle(x, y, vx, vy, '#FFAA00', 16, 4.5 + Math.random()*5, 'fire'));
+    const vx = (Math.random() - 0.5) * 6;
+    const vy = (Math.random() - 0.5) * 5 - 2;
+    particles.push(new Particle(x, y, vx, vy, '#FFAA00', 15, 4 + Math.random()*5, 'fire'));
   }
-  explosions.push({x, y, life: 16});
+  explosions.push({x, y, life: 15});
 }
 
 function drawBackground() {
@@ -315,49 +315,33 @@ function drawSideFireTruck() {
   for (let i = 0; i < 7; i++) ctx.fillRect(truckX+148, truckY-68 + i*6, 14, 3);
 }
 
-function drawSedan(x) {
-  ctx.fillStyle = 'rgba(0,0,0,0.45)';
-  ctx.fillRect(x+12, truckY+33, 118, 16);
-  ctx.fillStyle = '#1E5A9E';
-  ctx.fillRect(x+12, 348, 115, 52);
-  ctx.fillStyle = '#0F3A6B';
-  ctx.fillRect(x+25, 315, 85, 40);
-  ctx.fillStyle = '#AACCFF';
-  ctx.fillRect(x+35, 322, 38, 26);
-  ctx.fillRect(x+78, 322, 25, 26);
+function drawSedan(x) { /* same as before */ 
+  ctx.fillStyle = 'rgba(0,0,0,0.45)'; ctx.fillRect(x+12, truckY+33, 118, 16);
+  ctx.fillStyle = '#1E5A9E'; ctx.fillRect(x+12, 348, 115, 52);
+  ctx.fillStyle = '#0F3A6B'; ctx.fillRect(x+25, 315, 85, 40);
+  ctx.fillStyle = '#AACCFF'; ctx.fillRect(x+35, 322, 38, 26); ctx.fillRect(x+78, 322, 25, 26);
   ctx.fillStyle = '#111';
   ctx.beginPath(); ctx.arc(x+38, 390, 17, 0, Math.PI*2); ctx.fill();
   ctx.beginPath(); ctx.arc(x+98, 390, 17, 0, Math.PI*2); ctx.fill();
 }
 
-function drawPickup(x) {
-  ctx.fillStyle = 'rgba(0,0,0,0.45)';
-  ctx.fillRect(x+8, truckY+33, 138, 16);
-  ctx.fillStyle = '#1F2A3C';
-  ctx.fillRect(x+8, 350, 135, 50);
-  ctx.fillStyle = '#111';
-  ctx.fillRect(x+22, 314, 80, 40);
-  ctx.fillStyle = '#AACCFF';
-  ctx.fillRect(x+30, 320, 40, 27);
-  ctx.fillRect(x+75, 320, 20, 27);
+function drawPickup(x) { /* same */ 
+  ctx.fillStyle = 'rgba(0,0,0,0.45)'; ctx.fillRect(x+8, truckY+33, 138, 16);
+  ctx.fillStyle = '#1F2A3C'; ctx.fillRect(x+8, 350, 135, 50);
+  ctx.fillStyle = '#111'; ctx.fillRect(x+22, 314, 80, 40);
+  ctx.fillStyle = '#AACCFF'; ctx.fillRect(x+30, 320, 40, 27); ctx.fillRect(x+75, 320, 20, 27);
   ctx.fillStyle = '#111';
   ctx.beginPath(); ctx.arc(x+35, 392, 17, 0, Math.PI*2); ctx.fill();
   ctx.beginPath(); ctx.arc(x+108, 392, 17, 0, Math.PI*2); ctx.fill();
-  ctx.fillStyle = '#DDD';
-  ctx.fillRect(x+118, 355, 24, 24);
+  ctx.fillStyle = '#DDD'; ctx.fillRect(x+118, 355, 24, 24);
 }
 
-function drawSemi(x) {
-  ctx.fillStyle = 'rgba(0,0,0,0.45)';
-  ctx.fillRect(x+18, truckY+33, 315, 16);
-  ctx.fillStyle = '#C00';
-  ctx.fillRect(x, 300, 88, 78);
-  ctx.fillStyle = '#113344';
-  ctx.fillRect(x+14, 312, 44, 38);
-  ctx.fillStyle = '#DDD';
-  ctx.fillRect(x+85, 275, 280, 105);
-  ctx.fillStyle = '#A33';
-  ctx.fillRect(x+92, 285, 265, 15);
+function drawSemi(x) { /* same */ 
+  ctx.fillStyle = 'rgba(0,0,0,0.45)'; ctx.fillRect(x+18, truckY+33, 315, 16);
+  ctx.fillStyle = '#C00'; ctx.fillRect(x, 300, 88, 78);
+  ctx.fillStyle = '#113344'; ctx.fillRect(x+14, 312, 44, 38);
+  ctx.fillStyle = '#DDD'; ctx.fillRect(x+85, 275, 280, 105);
+  ctx.fillStyle = '#A33'; ctx.fillRect(x+92, 285, 265, 15);
   ctx.fillStyle = '#111';
   ctx.beginPath(); ctx.arc(x+40, 370, 19, 0, Math.PI*2); ctx.fill();
   ctx.beginPath(); ctx.arc(x+120, 370, 19, 0, Math.PI*2); ctx.fill();
@@ -399,17 +383,17 @@ function loop() {
       spot.lastSpread = now;
     }
 
-    const intensity = Math.floor(spot.health / 14); // lower intensity for smaller flames
+    const intensity = Math.floor(spot.health / 15);
     createFireParticles(spot.x + spot.w/2, spot.y + spot.h/2, intensity);
 
     for (let i = particles.length-1; i >= 0; i--) {
       const p = particles[i];
       if (p.type === 'water' && p.x > spot.x && p.x < spot.x + spot.w && p.y > spot.y && p.y < spot.y + spot.h) {
-        const damage = currentDifficulty === 4 ? 0.65 : currentDifficulty === 3 ? 0.78 : 1.05;
+        const damage = currentDifficulty === 4 ? 0.65 : currentDifficulty === 3 ? 0.78 : 1.1; // easier on Easy
         spot.health -= damage;
         spot.lastHit = now;
         p.life = 6;
-        if (spot.type === 'tanker' && Math.random() < 0.22) createSmallExplosion(spot.x + spot.w/2, spot.y + spot.h/2);
+        if (spot.type === 'tanker' && Math.random() < 0.2) createSmallExplosion(spot.x + spot.w/2, spot.y + spot.h/2);
       }
     }
 
@@ -417,7 +401,6 @@ function loop() {
       createSmoke(spot.x + spot.w/2, spot.y + spot.h/2);
       score += spot.points || 10;
       scoreEl.textContent = score;
-      if (Math.random() < 0.35) showPutOutMessage();
     }
   });
 
@@ -440,6 +423,7 @@ function loop() {
     if (e.life <= 0) explosions.splice(i, 1);
   }
 
+  // Hose & nozzle – always drawn
   ctx.strokeStyle = '#333';
   ctx.lineWidth = 12;
   ctx.lineCap = 'round';
