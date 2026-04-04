@@ -24,7 +24,8 @@
 <div id="overlay">
   <div id="titleScreen">
     <h1 style="font-size:58px; margin-top:80px; color:#FF0;">KENNARD FIRE DEFENDER</h1>
-    <div style="margin-top:40px;">
+    <p style="font-size:26px; margin:20px 0 40px;">For KVFD • Kennard, Indiana</p>
+    <div style="margin-top:30px;">
       <button onclick="startWithDifficulty(1)">EASY</button>
       <button onclick="startWithDifficulty(2)">MEDIUM</button>
       <button onclick="startWithDifficulty(3)">HARD</button>
@@ -55,7 +56,7 @@
 <canvas id="game" width="1150" height="600"></canvas>
 
 <script>
-// ============== KVFD – Clean Title + Working Difficulty Buttons + Optimized ==============
+// ============== KVFD – Fixed Start + Difficulty Buttons Work ==============
 const canvas = document.getElementById('game');
 const ctx = canvas.getContext('2d');
 const scoreEl = document.getElementById('score');
@@ -178,7 +179,7 @@ function returnToFirePage() {
   window.location.href = 'https://kennardin.com/fire-department.html';
 }
 
-// Particle functions (optimized)
+// Optimized particle functions
 function createFireParticles(x, y, intensity) {
   const count = Math.max(3, Math.floor(intensity * 0.4));
   for (let i = 0; i < count; i++) {
@@ -214,6 +215,26 @@ function createSmallExplosion(x, y) {
     particles.push(new Particle(x, y, vx, vy, '#FFAA00', 19, 6 + Math.random()*7, 'fire'));
   }
   explosions.push({x, y, life: 19});
+}
+
+class Particle {
+  constructor(x, y, vx, vy, color, life, size, type) {
+    this.x = x; this.y = y; this.vx = vx; this.vy = vy;
+    this.color = color; this.life = life; this.size = size; this.type = type;
+  }
+  update() {
+    this.x += this.vx; this.y += this.vy; this.life--;
+    if (this.type === 'water') this.vy += 0.11;
+    if (this.type === 'fire') { this.vy -= 0.23 + Math.random() * 0.29; this.vx += (Math.random() - 0.5) * 2.2; }
+    if (this.type === 'smoke') { this.vy -= 0.06; this.vx += (Math.random() - 0.5) * 0.5; }
+  }
+  draw() {
+    ctx.globalAlpha = Math.max(0.1, this.life / 48);
+    ctx.fillStyle = this.color;
+    if (this.type === 'water') ctx.fillRect(this.x - 2.5, this.y - 3, 5, 9);
+    else ctx.fillRect(this.x - this.size/2, this.y - this.size/2, this.size, this.size);
+    ctx.globalAlpha = 1;
+  }
 }
 
 function drawBackground() {
@@ -350,7 +371,7 @@ function loop() {
 
   drawSideFireTruck();
 
-  // KVFD text bottom right on grass
+  // KVFD text bottom right
   ctx.fillStyle = '#FFF';
   ctx.font = 'bold 18px Arial';
   ctx.textAlign = 'right';
