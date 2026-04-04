@@ -21,7 +21,10 @@
   #ui {
     position: absolute; top: 15px; left: 15px; font-size: 24px; color:#FFF;
     background: rgba(0,0,0,0.65); padding: 8px 16px; border-radius: 8px;
-    pointer-events: none;
+    pointer-events: none; z-index: 10;
+  }
+  .time-buttons {
+    position: absolute; top: 15px; right: 20px; z-index: 10;
   }
   .bottom-label {
     position: absolute; bottom: 15px; right: 20px; font-size: 22px; color:#FF0;
@@ -57,24 +60,24 @@
 <div id="ui">
   Score: <span id="score">0</span> &nbsp;&nbsp;&nbsp; Level: <span id="level">1</span>
 </div>
-<div class="bottom-label">KVFD - Kennard, IN</div>
-<div class="copyright">
-  Free for public use with credit.<br>
-  Created by Jason Groce, Kennard, Indiana.<br>
-  A donation to the KVFD is always appreciated.
-</div>
 
-<!-- Time of Day Buttons - Top Right -->
-<div style="position:absolute; top:15px; right:20px; z-index:10;">
+<div class="time-buttons">
   <button onclick="setTimeOfDay(0)">Day</button>
   <button onclick="setTimeOfDay(1)">Dusk</button>
   <button onclick="setTimeOfDay(2)">Night</button>
 </div>
 
+<div class="bottom-label">KVFD - Kennard, IN</div>
+<div class="copyright">
+  Free for public use.<br>
+  Please credit Jason Groce, Kennard, Indiana if you modify or use this game.<br>
+  A donation to the KVFD is always appreciated.
+</div>
+
 <canvas id="game" width="1200" height="600"></canvas>
 
 <script>
-// ============== UPDATED WITH TORNADO + TREE ON FIRE + UI IMPROVEMENTS ==============
+// ============== FINAL CLEAN VERSION WITH TORNADO + UI IMPROVEMENTS ==============
 const canvas = document.getElementById('game');
 const ctx = canvas.getContext('2d');
 const scoreEl = document.getElementById('score');
@@ -456,15 +459,16 @@ function drawLargeRedBarn(x) {
   ctx.globalAlpha = 1;
 }
 
-// New: Faded Tornado in background
+// Faded Tornado
 function drawTornado(x) {
   ctx.globalAlpha = 0.35;
-  ctx.fillStyle = '#AAAAAA';
+  ctx.strokeStyle = '#AAAAAA';
+  ctx.lineWidth = 18;
   ctx.beginPath();
-  ctx.moveTo(x, 180);
-  ctx.quadraticCurveTo(x+30, 300, x-20, 420);
-  ctx.quadraticCurveTo(x+40, 380, x+10, 480);
-  ctx.fill();
+  ctx.moveTo(x+20, 180);
+  ctx.quadraticCurveTo(x+45, 280, x-15, 380);
+  ctx.quadraticCurveTo(x+55, 420, x+10, 480);
+  ctx.stroke();
   ctx.globalAlpha = 1;
 }
 
