@@ -24,7 +24,6 @@
 <div id="overlay">
   <div id="titleScreen">
     <h1 style="font-size:58px; margin-top:80px; color:#FF0;">KENNARD FIRE DEFENDER</h1>
-    <p style="font-size:26px; margin:20px 0 40px;">For KVFD • Kennard, Indiana</p>
     <div style="margin-top:30px;">
       <button onclick="startWithDifficulty(1)">EASY</button>
       <button onclick="startWithDifficulty(2)">MEDIUM</button>
@@ -56,7 +55,7 @@
 <canvas id="game" width="1150" height="600"></canvas>
 
 <script>
-// ============== KVFD – Stable Version (No more disappearing hose/water/fire) ==============
+// ============== KVFD – Fixed Difficulty + Grounded Cars + Title Clean + Better Truck ==============
 const canvas = document.getElementById('game');
 const ctx = canvas.getContext('2d');
 const scoreEl = document.getElementById('score');
@@ -212,7 +211,7 @@ class Particle {
 }
 
 function createFireParticles(x, y, intensity) {
-  const count = Math.max(2, Math.floor(intensity * 0.22)); // very light flames
+  const count = Math.max(2, Math.floor(intensity * 0.22));
   for (let i = 0; i < count; i++) {
     const vx = (Math.random() - 0.5) * 2.6;
     const vy = -3.0 - Math.random() * 4.2;
@@ -222,7 +221,7 @@ function createFireParticles(x, y, intensity) {
 }
 
 function createWaterParticles() {
-  const count = 7; // very light water
+  const count = 7;
   for (let i = 0; i < count; i++) {
     const spread = (Math.random() - 0.5) * 3.2;
     const dirX = (mouseX - (truckX + 148)) * 0.042;
@@ -290,58 +289,81 @@ function drawSouthParkHouse(x, color, short, burned) {
 }
 
 function drawSideFireTruck() {
-  ctx.fillStyle = 'rgba(0,0,0,0.45)';
-  ctx.fillRect(truckX+20, truckY+39, 175, 16);
+  // Strong ground shadow
+  ctx.fillStyle = 'rgba(0,0,0,0.5)';
+  ctx.fillRect(truckX+18, truckY+38, 182, 18);
+  // Wheels
   ctx.fillStyle = '#111';
-  ctx.beginPath(); ctx.arc(truckX+45, truckY+27, 27, 0, Math.PI*2); ctx.fill();
-  ctx.beginPath(); ctx.arc(truckX+125, truckY+27, 27, 0, Math.PI*2); ctx.fill();
+  ctx.beginPath(); ctx.arc(truckX+48, truckY+28, 26, 0, Math.PI*2); ctx.fill();
+  ctx.beginPath(); ctx.arc(truckX+128, truckY+28, 26, 0, Math.PI*2); ctx.fill();
   ctx.fillStyle = '#DDD';
-  ctx.beginPath(); ctx.arc(truckX+45, truckY+27, 14, 0, Math.PI*2); ctx.fill();
-  ctx.beginPath(); ctx.arc(truckX+125, truckY+27, 14, 0, Math.PI*2); ctx.fill();
+  ctx.beginPath(); ctx.arc(truckX+48, truckY+28, 13, 0, Math.PI*2); ctx.fill();
+  ctx.beginPath(); ctx.arc(truckX+128, truckY+28, 13, 0, Math.PI*2); ctx.fill();
+  // Body (red fire truck style)
   ctx.fillStyle = '#C00';
-  ctx.fillRect(truckX, truckY-44, 185, 74);
+  ctx.fillRect(truckX, truckY-48, 190, 78);
   ctx.fillStyle = '#A00';
-  ctx.fillRect(truckX+12, truckY-76, 85, 40);
-  ctx.fillStyle = '#113344';
-  ctx.fillRect(truckX+20, truckY-71, 38, 29);
-  ctx.fillRect(truckX+65, truckY-71, 28, 29);
-  ctx.fillStyle = '#222';
-  ctx.fillRect(truckX+100, truckY-40, 75, 52);
+  ctx.fillRect(truckX+15, truckY-78, 88, 42);
+  ctx.fillStyle = '#113';
+  ctx.fillRect(truckX+22, truckY-73, 40, 30);
+  ctx.fillRect(truckX+68, truckY-73, 30, 30);
+  // Yellow stripe
   ctx.fillStyle = '#FF0';
-  ctx.fillRect(truckX+8, truckY-20, 173, 10);
+  ctx.fillRect(truckX+8, truckY-22, 175, 12);
+  // Ladder
+  ctx.fillStyle = '#CC0';
+  ctx.fillRect(truckX+105, truckY-85, 75, 12);
+  for (let i = 0; i < 6; i++) ctx.fillRect(truckX+108, truckY-82 + i*11, 68, 4);
+  // Lights
   ctx.fillStyle = '#DDD';
-  ctx.fillRect(truckX+145, truckY-72, 20, 40);
+  ctx.fillRect(truckX+155, truckY-75, 22, 38);
   ctx.fillStyle = '#AAA';
-  for (let i = 0; i < 7; i++) ctx.fillRect(truckX+148, truckY-68 + i*6, 14, 3);
+  for (let i = 0; i < 6; i++) ctx.fillRect(truckX+158, truckY-72 + i*7, 15, 3);
 }
 
-function drawSedan(x) { /* same as before */ 
-  ctx.fillStyle = 'rgba(0,0,0,0.45)'; ctx.fillRect(x+12, truckY+33, 118, 16);
-  ctx.fillStyle = '#1E5A9E'; ctx.fillRect(x+12, 348, 115, 52);
-  ctx.fillStyle = '#0F3A6B'; ctx.fillRect(x+25, 315, 85, 40);
-  ctx.fillStyle = '#AACCFF'; ctx.fillRect(x+35, 322, 38, 26); ctx.fillRect(x+78, 322, 25, 26);
+function drawSedan(x) {
+  ctx.fillStyle = 'rgba(0,0,0,0.5)';
+  ctx.fillRect(x+12, truckY+33, 118, 18);
+  ctx.fillStyle = '#1E5A9E';
+  ctx.fillRect(x+12, 348, 115, 52);
+  ctx.fillStyle = '#0F3A6B';
+  ctx.fillRect(x+25, 315, 85, 40);
+  ctx.fillStyle = '#AACCFF';
+  ctx.fillRect(x+35, 322, 38, 26);
+  ctx.fillRect(x+78, 322, 25, 26);
   ctx.fillStyle = '#111';
   ctx.beginPath(); ctx.arc(x+38, 390, 17, 0, Math.PI*2); ctx.fill();
   ctx.beginPath(); ctx.arc(x+98, 390, 17, 0, Math.PI*2); ctx.fill();
 }
 
-function drawPickup(x) { /* same */ 
-  ctx.fillStyle = 'rgba(0,0,0,0.45)'; ctx.fillRect(x+8, truckY+33, 138, 16);
-  ctx.fillStyle = '#1F2A3C'; ctx.fillRect(x+8, 350, 135, 50);
-  ctx.fillStyle = '#111'; ctx.fillRect(x+22, 314, 80, 40);
-  ctx.fillStyle = '#AACCFF'; ctx.fillRect(x+30, 320, 40, 27); ctx.fillRect(x+75, 320, 20, 27);
+function drawPickup(x) {
+  ctx.fillStyle = 'rgba(0,0,0,0.5)';
+  ctx.fillRect(x+8, truckY+33, 138, 18);
+  ctx.fillStyle = '#1F2A3C';
+  ctx.fillRect(x+8, 348, 135, 52);
+  ctx.fillStyle = '#111';
+  ctx.fillRect(x+22, 314, 80, 40);
+  ctx.fillStyle = '#AACCFF';
+  ctx.fillRect(x+30, 320, 40, 27);
+  ctx.fillRect(x+75, 320, 20, 27);
   ctx.fillStyle = '#111';
   ctx.beginPath(); ctx.arc(x+35, 392, 17, 0, Math.PI*2); ctx.fill();
   ctx.beginPath(); ctx.arc(x+108, 392, 17, 0, Math.PI*2); ctx.fill();
-  ctx.fillStyle = '#DDD'; ctx.fillRect(x+118, 355, 24, 24);
+  ctx.fillStyle = '#DDD';
+  ctx.fillRect(x+118, 355, 24, 24);
 }
 
-function drawSemi(x) { /* same */ 
-  ctx.fillStyle = 'rgba(0,0,0,0.45)'; ctx.fillRect(x+18, truckY+33, 315, 16);
-  ctx.fillStyle = '#C00'; ctx.fillRect(x, 300, 88, 78);
-  ctx.fillStyle = '#113344'; ctx.fillRect(x+14, 312, 44, 38);
-  ctx.fillStyle = '#DDD'; ctx.fillRect(x+85, 275, 280, 105);
-  ctx.fillStyle = '#A33'; ctx.fillRect(x+92, 285, 265, 15);
+function drawSemi(x) {
+  ctx.fillStyle = 'rgba(0,0,0,0.5)';
+  ctx.fillRect(x+18, truckY+33, 315, 18);
+  ctx.fillStyle = '#C00';
+  ctx.fillRect(x, 300, 88, 78);
+  ctx.fillStyle = '#113344';
+  ctx.fillRect(x+14, 312, 44, 38);
+  ctx.fillStyle = '#DDD';
+  ctx.fillRect(x+85, 275, 280, 105);
+  ctx.fillStyle = '#A33';
+  ctx.fillRect(x+92, 285, 265, 15);
   ctx.fillStyle = '#111';
   ctx.beginPath(); ctx.arc(x+40, 370, 19, 0, Math.PI*2); ctx.fill();
   ctx.beginPath(); ctx.arc(x+120, 370, 19, 0, Math.PI*2); ctx.fill();
@@ -374,22 +396,27 @@ function loop() {
   fireSpots.forEach(spot => {
     if (spot.health <= 0) return;
 
-    const growthRate = currentDifficulty === 4 ? 0.042 : currentDifficulty === 3 ? 0.035 : 0.025;
+    // Difficulty scaling
+    let growthRate = 0.025;
+    let reigniteTime = 8800;
+    let damage = 1.1;
+    if (currentDifficulty === 2) { growthRate = 0.032; reigniteTime = 7200; damage = 0.95; }
+    if (currentDifficulty === 3) { growthRate = 0.042; reigniteTime = 5800; damage = 0.72; }
+    if (currentDifficulty === 4) { growthRate = 0.048; reigniteTime = 4800; damage = 0.58; }
+
     if (Math.random() < growthRate) spot.health = Math.min(spot.health + 8, spot.maxHealth);
 
-    const reigniteTime = currentDifficulty >= 3 ? 6500 : 8800;
     if (now - spot.lastSpread > reigniteTime && spot.health > spot.maxHealth * 0.35) {
-      fireSpots.push({...spot, x: spot.x + (Math.random()*95 - 47), y: spot.y + (Math.random()*75 - 37), health: currentDifficulty === 4 ? 260 : 180, lastSpread: now});
+      fireSpots.push({...spot, x: spot.x + (Math.random()*95 - 47), y: spot.y + (Math.random()*75 - 37), health: currentDifficulty >= 3 ? 260 : 180, lastSpread: now});
       spot.lastSpread = now;
     }
 
-    const intensity = Math.floor(spot.health / 15);
+    const intensity = Math.floor(spot.health / 16);
     createFireParticles(spot.x + spot.w/2, spot.y + spot.h/2, intensity);
 
     for (let i = particles.length-1; i >= 0; i--) {
       const p = particles[i];
       if (p.type === 'water' && p.x > spot.x && p.x < spot.x + spot.w && p.y > spot.y && p.y < spot.y + spot.h) {
-        const damage = currentDifficulty === 4 ? 0.65 : currentDifficulty === 3 ? 0.78 : 1.1; // easier on Easy
         spot.health -= damage;
         spot.lastHit = now;
         p.life = 6;
@@ -423,7 +450,7 @@ function loop() {
     if (e.life <= 0) explosions.splice(i, 1);
   }
 
-  // Hose & nozzle – always drawn
+  // Hose always visible
   ctx.strokeStyle = '#333';
   ctx.lineWidth = 12;
   ctx.lineCap = 'round';
