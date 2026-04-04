@@ -40,7 +40,7 @@
 </div>
 <canvas id="game" width="1200" height="600"></canvas>
 <script>
-// ============== 20px GRID - REBUILT LEVELS (NO OVERLAPS, MIXED POSITIONS) ==============
+// ============== 20px GRID - PROGRESSIVE BUILDINGS + SAFE SPACING ==============
 const canvas = document.getElementById('game');
 const ctx = canvas.getContext('2d');
 const scoreEl = document.getElementById('score');
@@ -58,57 +58,50 @@ const truckX = 100;
 const truckY = 480;
 
 const levels = [
-  { name: "Level 1 – Tall Yellow House", fireSpots: [
-    {x: 900, y: 240, w: 60, h: 90, health: 240, maxHealth: 240, type: 'window'},
-    {x: 1020, y: 240, w: 60, h: 90, health: 240, maxHealth: 240, type: 'window'},
-    {x: 860, y: 140, w: 240, h: 50, health: 340, maxHealth: 340, type: 'roof'},
-    {x: 960, y: 410, w: 50, h: 110, health: 220, maxHealth: 220, type: 'door'}
-  ], entities: [{type:'house', x:860, color:'#FFEE66'}] },
+  // Level 1: Small Shed
+  { name: "Level 1 – Small Shed Fire", fireSpots: [
+    {x: 920, y: 320, w: 80, h: 100, health: 180, maxHealth: 180, type: 'wall'},
+    {x: 940, y: 260, w: 60, h: 40, health: 140, maxHealth: 140, type: 'roof'}
+  ], entities: [{type:'shed', x:880, color:'#A38D6B'}] },
 
-  { name: "Level 2 – Tall Green House", fireSpots: [
-    {x: 900, y: 240, w: 60, h: 90, health: 240, maxHealth: 240, type: 'window'},
-    {x: 1020, y: 240, w: 60, h: 90, health: 240, maxHealth: 240, type: 'window'},
-    {x: 860, y: 140, w: 240, h: 50, health: 340, maxHealth: 340, type: 'roof'},
-    {x: 960, y: 410, w: 50, h: 110, health: 220, maxHealth: 220, type: 'door'}
-  ], entities: [{type:'house', x:860, color:'#66FF99'}] },
+  // Level 2: Medium Garage/Shed
+  { name: "Level 2 – Medium Garage Fire", fireSpots: [
+    {x: 900, y: 280, w: 110, h: 130, health: 220, maxHealth: 220, type: 'door'},
+    {x: 920, y: 220, w: 90, h: 50, health: 180, maxHealth: 180, type: 'roof'},
+    {x: 980, y: 310, w: 50, h: 80, health: 160, maxHealth: 160, type: 'window'}
+  ], entities: [{type:'garage', x:860, color:'#8B9E7A'}] },
 
+  // Level 3: Tall Pink House + Sedan (sedan at safe distance)
   { name: "Level 3 – Tall Pink House + Sedan", fireSpots: [
     {x: 900, y: 240, w: 60, h: 90, health: 240, maxHealth: 240, type: 'window'},
     {x: 1020, y: 240, w: 60, h: 90, health: 240, maxHealth: 240, type: 'window'},
     {x: 860, y: 140, w: 240, h: 50, health: 340, maxHealth: 340, type: 'roof'},
-    {x: 960, y: 410, w: 50, h: 110, health: 220, maxHealth: 220, type: 'door'},
-    {x: 420, y: 350, w: 110, h: 60, health: 195, maxHealth: 195, type: 'hood'},
-    {x: 450, y: 310, w: 70, h: 45, health: 145, maxHealth: 145, type: 'cab'}
-  ], entities: [{type:'house', x:860, color:'#FF99CC'}, {type:'sedan', x:380}] },
+    {x: 960, y: 410, w: 50, h: 110, health: 220, maxHealth: 220, type: 'door'}
+  ], entities: [{type:'house', x:860, color:'#FF99CC'}, {type:'sedan', x:420}] },
 
+  // Level 4: Tall Blue House + Pickup
   { name: "Level 4 – Tall Blue House + Pickup", fireSpots: [
     {x: 900, y: 240, w: 60, h: 90, health: 240, maxHealth: 240, type: 'window'},
     {x: 1020, y: 240, w: 60, h: 90, health: 240, maxHealth: 240, type: 'window'},
     {x: 860, y: 140, w: 240, h: 50, health: 340, maxHealth: 340, type: 'roof'},
-    {x: 960, y: 410, w: 50, h: 110, health: 220, maxHealth: 220, type: 'door'},
-    {x: 560, y: 340, w: 130, h: 55, health: 215, maxHealth: 215, type: 'bed'},
-    {x: 580, y: 305, w: 85, h: 45, health: 160, maxHealth: 160, type: 'cab'}
+    {x: 960, y: 410, w: 50, h: 110, health: 220, maxHealth: 220, type: 'door'}
   ], entities: [{type:'house', x:860, color:'#66CCFF'}, {type:'pickup', x:520}] },
 
+  // Level 5: Tall Yellow House + Semi (semi moved right)
   { name: "Level 5 – Tall Yellow House + Semi", fireSpots: [
     {x: 900, y: 240, w: 60, h: 90, health: 240, maxHealth: 240, type: 'window'},
     {x: 1020, y: 240, w: 60, h: 90, health: 240, maxHealth: 240, type: 'window'},
     {x: 860, y: 140, w: 240, h: 50, health: 340, maxHealth: 340, type: 'roof'},
-    {x: 960, y: 410, w: 50, h: 110, health: 220, maxHealth: 220, type: 'door'},
-    {x: 300, y: 300, w: 90, h: 80, health: 295, maxHealth: 295, type: 'cab'},
-    {x: 400, y: 270, w: 280, h: 110, health: 465, maxHealth: 465, type: 'tanker'}
-  ], entities: [{type:'house', x:860, color:'#FFEE66'}, {type:'semi', x:260}] },
+    {x: 960, y: 410, w: 50, h: 110, health: 220, maxHealth: 220, type: 'door'}
+  ], entities: [{type:'house', x:860, color:'#FFEE66'}, {type:'semi', x:340}] },
 
+  // Level 6: Tall Green House + Two Vehicles
   { name: "Level 6 – Tall Green House + Vehicles", fireSpots: [
     {x: 900, y: 240, w: 60, h: 90, health: 240, maxHealth: 240, type: 'window'},
     {x: 1020, y: 240, w: 60, h: 90, health: 240, maxHealth: 240, type: 'window'},
     {x: 860, y: 140, w: 240, h: 50, health: 340, maxHealth: 340, type: 'roof'},
-    {x: 960, y: 410, w: 50, h: 110, health: 220, maxHealth: 220, type: 'door'},
-    {x: 420, y: 350, w: 110, h: 60, health: 195, maxHealth: 195, type: 'hood'},
-    {x: 450, y: 310, w: 70, h: 45, health: 145, maxHealth: 145, type: 'cab'},
-    {x: 660, y: 340, w: 130, h: 55, health: 215, maxHealth: 215, type: 'bed'},
-    {x: 680, y: 305, w: 85, h: 45, health: 160, maxHealth: 160, type: 'cab'}
-  ], entities: [{type:'house', x:860, color:'#66FF99'}, {type:'sedan', x:380}, {type:'pickup', x:620}] }
+    {x: 960, y: 410, w: 50, h: 110, health: 220, maxHealth: 220, type: 'door'}
+  ], entities: [{type:'house', x:860, color:'#66FF99'}, {type:'sedan', x:420}, {type:'pickup', x:620}] }
 ];
 
 function startGame() {
@@ -218,7 +211,6 @@ function drawBackground() {
 function drawSideFireTruck() {
   ctx.fillStyle = 'rgba(0,0,0,0.3)';
   ctx.fillRect(truckX + 20, truckY + 42, 185, 16);
-
   ctx.fillStyle = '#111';
   ctx.beginPath(); ctx.arc(truckX + 52, truckY + 38, 26, 0, Math.PI*2); ctx.fill();
   ctx.beginPath(); ctx.arc(truckX + 135, truckY + 38, 26, 0, Math.PI*2); ctx.fill();
@@ -228,62 +220,79 @@ function drawSideFireTruck() {
 
   ctx.fillStyle = '#E22';
   ctx.fillRect(truckX + 8, truckY - 48, 195, 82);
-
   ctx.fillStyle = '#C11';
   ctx.fillRect(truckX + 18, truckY - 78, 72, 38);
-
   ctx.fillStyle = '#AACCFF';
   ctx.fillRect(truckX + 26, truckY - 72, 28, 24);
   ctx.fillRect(truckX + 58, truckY - 72, 26, 24);
-
   ctx.fillStyle = '#FF0';
   ctx.fillRect(truckX + 12, truckY - 18, 185, 14);
-
   ctx.fillStyle = '#DD0';
   ctx.fillRect(truckX + 85, truckY - 88, 118, 12);
   ctx.fillStyle = '#BB0';
   for (let i = 0; i < 7; i++) {
     ctx.fillRect(truckX + 92 + i*16, truckY - 92, 6, 20);
   }
-
   ctx.fillStyle = '#B22';
   ctx.fillRect(truckX + 145, truckY - 45, 55, 38);
-
   ctx.fillStyle = '#00F';
   ctx.fillRect(truckX + 25, truckY - 82, 12, 6);
+}
+
+// Small Shed
+function drawShed(x) {
+  ctx.fillStyle = '#A38D6B';
+  ctx.fillRect(x + 20, 320, 140, 160);
+  ctx.fillStyle = '#8B2A00';
+  ctx.beginPath();
+  ctx.moveTo(x + 10, 320);
+  ctx.lineTo(x + 90, 240);
+  ctx.lineTo(x + 170, 320);
+  ctx.fill();
+  ctx.fillStyle = '#3C2F1F';
+  ctx.fillRect(x + 70, 380, 40, 100); // door
+}
+
+// Medium Garage
+function drawGarage(x) {
+  ctx.fillStyle = '#8B9E7A';
+  ctx.fillRect(x + 10, 280, 190, 200);
+  ctx.fillStyle = '#6B4E2A';
+  ctx.fillRect(x + 30, 340, 60, 140); // big door
+  ctx.fillStyle = '#8B2A00';
+  ctx.beginPath();
+  ctx.moveTo(x, 280);
+  ctx.lineTo(x + 105, 200);
+  ctx.lineTo(x + 210, 280);
+  ctx.fill();
+  ctx.fillStyle = '#AACCFF';
+  ctx.fillRect(x + 140, 310, 50, 60); // window
 }
 
 function drawTallHouse(x) {
   ctx.fillStyle = '#E8D5B8';
   ctx.fillRect(x, 200, 270, 320);
-
   ctx.strokeStyle = '#C9B89A';
   ctx.lineWidth = 4;
   for (let i = 0; i < 13; i++) {
     ctx.beginPath(); ctx.moveTo(x+12, 212 + i*24); ctx.lineTo(x+258, 212 + i*24); ctx.stroke();
   }
-
   ctx.fillStyle = '#8B2A00';
   ctx.beginPath();
   ctx.moveTo(x-25, 190);
   ctx.lineTo(x+135, 100);
   ctx.lineTo(x+290, 190);
   ctx.fill();
-
   ctx.fillStyle = '#A33';
   ctx.fillRect(x+175, 115, 32, 60);
-
   ctx.fillStyle = '#3C2F1F';
   ctx.fillRect(x+105, 405, 48, 115);
-
   ctx.fillStyle = '#FFCC00';
   ctx.fillRect(x+122, 465, 10, 10);
-
   ctx.strokeStyle = '#222';
   ctx.lineWidth = 8;
   ctx.strokeRect(x+30, 255, 68, 95);
   ctx.strokeRect(x+172, 255, 68, 95);
-
   ctx.fillStyle = '#AACCFF';
   ctx.fillRect(x+35, 260, 58, 85);
   ctx.fillRect(x+177, 260, 58, 85);
@@ -340,6 +349,8 @@ function loop() {
 
   const data = levels[currentLevel-1];
   data.entities.forEach(ent => {
+    if (ent.type === 'shed') drawShed(ent.x);
+    if (ent.type === 'garage') drawGarage(ent.x);
     if (ent.type === 'house') drawTallHouse(ent.x);
     if (ent.type === 'sedan') drawSedan(ent.x);
     if (ent.type === 'pickup') drawPickup(ent.x);
@@ -357,9 +368,7 @@ function loop() {
 
     for (let i = particles.length-1; i >= 0; i--) {
       const p = particles[i];
-      if (p.type === 'water' && 
-          p.x > spot.x && p.x < spot.x + spot.w && 
-          p.y > spot.y && p.y < spot.y + spot.h) {
+      if (p.type === 'water' && p.x > spot.x && p.x < spot.x + spot.w && p.y > spot.y && p.y < spot.y + spot.h) {
         spot.health -= 1.1;
         p.life = 7;
       }
@@ -381,7 +390,6 @@ function loop() {
     if (p.life <= 0) particles.splice(i, 1);
   }
 
-  // Hose
   ctx.strokeStyle = '#333333';
   ctx.lineWidth = 13;
   ctx.lineCap = 'round';
