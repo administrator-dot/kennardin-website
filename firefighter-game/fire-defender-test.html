@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Kennard Fire Defender - Test</title>
+<style>
+  body { margin:0; background:#000; font-family:Arial, sans-serif; overflow:hidden; }
+  canvas { display:block; margin:0 auto; background: linear-gradient(#87CEEB, #E0F7FF); }
+  #ui {
+    position: absolute; top: 10px; left: 10px; color: white; font-size: 20px;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.8); pointer-events: none;
+  }
+  #instructions {
+    position: absolute; bottom: 10px; left: 10px; color: white; background: rgba(0,0,0,0.5);
+    padding: 10px; border-radius: 8px; font-size: 16px;
+  }
+</style>
+</head>
+<body>
+
+<div id="ui">
+  Score: <span id="score">0</span> &nbsp;&nbsp; Level: 1
+</div>
+<div id="instructions">
+  Move mouse = hose nozzle<br>
+  Click & hold = spray water<br>
+  Put out all fires to win the level!
+</div>
+
+<canvas id="game" width="900" height="600"></canvas>
+
+<script>
+// ============== Kennard Fire Defender - Test Version ==============
+const canvas = document.getElementById('game');
+const ctx = canvas.getContext('2d');
+const scoreEl = document.getElementById('score');
+
+let score = 0;
+let mouseX = 450, mouseY = 300;
+let isSpraying = false;
+
+const truckX = 150;
+const truckY = 520;
+
+// Fire spots: {x, y, width, height, health, type: 'window' or 'roof', active}
+let fireSpots = [
+  {x: 520, y: 280, w: 60, h: 80, health: 100, type: 'window', active: true},  // left window
+  {x: 620, y: 280, w: 60, h: 80, health: 100, type: 'window', active: true},  // right window
+  {x: 500, y: 180, w: 200, h: 40, health: 150, type: 'roof', active: true}    // roof
+];
+
+let particles = []; // {x,y,vx,vy,color,life,size,type:'fire'|'water'|'smoke'}
+
+document.addEventListener('mousemove', e => {
+  const rect = canvas.getBoundingClientRect();
+  mouseX = e.clientX - rect.left;
+  mouseY = e.clientY - rect.top;
+});
+
+canvas.addEventListener('mousedown', () => isSpraying = true);
+canvas.addEventListener('mouseup', () => isSpraying = false);
+canvas.addEventListener('mouseleave', () => isSpraying = false);
+
+// Simple particle class
+class Particle {
+  constructor(x, y, vx, vy, color, life, size, type) {
+    this.x = x; this.y = y;
+    this.vx = vx; this.vy = vy;
+    this.color = color;
+    this.life = life;
+    this.size = size;
+    this.type = type;
+  }
+  update() {
+    this.x += this.vx;
+    this.y += this.vy;
+    this.life--;
+    if (this.type === 'water') this.vy += 0.15; // gravity
+    if (this.type === 'fire') {
+      this.vy -= 0.08; // rise
+      this.vx += (Math.random()-0.5)*0.8;
+    }
+    if (this.type === 'smoke') {
+      this.vy -= 0.05;
+      this.vx += (Math.random()-0.5)*0.3;
+    }
+  }
+  draw() {
+    ctx.globalAlpha = this.life / 60;
+    ctx.fillStyle = this.color;
+    ctx.fillRect(this.x, this.y, this.size, this.size);
+    ctx.globalAlpha = 1;
+  }
+}
+
+function createFireParticles(x, y, intensity) {
+  for (let i = 0; i < intensity; i++) {
+    const vx = (Math.random()-0.5)*2;
+    const vy = -1 - Math.random()*3;
+    const colors = ['#FF4500', '#FF8C00', '#FFD700', '#FF0000'];
+    particles.push(new Particle(
+      x + Math.random()*40 - 20,
+      y + Math.random()*30,
+      vx, vy,
+      colors[Math.floor(Math.random()*colors.length)],
+      40 + Math.random()*30,
+      6 + Math.random()*8,
+      'fire'
+    ));
+  }
+}
+
+function createWaterParticles() {
+  const spread = 12;
+  for (let i = 0; i < 18; i++) {
+    const angle = (Math.random()-0.5) * spread;
+    const speed = 8 + Math.random()*6;
+    const vx = (mouseX - (truckX+80)) / 40 + (angle * 0.3); // rough direction toward mouse
+    const vy = (mouseY - truckY) / 40 + (angle * 0.3) - 2;
+    particles.push(new Particle(
+      mouseX, mouseY,
+      vx * 0.8, vy * 0.8,
+      '#00BFFF',
+      35,
+      4,
+      'water'
+    ));
+  }
+}
+
+function createSmoke(x, y) {
+  for (let i = 0; i < 8; i++) {
+    particles.push(new Particle(
+      x + Math.random()*50 - 25,
+      y + Math.random()*20,
+      (Math.random()-0.5)*1.5,
+      -0.5 - Math.random()*1.5,
+      '#888888',
+      600, // ~10 seconds at 60fps
+      12 + Math.random()*10,
+      'smoke'
+    ));
+  }
+}
+
+// Game loop
+function loop() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  // Draw simple ground
+  ctx.fillStyle = '#555';
+  ctx.fillRect(0, 520, canvas.width, 80);
+
+  // Draw fire truck base
+  ctx.fillStyle = '#C00';
+  ctx.fillRect(truckX, truckY-40, 120, 60);
+  ctx.fillStyle = '#222';
+  ctx.fillRect(truckX+10, truckY-20, 40, 30);
+
+  // Draw house
+  ctx.fillStyle = '#D2B48C';
+  ctx.fillRect(480, 220, 240, 300);           // main house
+  ctx.fillStyle = '#8B4513';
+  ctx.fillRect(460, 180, 280, 60);            // roof
+
+  // Draw doors/windows outlines
+  ctx.strokeStyle = '#222';
+  ctx.lineWidth = 8;
+  ctx.strokeRect(520, 320, 60, 80);  // left window
+  ctx.strokeRect(620, 320, 60, 80);  // right window
+
+  // Update & draw fire spots + particles
+  let firesStillBurning = 0;
+
+  fireSpots.forEach(spot => {
+    if (!spot.active) return;
+    firesStillBurning++;
+
+    // Fire grows slowly over time
+    if (Math.random() < 0.02) spot.health = Math.min(spot.health + 1, 200);
+
+    createFireParticles(spot.x + spot.w/2, spot.y + spot.h/2, spot.health / 25);
+
+    // Check water collision
+    for (let i = particles.length-1; i >= 0; i--) {
+      const p = particles[i];
+      if (p.type === 'water') {
+        if (p.x > spot.x && p.x < spot.x + spot.w &&
+            p.y > spot.y && p.y < spot.y + spot.h) {
+          spot.health -= 1.8;
+          p.life = 5; // water disappears on hit
+        }
+      }
+    }
+
+    if (spot.health <= 0) {
+      spot.active = false;
+      score += (spot.type === 'roof') ? 25 : 10;
+      scoreEl.textContent = score;
+      createSmoke(spot.x + spot.w/2, spot.y + spot.h/2);
+    }
+  });
+
+  // Spawn water if spraying
+  if (isSpraying && Math.random() < 0.7) {
+    createWaterParticles();
+  }
+
+  // Update & draw all particles
+  for (let i = particles.length - 1; i >= 0; i--) {
+    const p = particles[i];
+    p.update();
+    p.draw();
+
+    if (p.life <= 0) particles.splice(i, 1);
+  }
+
+  // Draw hose
+  ctx.strokeStyle = '#222';
+  ctx.lineWidth = 18;
+  ctx.lineCap = 'round';
+  ctx.beginPath();
+  ctx.moveTo(truckX + 100, truckY - 10);
+  ctx.quadraticCurveTo(
+    (truckX + 100 + mouseX)/2,
+    truckY - 80,
+    mouseX, mouseY
+  );
+  ctx.stroke();
+
+  // Nozzle
+  ctx.fillStyle = '#333';
+  ctx.fillRect(mouseX-8, mouseY-8, 16, 16);
+
+  // Win condition
+  if (firesStillBurning === 0 && particles.filter(p => p.type === 'smoke').length < 5) {
+    ctx.fillStyle = 'rgba(0,0,0,0.6)';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = '#0F0';
+    ctx.font = 'bold 48px Arial';
+    ctx.textAlign = 'center';
+    ctx.fillText('LEVEL COMPLETE!', canvas.width/2, 280);
+    ctx.font = '24px Arial';
+    ctx.fillText('Great job, Fire Defender!', canvas.width/2, 340);
+  }
+
+  requestAnimationFrame(loop);
+}
+
+loop();
+</script>
+</body>
+</html><!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Kennard Fire Defender - Test</title>
+<style>
+  body { margin:0; background:#000; font-family:Arial, sans-serif; overflow:hidden; }
+  canvas { display:block; margin:0 auto; background: linear-gradient(#87CEEB, #E0F7FF); }
+  #ui {
+    position: absolute; top: 10px; left: 10px; color: white; font-size: 20px;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.8); pointer-events: none;
+  }
+  #instructions {
+    position: absolute; bottom: 10px; left: 10px; color: white; background: rgba(0,0,0,0.5);
+    padding: 10px; border-radius: 8px; font-size: 16px;
+  }
+</style>
+</head>
+<body>
+
+<div id="ui">
+  Score: <span id="score">0</span> &nbsp;&nbsp; Level: 1
+</div>
+<div id="instructions">
+  Move mouse = hose nozzle<br>
+  Click & hold = spray water<br>
+  Put out all fires to win the level!
+</div>
+
+<canvas id="game" width="900" height="600"></canvas>
+
+<script>
+// ============== Kennard Fire Defender - Test Version ==============
+const canvas = document.getElementById('game');
+const ctx = canvas.getContext('2d');
+const scoreEl = document.getElementById('score');
+
+let score = 0;
+let mouseX = 450, mouseY = 300;
+let isSpraying = false;
+
+const truckX = 150;
+const truckY = 520;
+
+// Fire spots: {x, y, width, height, health, type: 'window' or 'roof', active}
+let fireSpots = [
+  {x: 520, y: 280, w: 60, h: 80, health: 100, type: 'window', active: true},  // left window
+  {x: 620, y: 280, w: 60, h: 80, health: 100, type: 'window', active: true},  // right window
+  {x: 500, y: 180, w: 200, h: 40, health: 150, type: 'roof', active: true}    // roof
+];
+
+let particles = []; // {x,y,vx,vy,color,life,size,type:'fire'|'water'|'smoke'}
+
+document.addEventListener('mousemove', e => {
+  const rect = canvas.getBoundingClientRect();
+  mouseX = e.clientX - rect.left;
+  mouseY = e.clientY - rect.top;
+});
+
+canvas.addEventListener('mousedown', () => isSpraying = true);
+canvas.addEventListener('mouseup', () => isSpraying = false);
+canvas.addEventListener('mouseleave', () => isSpraying = false);
+
+// Simple particle class
+class Particle {
+  constructor(x, y, vx, vy, color, life, size, type) {
+    this.x = x; this.y = y;
+    this.vx = vx; this.vy = vy;
+    this.color = color;
+    this.life = life;
+    this.size = size;
+    this.type = type;
+  }
+  update() {
+    this.x += this.vx;
+    this.y += this.vy;
+    this.life--;
+    if (this.type === 'water') this.vy += 0.15; // gravity
+    if (this.type === 'fire') {
+      this.vy -= 0.08; // rise
+      this.vx += (Math.random()-0.5)*0.8;
+    }
+    if (this.type === 'smoke') {
+      this.vy -= 0.05;
+      this.vx += (Math.random()-0.5)*0.3;
+    }
+  }
+  draw() {
+    ctx.globalAlpha = this.life / 60;
+    ctx.fillStyle = this.color;
+    ctx.fillRect(this.x, this.y, this.size, this.size);
+    ctx.globalAlpha = 1;
+  }
+}
+
+function createFireParticles(x, y, intensity) {
+  for (let i = 0; i < intensity; i++) {
+    const vx = (Math.random()-0.5)*2;
+    const vy = -1 - Math.random()*3;
+    const colors = ['#FF4500', '#FF8C00', '#FFD700', '#FF0000'];
+    particles.push(new Particle(
+      x + Math.random()*40 - 20,
+      y + Math.random()*30,
+      vx, vy,
+      colors[Math.floor(Math.random()*colors.length)],
+      40 + Math.random()*30,
+      6 + Math.random()*8,
+      'fire'
+    ));
+  }
+}
+
+function createWaterParticles() {
+  const spread = 12;
+  for (let i = 0; i < 18; i++) {
+    const angle = (Math.random()-0.5) * spread;
+    const speed = 8 + Math.random()*6;
+    const vx = (mouseX - (truckX+80)) / 40 + (angle * 0.3); // rough direction toward mouse
+    const vy = (mouseY - truckY) / 40 + (angle * 0.3) - 2;
+    particles.push(new Particle(
+      mouseX, mouseY,
+      vx * 0.8, vy * 0.8,
+      '#00BFFF',
+      35,
+      4,
+      'water'
+    ));
+  }
+}
+
+function createSmoke(x, y) {
+  for (let i = 0; i < 8; i++) {
+    particles.push(new Particle(
+      x + Math.random()*50 - 25,
+      y + Math.random()*20,
+      (Math.random()-0.5)*1.5,
+      -0.5 - Math.random()*1.5,
+      '#888888',
+      600, // ~10 seconds at 60fps
+      12 + Math.random()*10,
+      'smoke'
+    ));
+  }
+}
+
+// Game loop
+function loop() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  // Draw simple ground
+  ctx.fillStyle = '#555';
+  ctx.fillRect(0, 520, canvas.width, 80);
+
+  // Draw fire truck base
+  ctx.fillStyle = '#C00';
+  ctx.fillRect(truckX, truckY-40, 120, 60);
+  ctx.fillStyle = '#222';
+  ctx.fillRect(truckX+10, truckY-20, 40, 30);
+
+  // Draw house
+  ctx.fillStyle = '#D2B48C';
+  ctx.fillRect(480, 220, 240, 300);           // main house
+  ctx.fillStyle = '#8B4513';
+  ctx.fillRect(460, 180, 280, 60);            // roof
+
+  // Draw doors/windows outlines
+  ctx.strokeStyle = '#222';
+  ctx.lineWidth = 8;
+  ctx.strokeRect(520, 320, 60, 80);  // left window
+  ctx.strokeRect(620, 320, 60, 80);  // right window
+
+  // Update & draw fire spots + particles
+  let firesStillBurning = 0;
+
+  fireSpots.forEach(spot => {
+    if (!spot.active) return;
+    firesStillBurning++;
+
+    // Fire grows slowly over time
+    if (Math.random() < 0.02) spot.health = Math.min(spot.health + 1, 200);
+
+    createFireParticles(spot.x + spot.w/2, spot.y + spot.h/2, spot.health / 25);
+
+    // Check water collision
+    for (let i = particles.length-1; i >= 0; i--) {
+      const p = particles[i];
+      if (p.type === 'water') {
+        if (p.x > spot.x && p.x < spot.x + spot.w &&
+            p.y > spot.y && p.y < spot.y + spot.h) {
+          spot.health -= 1.8;
+          p.life = 5; // water disappears on hit
+        }
+      }
+    }
+
+    if (spot.health <= 0) {
+      spot.active = false;
+      score += (spot.type === 'roof') ? 25 : 10;
+      scoreEl.textContent = score;
+      createSmoke(spot.x + spot.w/2, spot.y + spot.h/2);
+    }
+  });
+
+  // Spawn water if spraying
+  if (isSpraying && Math.random() < 0.7) {
+    createWaterParticles();
+  }
+
+  // Update & draw all particles
+  for (let i = particles.length - 1; i >= 0; i--) {
+    const p = particles[i];
+    p.update();
+    p.draw();
+
+    if (p.life <= 0) particles.splice(i, 1);
+  }
+
+  // Draw hose
+  ctx.strokeStyle = '#222';
+  ctx.lineWidth = 18;
+  ctx.lineCap = 'round';
+  ctx.beginPath();
+  ctx.moveTo(truckX + 100, truckY - 10);
+  ctx.quadraticCurveTo(
+    (truckX + 100 + mouseX)/2,
+    truckY - 80,
+    mouseX, mouseY
+  );
+  ctx.stroke();
+
+  // Nozzle
+  ctx.fillStyle = '#333';
+  ctx.fillRect(mouseX-8, mouseY-8, 16, 16);
+
+  // Win condition
+  if (firesStillBurning === 0 && particles.filter(p => p.type === 'smoke').length < 5) {
+    ctx.fillStyle = 'rgba(0,0,0,0.6)';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = '#0F0';
+    ctx.font = 'bold 48px Arial';
+    ctx.textAlign = 'center';
+    ctx.fillText('LEVEL COMPLETE!', canvas.width/2, 280);
+    ctx.font = '24px Arial';
+    ctx.fillText('Great job, Fire Defender!', canvas.width/2, 340);
+  }
+
+  requestAnimationFrame(loop);
+}
+
+loop();
+</script>
+</body>
+</html>
