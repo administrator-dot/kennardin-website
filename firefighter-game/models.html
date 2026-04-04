@@ -57,7 +57,7 @@
 </div>
 
 <script>
-// ============== FIXED: Tire swing & Big Crash fire spots + Stronger fire + Proper difficulty scaling ==============
+// ============== FULLY RESTORED: All drawings + fires + proper difficulty scaling ==============
 const canvas = document.getElementById('game');
 const ctx = canvas.getContext('2d');
 
@@ -113,9 +113,8 @@ const baseLevels = [
     {x:880,y:280,w:55,h:55,health:110,maxHealth:190,type:'window'},
     {x:900,y:255,w:65,h:40,health:120,maxHealth:200,type:'roof'},
     {x:935,y:355,w:42,h:95,health:90,maxHealth:160,type:'door'},
-    // Improved tire swing fire spots (lower and more centered on tire/branch)
-    {x:680,y:340,w:38,h:45,health:95,maxHealth:170,type:'tirefire1'},
-    {x:695,y:310,w:28,h:35,health:85,maxHealth:150,type:'tirefire2'}
+    {x:675,y:355,w:45,h:50,health:95,maxHealth:170,type:'tirefire1'},   // Fixed tire swing fire
+    {x:700,y:325,w:35,h:40,health:85,maxHealth:155,type:'tirefire2'}
   ], entities: [{type:'smallShed',x:820},{type:'treeWithSwing',x:620}] },
 
   { name: "Level 5 – Small House + Sedan", fireSpots: [
@@ -161,8 +160,7 @@ const baseLevels = [
     {x:740,y:315,w:90,h:80,health:170,maxHealth:270,type:'cab2'},
     {x:840,y:285,w:260,h:105,health:220,maxHealth:320,type:'tanker'},
     {x:980,y:355,w:130,h:55,health:150,maxHealth:250,type:'bed'},
-    // Extra fire on the big wreck for more intensity
-    {x:650,y:340,w:55,h:40,health:130,maxHealth:210,type:'extra1'}
+    {x:650,y:340,w:55,h:40,health:130,maxHealth:210,type:'extra'}
   ], entities: [{type:'sedan',x:420,yOffset:12},{type:'pickup',x:620,yOffset:8},{type:'semi',x:780}] }
 ];
 
@@ -179,14 +177,14 @@ function loadLevel(lvl) {
   const base = baseLevels[lvl-1];
   fireSpots = base.fireSpots.map(s => {
     let healthMod = 1, growthMod = 1;
-    if (difficulty === 1) { healthMod = 0.7; growthMod = 0.65; }   // Easy: weaker & slower
-    else if (difficulty === 2) { healthMod = 1.0; growthMod = 1.0; } // Medium: balanced
-    else if (difficulty === 3) { healthMod = 1.55; growthMod = 1.45; } // Hard: much stronger & faster
+    if (difficulty === 1) { healthMod = 0.68; growthMod = 0.62; }   // Easy
+    else if (difficulty === 2) { healthMod = 1.0; growthMod = 1.0; } // Medium
+    else if (difficulty === 3) { healthMod = 1.58; growthMod = 1.48; } // Hard
     return { 
       ...s, 
       health: Math.floor(s.health * healthMod), 
       maxHealth: Math.floor(s.maxHealth * healthMod), 
-      growthRate: 6.8 * growthMod 
+      growthRate: 7.2 * growthMod 
     };
   });
   particles = [];
@@ -272,7 +270,7 @@ class Particle {
 }
 
 function createFireParticles(x, y, intensity) {
-  const count = Math.floor(intensity * 0.55); // Slightly more fire back
+  const count = Math.floor(intensity * 0.6);
   for (let i = 0; i < count; i++) {
     const vx = (Math.random() - 0.5) * 3.4;
     const vy = -3.8 - Math.random() * 5.8;
@@ -321,8 +319,7 @@ function drawBackground() {
   }
 }
 
-// (All draw functions for houses, sheds, garage, barn, tractor, tornado, etc. remain the same as the stable version)
-function drawSideFireTruck() { /* ... full implementation from previous stable version ... */ 
+function drawSideFireTruck() {
   ctx.fillStyle = 'rgba(0,0,0,0.3)'; ctx.fillRect(truckX + 20, truckY + 42, 185, 16);
   ctx.fillStyle = '#111';
   ctx.beginPath(); ctx.arc(truckX + 52, truckY + 38, 26, 0, Math.PI*2); ctx.fill();
@@ -342,7 +339,195 @@ function drawSideFireTruck() { /* ... full implementation from previous stable v
   ctx.fillStyle = '#00F'; ctx.fillRect(truckX + 25, truckY - 82, 12, 6);
 }
 
-// ... (All other draw functions: drawShedWindow, drawTallHouse, drawTornado, drawTreeWithSwing, drawSemi, etc. are unchanged from the previous stable version)
+function drawShedWindow(x) {
+  ctx.fillStyle = '#E8D5B8'; ctx.fillRect(x+30, 255, 190, 225);
+  ctx.strokeStyle = '#222'; ctx.lineWidth = 4;
+  for (let i = 0; i < 9; i++) { ctx.beginPath(); ctx.moveTo(x+38, 270 + i*24); ctx.lineTo(x+210, 270 + i*24); ctx.stroke(); }
+  ctx.fillStyle = '#8B2A00';
+  ctx.beginPath(); ctx.moveTo(x+10, 255); ctx.lineTo(x+125, 185); ctx.lineTo(x+240, 255); ctx.fill();
+  ctx.fillStyle = '#3C2F1F'; ctx.fillRect(x+82, 340, 48, 140);
+  ctx.fillStyle = '#AACCFF'; ctx.fillRect(x+155, 275, 52, 52);
+  ctx.strokeStyle = '#222'; ctx.lineWidth = 4; ctx.strokeRect(x+155, 275, 52, 52);
+}
+
+function drawSmallShed(x) {
+  ctx.fillStyle = '#E8D5B8'; ctx.fillRect(x+30, 255, 160, 225);
+  ctx.strokeStyle = '#222'; ctx.lineWidth = 4;
+  for (let i = 0; i < 8; i++) { ctx.beginPath(); ctx.moveTo(x+38, 270 + i*26); ctx.lineTo(x+180, 270 + i*26); ctx.stroke(); }
+  ctx.fillStyle = '#8B2A00';
+  ctx.beginPath(); ctx.moveTo(x+10, 255); ctx.lineTo(x+110, 195); ctx.lineTo(x+200, 255); ctx.fill();
+  ctx.fillStyle = '#3C2F1F'; ctx.fillRect(x+72, 340, 42, 140);
+}
+
+function drawLeanToShed(x) {
+  ctx.fillStyle = '#E8D5B8'; ctx.fillRect(x+30, 255, 190, 225);
+  ctx.strokeStyle = '#222'; ctx.lineWidth = 4;
+  for (let i = 0; i < 9; i++) { ctx.beginPath(); ctx.moveTo(x+38, 270 + i*24); ctx.lineTo(x+210, 270 + i*24); ctx.stroke(); }
+  ctx.fillStyle = '#8B2A00';
+  ctx.beginPath(); ctx.moveTo(x+10, 255); ctx.lineTo(x+125, 210); ctx.lineTo(x+240, 255); ctx.fill();
+  ctx.fillStyle = '#3C2F1F'; ctx.fillRect(x+82, 340, 48, 140);
+}
+
+function drawSingleGarage(x) {
+  ctx.fillStyle = '#E8D5B8'; ctx.fillRect(x+20, 230, 260, 250);
+  ctx.strokeStyle = '#222'; ctx.lineWidth = 4;
+  for (let i = 0; i < 11; i++) { ctx.beginPath(); ctx.moveTo(x+30, 245 + i*22); ctx.lineTo(x+270, 245 + i*22); ctx.stroke(); }
+  ctx.fillStyle = '#555'; ctx.fillRect(x+91, 255, 118, 225);
+  ctx.fillStyle = '#8B2A00';
+  ctx.beginPath(); ctx.moveTo(x, 230); ctx.lineTo(x+150, 160); ctx.lineTo(x+300, 230); ctx.fill();
+}
+
+function drawTallHouse(x) {
+  ctx.fillStyle = '#E8D5B8'; ctx.fillRect(x, 200, 270, 320);
+  ctx.strokeStyle = '#222'; ctx.lineWidth = 4;
+  for (let i = 0; i < 13; i++) { ctx.beginPath(); ctx.moveTo(x+12, 212 + i*24); ctx.lineTo(x+258, 212 + i*24); ctx.stroke(); }
+  ctx.fillStyle = '#8B2A00';
+  ctx.beginPath(); ctx.moveTo(x-25, 190); ctx.lineTo(x+135, 100); ctx.lineTo(x+290, 190); ctx.fill();
+  ctx.fillStyle = '#A33'; ctx.fillRect(x+175, 115, 32, 60);
+  ctx.fillStyle = '#3C2F1F'; ctx.fillRect(x+105, 405, 48, 115);
+  ctx.fillStyle = '#FFCC00'; ctx.fillRect(x+122, 465, 10, 10);
+  ctx.strokeStyle = '#222'; ctx.lineWidth = 4;
+  ctx.strokeRect(x+30, 255, 68, 95); ctx.strokeRect(x+172, 255, 68, 95);
+  ctx.fillStyle = '#AACCFF'; ctx.fillRect(x+35, 260, 58, 85); ctx.fillRect(x+177, 260, 58, 85);
+}
+
+function drawSmallHouse(x, color = '#FFCC99') {
+  ctx.fillStyle = color; ctx.fillRect(x+40, 240, 180, 240);
+  ctx.strokeStyle = '#222'; ctx.lineWidth = 4;
+  for (let i = 0; i < 8; i++) { ctx.beginPath(); ctx.moveTo(x+48, 252 + i*26); ctx.lineTo(x+212, 252 + i*26); ctx.stroke(); }
+  ctx.fillStyle = '#8B2A00';
+  ctx.beginPath(); ctx.moveTo(x+20, 240); ctx.lineTo(x+130, 150); ctx.lineTo(x+220, 240); ctx.fill();
+  ctx.fillStyle = '#3C2F1F'; ctx.fillRect(x+92, 390, 45, 90);
+  ctx.fillStyle = '#FFCC00'; ctx.fillRect(x+102, 440, 8, 8);
+  ctx.strokeStyle = '#222'; ctx.lineWidth = 4;
+  ctx.strokeRect(x+55, 270, 48, 65); ctx.strokeRect(x+145, 270, 48, 65);
+  ctx.fillStyle = '#AACCFF'; ctx.fillRect(x+58, 273, 42, 58); ctx.fillRect(x+148, 273, 42, 58);
+}
+
+function drawMiniBarn(x) {
+  ctx.fillStyle = '#C22'; ctx.fillRect(x+40, 230, 180, 250);
+  ctx.strokeStyle = '#222'; ctx.lineWidth = 4;
+  for (let i = 0; i < 9; i++) { ctx.beginPath(); ctx.moveTo(x+48, 245 + i*24); ctx.lineTo(x+212, 245 + i*24); ctx.stroke(); }
+  ctx.fillStyle = '#8B2A00';
+  ctx.beginPath(); ctx.moveTo(x+20, 230); ctx.lineTo(x+130, 170); ctx.lineTo(x+220, 230); ctx.fill();
+  ctx.fillStyle = '#FFF'; ctx.fillRect(x+78, 310, 55, 170);
+}
+
+function drawLargeRedBarn(x) {
+  ctx.globalAlpha = 0.75;
+  ctx.fillStyle = '#C22'; ctx.fillRect(x+20, 180, 260, 300);
+  ctx.strokeStyle = '#222'; ctx.lineWidth = 4;
+  for (let i = 0; i < 13; i++) { ctx.beginPath(); ctx.moveTo(x+30, 195 + i*22); ctx.lineTo(x+270, 195 + i*22); ctx.stroke(); }
+  ctx.fillStyle = '#8B2A00';
+  ctx.beginPath(); ctx.moveTo(x, 180); ctx.lineTo(x+130, 100); ctx.lineTo(x+280, 180); ctx.fill();
+  ctx.fillStyle = '#FFF'; ctx.fillRect(x+95, 340, 70, 140);
+  ctx.globalAlpha = 1;
+}
+
+function drawHayBale(x) {
+  ctx.fillStyle = '#E8B070'; ctx.fillRect(x, 415, 80, 60);
+  ctx.strokeStyle = '#222'; ctx.lineWidth = 4;
+  ctx.strokeRect(x, 415, 80, 60);
+  ctx.fillStyle = '#D9A060';
+  for (let i = 0; i < 5; i++) ctx.fillRect(x + 10 + i*12, 420, 8, 50);
+}
+
+function drawTractor(x, facing) {
+  const flip = facing === 'left' ? -1 : 1;
+  ctx.save();
+  ctx.translate(x + 75, 410);
+  ctx.scale(flip, 1);
+  ctx.fillStyle = '#228B22'; ctx.fillRect(-65, 0, 130, 65);
+  ctx.fillStyle = '#111'; ctx.fillRect(-45, -30, 65, 38);
+  ctx.fillStyle = '#AACCFF'; ctx.fillRect(-38, -25, 38, 28);
+  ctx.fillStyle = '#1A6B1A'; ctx.fillRect(10, -10, 55, 38);
+  ctx.fillStyle = '#111';
+  ctx.beginPath(); ctx.arc(-45, 65, 22, 0, Math.PI*2); ctx.fill();
+  ctx.fillStyle = '#DDD'; ctx.beginPath(); ctx.arc(-45, 65, 12, 0, Math.PI*2); ctx.fill();
+  ctx.fillStyle = '#111';
+  ctx.beginPath(); ctx.arc(35, 65, 14, 0, Math.PI*2); ctx.fill();
+  ctx.fillStyle = '#DDD'; ctx.beginPath(); ctx.arc(35, 65, 7, 0, Math.PI*2); ctx.fill();
+  ctx.restore();
+}
+
+function drawSedan(x, yOffset = 0) {
+  const groundY = 480 + yOffset;
+  ctx.fillStyle = '#1E5A9E'; ctx.fillRect(x+15, groundY-52, 120, 55);
+  ctx.fillStyle = '#0F3A6B'; ctx.fillRect(x+28, groundY-85, 90, 42);
+  ctx.fillStyle = '#AACCFF'; ctx.fillRect(x+38, groundY-78, 40, 28); ctx.fillRect(x+82, groundY-78, 27, 28);
+  ctx.fillStyle = '#111';
+  ctx.beginPath(); ctx.arc(x+40, groundY+8, 18, 0, Math.PI*2); ctx.fill();
+  ctx.beginPath(); ctx.arc(x+102, groundY+8, 18, 0, Math.PI*2); ctx.fill();
+}
+
+function drawPickup(x, yOffset = 0) {
+  const groundY = 480 + yOffset;
+  ctx.fillStyle = '#1F2A3C'; ctx.fillRect(x+10, groundY-52, 140, 54);
+  ctx.fillStyle = '#111'; ctx.fillRect(x+25, groundY-88, 85, 42);
+  ctx.fillStyle = '#AACCFF'; ctx.fillRect(x+33, groundY-80, 42, 29); ctx.fillRect(x+80, groundY-80, 22, 29);
+  ctx.fillStyle = '#111';
+  ctx.beginPath(); ctx.arc(x+37, groundY+8, 18, 0, Math.PI*2); ctx.fill();
+  ctx.beginPath(); ctx.arc(x+112, groundY+8, 18, 0, Math.PI*2); ctx.fill();
+}
+
+function drawSemi(x) {
+  const groundY = 480;
+  ctx.fillStyle = '#C00'; ctx.fillRect(x, groundY-82, 92, 82);
+  ctx.fillStyle = '#113344'; ctx.fillRect(x+16, groundY-70, 46, 40);
+  ctx.fillStyle = '#DDD'; ctx.fillRect(x+88, groundY-107, 290, 110);
+  ctx.fillStyle = '#A33'; ctx.fillRect(x+95, groundY-97, 275, 16);
+  ctx.fillStyle = '#111';
+  ctx.beginPath(); ctx.arc(x+42, groundY+12, 20, 0, Math.PI*2); ctx.fill();
+  ctx.beginPath(); ctx.arc(x+125, groundY+12, 20, 0, Math.PI*2); ctx.fill();
+  ctx.beginPath(); ctx.arc(x+195, groundY+12, 20, 0, Math.PI*2); ctx.fill();
+  ctx.beginPath(); ctx.arc(x+265, groundY+12, 20, 0, Math.PI*2); ctx.fill();
+}
+
+function drawTree(x) {
+  ctx.fillStyle = '#3C2F1F'; ctx.fillRect(x+35, 370, 18, 110);
+  ctx.fillStyle = '#1E8C2E';
+  ctx.beginPath(); ctx.moveTo(x+8, 380); ctx.lineTo(x+44, 310); ctx.lineTo(x+80, 380); ctx.fill();
+  ctx.beginPath(); ctx.moveTo(x+12, 340); ctx.lineTo(x+44, 280); ctx.lineTo(x+76, 340); ctx.fill();
+  ctx.beginPath(); ctx.moveTo(x+18, 310); ctx.lineTo(x+44, 250); ctx.lineTo(x+70, 310); ctx.fill();
+}
+
+function drawTreeWithSwing(x) {
+  ctx.fillStyle = '#3C2F1F'; ctx.fillRect(x+35, 370, 18, 110);
+  ctx.fillStyle = '#1E8C2E';
+  ctx.beginPath(); ctx.moveTo(x+8, 380); ctx.lineTo(x+44, 310); ctx.lineTo(x+80, 380); ctx.fill();
+  ctx.beginPath(); ctx.moveTo(x+12, 340); ctx.lineTo(x+44, 280); ctx.lineTo(x+76, 340); ctx.fill();
+  ctx.beginPath(); ctx.moveTo(x+18, 310); ctx.lineTo(x+44, 250); ctx.lineTo(x+70, 310); ctx.fill();
+  ctx.strokeStyle = '#222'; ctx.lineWidth = 6;
+  ctx.beginPath(); ctx.moveTo(x+55, 310); ctx.lineTo(x+55, 405); ctx.stroke();
+  ctx.fillStyle = '#222';
+  ctx.beginPath(); ctx.arc(x+55, 420, 18, 0, Math.PI*2); ctx.fill();
+  ctx.fillStyle = '#555';
+  ctx.beginPath(); ctx.arc(x+55, 420, 12, 0, Math.PI*2); ctx.fill();
+}
+
+function drawLawnMower(x) {
+  ctx.fillStyle = '#228B22'; ctx.fillRect(x+30, 410, 95, 55);
+  ctx.fillStyle = '#111'; ctx.fillRect(x+45, 385, 48, 32);
+  ctx.fillStyle = '#AACCFF'; ctx.fillRect(x+52, 392, 32, 20);
+  ctx.fillStyle = '#111';
+  ctx.beginPath(); ctx.arc(x+45, 465, 13, 0, Math.PI*2); ctx.fill();
+  ctx.beginPath(); ctx.arc(x+105, 465, 13, 0, Math.PI*2); ctx.fill();
+}
+
+function drawTornado(x) {
+  tornadoAngle += 0.032;
+  const topTwist = Math.sin(tornadoAngle) * 22;
+  const midTwist = Math.sin(tornadoAngle * 1.3) * 8;
+  ctx.globalAlpha = 0.58;
+  ctx.strokeStyle = '#444444';
+  ctx.lineWidth = 34;
+  ctx.beginPath();
+  ctx.moveTo(x - 38 + topTwist, 155);
+  ctx.quadraticCurveTo(x + 22 + midTwist, 240, x - 18 + midTwist * 1.2, 340);
+  ctx.quadraticCurveTo(x + 28, 410, x + 8, 480);
+  ctx.stroke();
+  ctx.globalAlpha = 1;
+}
 
 function loop() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -397,15 +582,15 @@ function loop() {
 
   fireSpots.forEach(spot => {
     if (spot.health <= 0) return;
-    if (Math.random() < 0.042) spot.health = Math.min(spot.health + (spot.growthRate || 6.8), spot.maxHealth);
+    if (Math.random() < 0.045) spot.health = Math.min(spot.health + (spot.growthRate || 7.2), spot.maxHealth);
 
-    const intensity = Math.floor(spot.health / 9); // stronger visual fire
+    const intensity = Math.floor(spot.health / 9);
     createFireParticles(spot.x + spot.w/2, spot.y + spot.h/2, intensity);
 
     for (let i = particles.length-1; i >= 0; i--) {
       const p = particles[i];
       if (p.type === 'water' && p.x > spot.x && p.x < spot.x + spot.w && p.y > spot.y && p.y < spot.y + spot.h) {
-        spot.health -= 1.2;
+        spot.health -= 1.25;
         p.life = 7;
       }
     }
