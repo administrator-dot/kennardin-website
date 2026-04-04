@@ -55,7 +55,7 @@
 <canvas id="game" width="1150" height="600"></canvas>
 
 <script>
-// ============== KVFD – Fixed Difficulty + Grounded Cars + Title Clean + Better Truck ==============
+// ============== KVFD – Cars & Semi Grounded Like Your Screenshot + Stable ==============
 const canvas = document.getElementById('game');
 const ctx = canvas.getContext('2d');
 const scoreEl = document.getElementById('score');
@@ -111,7 +111,7 @@ const levels = [
     {x: 695, y: 138, w: 235, h: 48, health: 4500, maxHealth: 4500, type: 'roof', points: 25, entity: 0},
     {x: 210, y: 345, w: 105, h: 55, health: 2400, maxHealth: 2400, type: 'hood', points: 15, entity: 1},
     {x: 235, y: 310, w: 65, h: 42, health: 2000, maxHealth: 2000, type: 'cab', points: 20, entity: 1}
-  ], entities: [{type:'house', x:680, color:'#FFEE66', short:false}, {type:'sedan', x:170}] },
+  ], entities: [{type:'house', x:680, color:'#FFEE66', short:false}, {type:'sedan', x:240}] },  // moved right of truck
 
   { name: "Level 4 – Pink House + Red Pickup", fireSpots: [
     {x: 720, y: 228, w: 58, h: 88, health: 3000, maxHealth: 3000, type: 'window', points: 10, entity: 0},
@@ -119,19 +119,19 @@ const levels = [
     {x: 695, y: 138, w: 235, h: 48, health: 4500, maxHealth: 4500, type: 'roof', points: 25, entity: 0},
     {x: 195, y: 338, w: 130, h: 50, health: 2600, maxHealth: 2600, type: 'bed', points: 15, entity: 1},
     {x: 212, y: 306, w: 80, h: 40, health: 2100, maxHealth: 2100, type: 'cab', points: 20, entity: 1}
-  ], entities: [{type:'house', x:680, color:'#FF99CC', short:false}, {type:'pickup', x:170}] },
+  ], entities: [{type:'house', x:680, color:'#FF99CC', short:false}, {type:'pickup', x:240}] },
 
   { name: "Level 5 – Semi Tanker Fire", fireSpots: [
     {x: 520, y: 300, w: 85, h: 75, health: 3800, maxHealth: 3800, type: 'cab', points: 20, entity: 0},
     {x: 610, y: 275, w: 270, h: 102, health: 6200, maxHealth: 6200, type: 'tanker', points: 30, entity: 0}
-  ], entities: [{type:'semi', x:480}] },
+  ], entities: [{type:'semi', x:320}] },  // positioned on grass
 
   { name: "Level 6 – Wrecked Cars on Grass", fireSpots: [
     {x: 680, y: 345, w: 105, h: 55, health: 2800, maxHealth: 2800, type: 'hood', points: 15, entity: 0},
     {x: 705, y: 310, w: 65, h: 42, health: 2200, maxHealth: 2200, type: 'cab', points: 20, entity: 0},
     {x: 820, y: 338, w: 130, h: 50, health: 2800, maxHealth: 2800, type: 'bed', points: 15, entity: 1},
     {x: 837, y: 306, w: 80, h: 40, health: 2200, maxHealth: 2200, type: 'cab', points: 20, entity: 1}
-  ], entities: [{type:'sedan', x:650}, {type:'pickup', x:790}] }
+  ], entities: [{type:'sedan', x:520}, {type:'pickup', x:680}] }
 ];
 
 function startWithDifficulty(diff) {
@@ -289,17 +289,14 @@ function drawSouthParkHouse(x, color, short, burned) {
 }
 
 function drawSideFireTruck() {
-  // Strong ground shadow
   ctx.fillStyle = 'rgba(0,0,0,0.5)';
   ctx.fillRect(truckX+18, truckY+38, 182, 18);
-  // Wheels
   ctx.fillStyle = '#111';
   ctx.beginPath(); ctx.arc(truckX+48, truckY+28, 26, 0, Math.PI*2); ctx.fill();
   ctx.beginPath(); ctx.arc(truckX+128, truckY+28, 26, 0, Math.PI*2); ctx.fill();
   ctx.fillStyle = '#DDD';
   ctx.beginPath(); ctx.arc(truckX+48, truckY+28, 13, 0, Math.PI*2); ctx.fill();
   ctx.beginPath(); ctx.arc(truckX+128, truckY+28, 13, 0, Math.PI*2); ctx.fill();
-  // Body (red fire truck style)
   ctx.fillStyle = '#C00';
   ctx.fillRect(truckX, truckY-48, 190, 78);
   ctx.fillStyle = '#A00';
@@ -307,14 +304,11 @@ function drawSideFireTruck() {
   ctx.fillStyle = '#113';
   ctx.fillRect(truckX+22, truckY-73, 40, 30);
   ctx.fillRect(truckX+68, truckY-73, 30, 30);
-  // Yellow stripe
   ctx.fillStyle = '#FF0';
   ctx.fillRect(truckX+8, truckY-22, 175, 12);
-  // Ladder
   ctx.fillStyle = '#CC0';
   ctx.fillRect(truckX+105, truckY-85, 75, 12);
   for (let i = 0; i < 6; i++) ctx.fillRect(truckX+108, truckY-82 + i*11, 68, 4);
-  // Lights
   ctx.fillStyle = '#DDD';
   ctx.fillRect(truckX+155, truckY-75, 22, 38);
   ctx.fillStyle = '#AAA';
@@ -396,7 +390,6 @@ function loop() {
   fireSpots.forEach(spot => {
     if (spot.health <= 0) return;
 
-    // Difficulty scaling
     let growthRate = 0.025;
     let reigniteTime = 8800;
     let damage = 1.1;
@@ -450,7 +443,6 @@ function loop() {
     if (e.life <= 0) explosions.splice(i, 1);
   }
 
-  // Hose always visible
   ctx.strokeStyle = '#333';
   ctx.lineWidth = 12;
   ctx.lineCap = 'round';
