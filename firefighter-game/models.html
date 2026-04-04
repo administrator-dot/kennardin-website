@@ -18,14 +18,6 @@
   button:hover { background: #0088FF; }
   .difficulty-btn { background:#C00; }
   .difficulty-btn:hover { background: #F00; }
-  #ui {
-    position: absolute; top: 15px; left: 15px; font-size: 24px; color:#FFF;
-    background: rgba(0,0,0,0.65); padding: 8px 16px; border-radius: 8px;
-    pointer-events: none; z-index: 10;
-  }
-  .time-buttons {
-    position: absolute; top: 15px; right: 20px; z-index: 10;
-  }
   .bottom-label {
     position: absolute; bottom: 15px; right: 20px; font-size: 22px; color:#FF0;
     text-shadow: 2px 2px 6px rgba(0,0,0,0.8);
@@ -57,15 +49,7 @@
   </div>
 </div>
 
-<div id="ui">
-  Score: <span id="score">0</span> &nbsp;&nbsp;&nbsp; Level: <span id="level">1</span>
-</div>
-
-<div class="time-buttons">
-  <button onclick="setTimeOfDay(0)">Day</button>
-  <button onclick="setTimeOfDay(1)">Dusk</button>
-  <button onclick="setTimeOfDay(2)">Night</button>
-</div>
+<canvas id="game" width="1200" height="600"></canvas>
 
 <div class="bottom-label">KVFD - Kennard, IN</div>
 <div class="copyright">
@@ -74,14 +58,10 @@
   A donation to the KVFD is always appreciated.
 </div>
 
-<canvas id="game" width="1200" height="600"></canvas>
-
 <script>
-// ============== ALL DRAW FUNCTIONS RESTORED + LEVEL UPDATES ==============
+// ============== ALL DRAWINGS RESTORED + TIRE LOWERED + TORNADO STATIONARY CENTERED + TRACTOR IMPROVED + SCORE ON GRID ==============
 const canvas = document.getElementById('game');
 const ctx = canvas.getContext('2d');
-const scoreEl = document.getElementById('score');
-const levelEl = document.getElementById('level');
 
 let score = 0;
 let mouseX = 500, mouseY = 300;
@@ -90,7 +70,6 @@ let gameState = 'title';
 let currentLevel = 1;
 let difficulty = 2;
 let timeOfDay = 0;
-let tornadoAngle = 0;
 let fireSpots = [];
 let particles = [];
 
@@ -153,7 +132,7 @@ const baseLevels = [
     {x:620,y:425,w:110,h:70,health:130,maxHealth:210,type:'tractor'}
   ], entities: [
     {type:'miniBarn',x:820},
-    {type:'tractor',x:520}
+    {type:'tractor',x:520,facing:'right'}
   ] },
 
   { name: "Level 8 – Farm Fire", fireSpots: [
@@ -164,7 +143,7 @@ const baseLevels = [
     {x:620,y:425,w:110,h:70,health:130,maxHealth:210,type:'tractor'}
   ], entities: [
     {type:'largeRedBarn',x:1050},
-    {type:'tractor',x:520},
+    {type:'tractor',x:520,facing:'left'},
     {type:'hayBale',x:720}, {type:'hayBale',x:800}, 
     {type:'hayBale',x:880}, {type:'hayBale',x:950}
   ] },
@@ -174,7 +153,7 @@ const baseLevels = [
     {x:900,y:240,w:60,h:90,health:150,maxHealth:250,type:'window2'},
     {x:740,y:140,w:240,h:50,health:190,maxHealth:290,type:'roof'},
     {x:840,y:410,w:50,h:110,health:130,maxHealth:220,type:'door'}
-  ], entities: [{type:'house',x:740,color:'#FFEE66'}, {type:'tornado',x:1080}] },
+  ], entities: [{type:'house',x:740,color:'#FFEE66'}, {type:'tornado',x:620}] }, // tornado centered
 
   { name: "Level 10 – Big Car Wreck", fireSpots: [
     {x:480,y:355,w:110,h:55,health:140,maxHealth:240,type:'hood'},
@@ -189,9 +168,7 @@ const baseLevels = [
   ] }
 ];
 
-function setTimeOfDay(mode) {
-  timeOfDay = mode;
-}
+function setTimeOfDay(mode) { timeOfDay = mode; }
 
 function startGame(diff) {
   difficulty = diff;
@@ -201,22 +178,14 @@ function startGame(diff) {
 
 function loadLevel(lvl) {
   currentLevel = lvl;
-  levelEl.textContent = currentLevel;
   const base = baseLevels[lvl-1];
-  
   fireSpots = base.fireSpots.map(s => {
     let healthMod = 1, growthMod = 1;
     if (difficulty === 1) { healthMod = 0.75; growthMod = 1.3; }
     else if (difficulty === 2) { healthMod = 1.0; growthMod = 1.0; }
     else if (difficulty === 3) { healthMod = 1.45; growthMod = 0.75; }
-    return {
-      ...s,
-      health: Math.floor(s.health * healthMod),
-      maxHealth: Math.floor(s.maxHealth * healthMod),
-      growthRate: 6.8 * growthMod
-    };
+    return { ...s, health: Math.floor(s.health * healthMod), maxHealth: Math.floor(s.maxHealth * healthMod), growthRate: 6.8 * growthMod };
   });
-  
   particles = [];
   gameState = 'playing';
 }
@@ -240,7 +209,6 @@ function nextLevel() {
 function resetGame() {
   document.getElementById('levelCompleteScreen').style.display = 'none';
   score = 0;
-  scoreEl.textContent = 0;
   document.getElementById('titleScreen').style.display = 'block';
 }
 
@@ -302,25 +270,13 @@ function createSmoke(x, y) {
 
 function drawBackground() {
   let sky1, sky2, sunColor, sunX, sunY, grassColor;
-  if (timeOfDay === 0) {
-    sky1 = '#7BC4FF'; sky2 = '#C0E4FF';
-    sunColor = '#FFDD00'; sunX = 300; sunY = 120;
-    grassColor = '#3D8C40';
-  } else if (timeOfDay === 1) {
-    sky1 = '#FF8800'; sky2 = '#FFBB66';
-    sunColor = '#FFAA00'; sunX = 900; sunY = 140;
-    grassColor = '#2A6B2F';
-  } else {
-    sky1 = '#112244'; sky2 = '#223366';
-    sunColor = '#EEEEEE'; sunX = 600; sunY = 130;
-    grassColor = '#1F4A22';
-  }
+  if (timeOfDay === 0) { sky1 = '#7BC4FF'; sky2 = '#C0E4FF'; sunColor = '#FFDD00'; sunX = 300; sunY = 120; grassColor = '#3D8C40'; }
+  else if (timeOfDay === 1) { sky1 = '#FF8800'; sky2 = '#FFBB66'; sunColor = '#FFAA00'; sunX = 900; sunY = 140; grassColor = '#2A6B2F'; }
+  else { sky1 = '#112244'; sky2 = '#223366'; sunColor = '#EEEEEE'; sunX = 600; sunY = 130; grassColor = '#1F4A22'; }
 
   const grad = ctx.createLinearGradient(0, 0, 0, 520);
-  grad.addColorStop(0, sky1);
-  grad.addColorStop(1, sky2);
-  ctx.fillStyle = grad;
-  ctx.fillRect(0, 0, canvas.width, 520);
+  grad.addColorStop(0, sky1); grad.addColorStop(1, sky2);
+  ctx.fillStyle = grad; ctx.fillRect(0, 0, canvas.width, 520);
 
   ctx.fillStyle = sunColor;
   ctx.beginPath(); ctx.arc(sunX, sunY, 45, 0, Math.PI*2); ctx.fill();
@@ -329,20 +285,15 @@ function drawBackground() {
   ctx.fillRect(0, 480, canvas.width, 120);
 
   if (timeOfDay === 2) {
-    ctx.fillStyle = '#FFFFFF';
-    ctx.globalAlpha = 0.8;
-    ctx.fillRect(200, 80, 3, 3);
-    ctx.fillRect(450, 50, 2, 2);
-    ctx.fillRect(720, 110, 3, 3);
-    ctx.fillRect(950, 70, 2, 2);
-    ctx.fillRect(1100, 40, 3, 3);
+    ctx.fillStyle = '#FFFFFF'; ctx.globalAlpha = 0.8;
+    ctx.fillRect(200, 80, 3, 3); ctx.fillRect(450, 50, 2, 2);
+    ctx.fillRect(720, 110, 3, 3); ctx.fillRect(950, 70, 2, 2); ctx.fillRect(1100, 40, 3, 3);
     ctx.globalAlpha = 1;
   }
 }
 
 function drawSideFireTruck() {
-  ctx.fillStyle = 'rgba(0,0,0,0.3)';
-  ctx.fillRect(truckX + 20, truckY + 42, 185, 16);
+  ctx.fillStyle = 'rgba(0,0,0,0.3)'; ctx.fillRect(truckX + 20, truckY + 42, 185, 16);
   ctx.fillStyle = '#111';
   ctx.beginPath(); ctx.arc(truckX + 52, truckY + 38, 26, 0, Math.PI*2); ctx.fill();
   ctx.beginPath(); ctx.arc(truckX + 135, truckY + 38, 26, 0, Math.PI*2); ctx.fill();
@@ -350,33 +301,21 @@ function drawSideFireTruck() {
   ctx.beginPath(); ctx.arc(truckX + 52, truckY + 38, 13, 0, Math.PI*2); ctx.fill();
   ctx.beginPath(); ctx.arc(truckX + 135, truckY + 38, 13, 0, Math.PI*2); ctx.fill();
 
-  ctx.fillStyle = '#E22';
-  ctx.fillRect(truckX + 8, truckY - 48, 195, 82);
-  ctx.fillStyle = '#C11';
-  ctx.fillRect(truckX + 18, truckY - 78, 72, 38);
-  ctx.fillStyle = '#AACCFF';
-  ctx.fillRect(truckX + 26, truckY - 72, 28, 24);
-  ctx.fillRect(truckX + 58, truckY - 72, 26, 24);
-  ctx.fillStyle = '#FF0';
-  ctx.fillRect(truckX + 12, truckY - 18, 185, 14);
-  ctx.fillStyle = '#DD0';
-  ctx.fillRect(truckX + 85, truckY - 88, 118, 12);
+  ctx.fillStyle = '#E22'; ctx.fillRect(truckX + 8, truckY - 48, 195, 82);
+  ctx.fillStyle = '#C11'; ctx.fillRect(truckX + 18, truckY - 78, 72, 38);
+  ctx.fillStyle = '#AACCFF'; ctx.fillRect(truckX + 26, truckY - 72, 28, 24); ctx.fillRect(truckX + 58, truckY - 72, 26, 24);
+  ctx.fillStyle = '#FF0'; ctx.fillRect(truckX + 12, truckY - 18, 185, 14);
+  ctx.fillStyle = '#DD0'; ctx.fillRect(truckX + 85, truckY - 88, 118, 12);
   ctx.fillStyle = '#BB0';
-  for (let i = 0; i < 7; i++) {
-    ctx.fillRect(truckX + 92 + i*16, truckY - 92, 6, 20);
-  }
-  ctx.fillStyle = '#B22';
-  ctx.fillRect(truckX + 145, truckY - 45, 55, 38);
-  ctx.fillStyle = '#00F';
-  ctx.fillRect(truckX + 25, truckY - 82, 12, 6);
+  for (let i = 0; i < 7; i++) ctx.fillRect(truckX + 92 + i*16, truckY - 92, 6, 20);
+  ctx.fillStyle = '#B22'; ctx.fillRect(truckX + 145, truckY - 45, 55, 38);
+  ctx.fillStyle = '#00F'; ctx.fillRect(truckX + 25, truckY - 82, 12, 6);
 }
 
 function drawShedWindow(x) {
   ctx.fillStyle = '#E8D5B8'; ctx.fillRect(x+30, 255, 190, 225);
   ctx.strokeStyle = '#222'; ctx.lineWidth = 4;
-  for (let i = 0; i < 9; i++) {
-    ctx.beginPath(); ctx.moveTo(x+38, 270 + i*24); ctx.lineTo(x+210, 270 + i*24); ctx.stroke();
-  }
+  for (let i = 0; i < 9; i++) { ctx.beginPath(); ctx.moveTo(x+38, 270 + i*24); ctx.lineTo(x+210, 270 + i*24); ctx.stroke(); }
   ctx.fillStyle = '#8B2A00';
   ctx.beginPath(); ctx.moveTo(x+10, 255); ctx.lineTo(x+125, 185); ctx.lineTo(x+240, 255); ctx.fill();
   ctx.fillStyle = '#3C2F1F'; ctx.fillRect(x+82, 340, 48, 140);
@@ -387,9 +326,7 @@ function drawShedWindow(x) {
 function drawSmallShed(x) {
   ctx.fillStyle = '#E8D5B8'; ctx.fillRect(x+30, 255, 160, 225);
   ctx.strokeStyle = '#222'; ctx.lineWidth = 4;
-  for (let i = 0; i < 8; i++) {
-    ctx.beginPath(); ctx.moveTo(x+38, 270 + i*26); ctx.lineTo(x+180, 270 + i*26); ctx.stroke();
-  }
+  for (let i = 0; i < 8; i++) { ctx.beginPath(); ctx.moveTo(x+38, 270 + i*26); ctx.lineTo(x+180, 270 + i*26); ctx.stroke(); }
   ctx.fillStyle = '#8B2A00';
   ctx.beginPath(); ctx.moveTo(x+10, 255); ctx.lineTo(x+110, 195); ctx.lineTo(x+200, 255); ctx.fill();
   ctx.fillStyle = '#3C2F1F'; ctx.fillRect(x+72, 340, 42, 140);
@@ -398,9 +335,7 @@ function drawSmallShed(x) {
 function drawLeanToShed(x) {
   ctx.fillStyle = '#E8D5B8'; ctx.fillRect(x+30, 255, 190, 225);
   ctx.strokeStyle = '#222'; ctx.lineWidth = 4;
-  for (let i = 0; i < 9; i++) {
-    ctx.beginPath(); ctx.moveTo(x+38, 270 + i*24); ctx.lineTo(x+210, 270 + i*24); ctx.stroke();
-  }
+  for (let i = 0; i < 9; i++) { ctx.beginPath(); ctx.moveTo(x+38, 270 + i*24); ctx.lineTo(x+210, 270 + i*24); ctx.stroke(); }
   ctx.fillStyle = '#8B2A00';
   ctx.beginPath(); ctx.moveTo(x+10, 255); ctx.lineTo(x+125, 210); ctx.lineTo(x+240, 255); ctx.fill();
   ctx.fillStyle = '#3C2F1F'; ctx.fillRect(x+82, 340, 48, 140);
@@ -409,11 +344,8 @@ function drawLeanToShed(x) {
 function drawSingleGarage(x) {
   ctx.fillStyle = '#E8D5B8'; ctx.fillRect(x+20, 230, 260, 250);
   ctx.strokeStyle = '#222'; ctx.lineWidth = 4;
-  for (let i = 0; i < 11; i++) {
-    ctx.beginPath(); ctx.moveTo(x+30, 245 + i*22); ctx.lineTo(x+270, 245 + i*22); ctx.stroke();
-  }
-  ctx.fillStyle = '#555';
-  ctx.fillRect(x+91, 255, 118, 225);
+  for (let i = 0; i < 11; i++) { ctx.beginPath(); ctx.moveTo(x+30, 245 + i*22); ctx.lineTo(x+270, 245 + i*22); ctx.stroke(); }
+  ctx.fillStyle = '#555'; ctx.fillRect(x+91, 255, 118, 225);
   ctx.fillStyle = '#8B2A00';
   ctx.beginPath(); ctx.moveTo(x, 230); ctx.lineTo(x+150, 160); ctx.lineTo(x+300, 230); ctx.fill();
 }
@@ -421,9 +353,7 @@ function drawSingleGarage(x) {
 function drawTallHouse(x) {
   ctx.fillStyle = '#E8D5B8'; ctx.fillRect(x, 200, 270, 320);
   ctx.strokeStyle = '#222'; ctx.lineWidth = 4;
-  for (let i = 0; i < 13; i++) {
-    ctx.beginPath(); ctx.moveTo(x+12, 212 + i*24); ctx.lineTo(x+258, 212 + i*24); ctx.stroke();
-  }
+  for (let i = 0; i < 13; i++) { ctx.beginPath(); ctx.moveTo(x+12, 212 + i*24); ctx.lineTo(x+258, 212 + i*24); ctx.stroke(); }
   ctx.fillStyle = '#8B2A00';
   ctx.beginPath(); ctx.moveTo(x-25, 190); ctx.lineTo(x+135, 100); ctx.lineTo(x+290, 190); ctx.fill();
   ctx.fillStyle = '#A33'; ctx.fillRect(x+175, 115, 32, 60);
@@ -437,25 +367,20 @@ function drawTallHouse(x) {
 function drawSmallHouse(x, color = '#FFCC99') {
   ctx.fillStyle = color; ctx.fillRect(x+40, 240, 180, 240);
   ctx.strokeStyle = '#222'; ctx.lineWidth = 4;
-  for (let i = 0; i < 8; i++) {
-    ctx.beginPath(); ctx.moveTo(x+48, 252 + i*26); ctx.lineTo(x+212, 252 + i*26); ctx.stroke();
-  }
+  for (let i = 0; i < 8; i++) { ctx.beginPath(); ctx.moveTo(x+48, 252 + i*26); ctx.lineTo(x+212, 252 + i*26); ctx.stroke(); }
   ctx.fillStyle = '#8B2A00';
   ctx.beginPath(); ctx.moveTo(x+20, 240); ctx.lineTo(x+130, 150); ctx.lineTo(x+220, 240); ctx.fill();
   ctx.fillStyle = '#3C2F1F'; ctx.fillRect(x+92, 390, 45, 90);
   ctx.fillStyle = '#FFCC00'; ctx.fillRect(x+102, 440, 8, 8);
   ctx.strokeStyle = '#222'; ctx.lineWidth = 4;
-  ctx.strokeRect(x+55, 270, 48, 65);
-  ctx.strokeRect(x+145, 270, 48, 65);
+  ctx.strokeRect(x+55, 270, 48, 65); ctx.strokeRect(x+145, 270, 48, 65);
   ctx.fillStyle = '#AACCFF'; ctx.fillRect(x+58, 273, 42, 58); ctx.fillRect(x+148, 273, 42, 58);
 }
 
 function drawMiniBarn(x) {
   ctx.fillStyle = '#C22'; ctx.fillRect(x+40, 230, 180, 250);
   ctx.strokeStyle = '#222'; ctx.lineWidth = 4;
-  for (let i = 0; i < 9; i++) {
-    ctx.beginPath(); ctx.moveTo(x+48, 245 + i*24); ctx.lineTo(x+212, 245 + i*24); ctx.stroke();
-  }
+  for (let i = 0; i < 9; i++) { ctx.beginPath(); ctx.moveTo(x+48, 245 + i*24); ctx.lineTo(x+212, 245 + i*24); ctx.stroke(); }
   ctx.fillStyle = '#8B2A00';
   ctx.beginPath(); ctx.moveTo(x+20, 230); ctx.lineTo(x+130, 170); ctx.lineTo(x+220, 230); ctx.fill();
   ctx.fillStyle = '#FFF'; ctx.fillRect(x+78, 310, 55, 170);
@@ -465,9 +390,7 @@ function drawLargeRedBarn(x) {
   ctx.globalAlpha = 0.75;
   ctx.fillStyle = '#C22'; ctx.fillRect(x+20, 180, 260, 300);
   ctx.strokeStyle = '#222'; ctx.lineWidth = 4;
-  for (let i = 0; i < 13; i++) {
-    ctx.beginPath(); ctx.moveTo(x+30, 195 + i*22); ctx.lineTo(x+270, 195 + i*22); ctx.stroke();
-  }
+  for (let i = 0; i < 13; i++) { ctx.beginPath(); ctx.moveTo(x+30, 195 + i*22); ctx.lineTo(x+270, 195 + i*22); ctx.stroke(); }
   ctx.fillStyle = '#8B2A00';
   ctx.beginPath(); ctx.moveTo(x, 180); ctx.lineTo(x+130, 100); ctx.lineTo(x+280, 180); ctx.fill();
   ctx.fillStyle = '#FFF'; ctx.fillRect(x+95, 340, 70, 140);
@@ -482,13 +405,29 @@ function drawHayBale(x) {
   for (let i = 0; i < 5; i++) ctx.fillRect(x + 10 + i*12, 420, 8, 50);
 }
 
-function drawTractor(x) {
-  ctx.fillStyle = '#228B22'; ctx.fillRect(x+20, 410, 130, 70);
-  ctx.fillStyle = '#111'; ctx.fillRect(x+40, 375, 60, 45);
-  ctx.fillStyle = '#AACCFF'; ctx.fillRect(x+48, 382, 35, 30);
-  ctx.fillStyle = '#111';
-  ctx.beginPath(); ctx.arc(x+50, 465, 18, 0, Math.PI*2); ctx.fill();
-  ctx.beginPath(); ctx.arc(x+120, 465, 18, 0, Math.PI*2); ctx.fill();
+function drawTractor(x, facing) {
+  const flip = facing === 'left' ? -1 : 1;
+  ctx.save();
+  ctx.translate(x + 75, 410);
+  ctx.scale(flip, 1);
+
+  // Body / engine
+  ctx.fillStyle = '#228B22'; ctx.fillRect(-65, 0, 130, 65);
+  ctx.fillStyle = '#111'; ctx.fillRect(-45, -30, 65, 38); // cab
+  ctx.fillStyle = '#AACCFF'; ctx.fillRect(-38, -25, 38, 28); // window
+
+  // Engine hood
+  ctx.fillStyle = '#1A6B1A'; ctx.fillRect(10, -10, 55, 38);
+
+  // Big rear wheel
+  ctx.fillStyle = '#111'; ctx.beginPath(); ctx.arc(-45, 65, 22, 0, Math.PI*2); ctx.fill();
+  ctx.fillStyle = '#DDD'; ctx.beginPath(); ctx.arc(-45, 65, 12, 0, Math.PI*2); ctx.fill();
+
+  // Small front wheel
+  ctx.fillStyle = '#111'; ctx.beginPath(); ctx.arc(35, 65, 14, 0, Math.PI*2); ctx.fill();
+  ctx.fillStyle = '#DDD'; ctx.beginPath(); ctx.arc(35, 65, 7, 0, Math.PI*2); ctx.fill();
+
+  ctx.restore();
 }
 
 function drawSedan(x, yOffset = 0) {
@@ -539,36 +478,49 @@ function drawTreeWithSwing(x) {
   ctx.beginPath(); ctx.moveTo(x+12, 340); ctx.lineTo(x+44, 280); ctx.lineTo(x+76, 340); ctx.fill();
   ctx.beginPath(); ctx.moveTo(x+18, 310); ctx.lineTo(x+44, 250); ctx.lineTo(x+70, 310); ctx.fill();
   
-  // Tire swing
+  // Tire swing – lowered so tire hangs clearly under branch
   ctx.strokeStyle = '#222'; ctx.lineWidth = 6;
-  ctx.beginPath(); ctx.moveTo(x+55, 310); ctx.lineTo(x+55, 370); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(x+55, 310); ctx.lineTo(x+55, 395); ctx.stroke(); // longer rope
   ctx.fillStyle = '#222';
-  ctx.beginPath(); ctx.arc(x+55, 380, 18, 0, Math.PI*2); ctx.fill();
+  ctx.beginPath(); ctx.arc(x+55, 410, 18, 0, Math.PI*2); ctx.fill(); // tire lowered
   ctx.fillStyle = '#555';
-  ctx.beginPath(); ctx.arc(x+55, 380, 12, 0, Math.PI*2); ctx.fill();
+  ctx.beginPath(); ctx.arc(x+55, 410, 12, 0, Math.PI*2); ctx.fill();
 }
 
-// Spinning Tornado
+function drawLawnMower(x) {
+  ctx.fillStyle = '#228B22'; ctx.fillRect(x+30, 410, 95, 55);
+  ctx.fillStyle = '#111'; ctx.fillRect(x+45, 385, 48, 32);
+  ctx.fillStyle = '#AACCFF'; ctx.fillRect(x+52, 392, 32, 20);
+  ctx.fillStyle = '#111';
+  ctx.beginPath(); ctx.arc(x+45, 465, 13, 0, Math.PI*2); ctx.fill();
+  ctx.beginPath(); ctx.arc(x+105, 465, 13, 0, Math.PI*2); ctx.fill();
+}
+
+// Stationary faded tornado in center of screen
 function drawTornado(x) {
-  tornadoAngle += 0.035;
   ctx.globalAlpha = 0.48;
   ctx.strokeStyle = '#BBBBBB';
   ctx.lineWidth = 26;
-  ctx.save();
-  ctx.translate(x, 290);
-  ctx.rotate(tornadoAngle * 0.25);
   ctx.beginPath();
-  ctx.moveTo(0, -140);
-  ctx.quadraticCurveTo(45, -50, -30, 70);
-  ctx.quadraticCurveTo(50, 130, 15, 195);
+  ctx.moveTo(x, 160);
+  ctx.quadraticCurveTo(x+40, 260, x-30, 360);
+  ctx.quadraticCurveTo(x+45, 410, x+10, 480);
   ctx.stroke();
-  ctx.restore();
   ctx.globalAlpha = 1;
 }
 
 function loop() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   drawBackground();
+
+  // Score + Level drawn directly on canvas, aligned to top grid
+  ctx.fillStyle = 'rgba(0,0,0,0.65)';
+  ctx.fillRect(20, 18, 240, 48); // dark box at top
+  ctx.fillStyle = '#FFFFFF';
+  ctx.font = 'bold 26px Arial';
+  ctx.textAlign = 'left';
+  ctx.fillText(`Score: ${score}`, 35, 48);
+  ctx.fillText(`Level: ${currentLevel}`, 155, 48);
 
   const data = baseLevels[currentLevel-1];
   data.entities.forEach(ent => {
@@ -581,13 +533,14 @@ function loop() {
     if (ent.type === 'miniBarn') drawMiniBarn(ent.x);
     if (ent.type === 'largeRedBarn') drawLargeRedBarn(ent.x);
     if (ent.type === 'hayBale') drawHayBale(ent.x);
-    if (ent.type === 'tractor') drawTractor(ent.x);
+    if (ent.type === 'tractor') drawTractor(ent.x, ent.facing || 'right');
     if (ent.type === 'sedan') drawSedan(ent.x, ent.yOffset || 0);
     if (ent.type === 'pickup') drawPickup(ent.x, ent.yOffset || 0);
     if (ent.type === 'semi') drawSemi(ent.x);
     if (ent.type === 'tree') drawTree(ent.x);
     if (ent.type === 'treeWithSwing') drawTreeWithSwing(ent.x);
     if (ent.type === 'tornado') drawTornado(ent.x);
+    if (ent.type === 'lawnMower') drawLawnMower(ent.x);
   });
 
   drawSideFireTruck();
@@ -615,7 +568,6 @@ function loop() {
     if (spot.health <= 0) {
       createSmoke(spot.x + spot.w/2, spot.y + spot.h/2);
       score += 10;
-      scoreEl.textContent = score;
     }
   });
 
