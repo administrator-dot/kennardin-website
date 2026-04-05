@@ -121,14 +121,9 @@
   If you enjoyed please consider a donation to the Kennard Volunteer Fire Department.
 </div>
 <script>
-// ============== FINAL FIXED VERSION - maxHoseLength=300 + REALISTIC WATER + BLOCKING + HEALTH-SCALED FLAMES ==============
+// ============== COMPLETE CODE - Reduced Roof Fires + Total Fire Health Gauge ==============
 const canvas = document.getElementById('game');
 const ctx = canvas.getContext('2d');
-const landscapeMsg = document.getElementById('landscapeMessage');
-const levelCompleteScreen = document.getElementById('levelCompleteScreen');
-const normalButtons = document.getElementById('normalButtons');
-const finalButtons = document.getElementById('finalButtons');
-const confirmDialog = document.getElementById('confirmDialog');
 
 let score = 0;
 let levelStartScore = 0;
@@ -146,7 +141,7 @@ const truckX = 100;
 const truckY = 480;
 const nozzleAttachX = 168;
 const nozzleAttachY = -45;
-const maxHoseLength = 300;   // your setting
+const maxHoseLength = 300;
 
 const safetyTips = [
   "Never play with matches or lighters.", "If your clothes catch fire, stop, drop, and roll.",
@@ -157,18 +152,47 @@ const safetyTips = [
 ];
 
 const baseLevels = [
-  { name: "Level 1 – Small Shed Fire", fireSpots: [{x:880,y:280,w:55,h:55,health:320,maxHealth:400},{x:900,y:255,w:65,h:40,health:580,maxHealth:720},{x:935,y:355,w:42,h:95,health:270,maxHealth:340}], entities: [{type:'shedWindow',x:840}, {type:'lawnMower',x:1060}] },
+  { name: "Level 1 – Small Shed Fire", fireSpots: [{x:880,y:280,w:55,h:55,health:320,maxHealth:400},{x:900,y:255,w:65,h:40,health:580,maxHealth:720},{x:935,y:355,w:42,h:95,health:270,maxHealth:340}], entities: [{type:'shedWindow',x:840}, {type:'ridingMower',x:680}] },
   { name: "Level 2 – Car + Tree Crash", fireSpots: [{x:620,y:355,w:110,h:55,health:380,maxHealth:480},{x:650,y:320,w:70,h:45,health:350,maxHealth:440},{x:790,y:280,w:45,h:140,health:430,maxHealth:530},{x:810,y:260,w:35,h:80,health:300,maxHealth:380}], entities: [{type:'sedan',x:580,yOffset:12},{type:'tree',x:810}] },
-  { name: "Level 3 – Garage Fire", fireSpots: [{x:920,y:200,w:110,h:45,health:650,maxHealth:800},{x:920,y:255,w:55,h:225,health:350,maxHealth:440},{x:975,y:255,w:55,h:225,health:350,maxHealth:440},{x:945,y:460,w:40,h:20,health:240,maxHealth:300}], entities: [{type:'singleGarage',x:820}] },
-  { name: "Level 4 – Small Shed + Tree with Tire Swing", fireSpots: [{x:880,y:280,w:55,h:55,health:360,maxHealth:450},{x:900,y:255,w:65,h:40,health:610,maxHealth:760},{x:935,y:355,w:42,h:95,health:320,maxHealth:400},{x:675,y:355,w:45,h:50,health:340,maxHealth:430},{x:700,y:325,w:35,h:40,health:290,maxHealth:370}], entities: [{type:'smallShed',x:820},{type:'treeWithSwing',x:620}] },
+  { name: "Level 3 – Garage Fire", fireSpots: [
+      {x:920,y:200,w:110,h:45,health:480,maxHealth:600},   // roof - reduced health
+      {x:920,y:255,w:55,h:225,health:350,maxHealth:440},
+      {x:975,y:255,w:55,h:225,health:350,maxHealth:440},
+      {x:945,y:460,w:40,h:20,health:240,maxHealth:300}
+    ], entities: [{type:'singleGarage',x:820}] },
+  { name: "Level 4 – Small Shed + Tree with Tire Swing", fireSpots: [
+      {x:880,y:280,w:55,h:55,health:360,maxHealth:450},
+      {x:900,y:255,w:65,h:40,health:610,maxHealth:760},
+      {x:935,y:355,w:42,h:95,health:320,maxHealth:400},
+      {x:675,y:355,w:45,h:50,health:340,maxHealth:430},
+      {x:700,y:325,w:35,h:40,health:290,maxHealth:370},
+      {x:860,y:165,w:80,h:35,health:420,maxHealth:520,roof:true}   // roof - reduced health
+    ], entities: [{type:'smallShed',x:820},{type:'treeWithSwing',x:620}] },
   { name: "Level 5 – Small House + Sedan", fireSpots: [{x:920,y:260,w:50,h:70,health:380,maxHealth:480},{x:1000,y:260,w:50,h:70,health:380,maxHealth:480},{x:870,y:170,w:190,h:60,health:690,maxHealth:850},{x:950,y:400,w:45,h:100,health:350,maxHealth:440}], entities: [{type:'smallHouse',x:850,color:'#FFCC99'}, {type:'sedan',x:520,yOffset:8}] },
   { name: "Level 6 – Tall House + Pickup + Burning Trees", fireSpots: [{x:900,y:240,w:60,h:90,health:410,maxHealth:510},{x:1020,y:240,w:60,h:90,health:410,maxHealth:510},{x:860,y:140,w:240,h:50,health:730,maxHealth:900},{x:960,y:410,w:50,h:110,health:380,maxHealth:480},{x:680,y:280,w:45,h:120,health:370,maxHealth:470},{x:1150,y:280,w:45,h:120,health:370,maxHealth:470}], entities: [{type:'house',x:860,color:'#66CCFF'}, {type:'pickup',x:590,yOffset:10}, {type:'tree',x:680}, {type:'tree',x:1150}] },
-  { name: "Level 7 – Mini Barn", fireSpots: [{x:880,y:255,w:78,h:225,health:500,maxHealth:620},{x:920,y:200,w:90,h:45,health:700,maxHealth:860},{x:620,y:425,w:110,h:70,health:460,maxHealth:570}], entities: [{type:'miniBarn',x:820},{type:'tractor',x:520,facing:'right'}] },
+  { name: "Level 7 – Mini Barn", fireSpots: [
+      {x:880,y:255,w:78,h:225,health:500,maxHealth:620},
+      {x:920,y:200,w:90,h:45,health:350,maxHealth:430,roof:true},
+      {x:620,y:425,w:110,h:70,health:460,maxHealth:570},
+      {x:780,y:255,w:45,h:225,health:480,maxHealth:580},
+      {x:1020,y:255,w:45,h:225,health:480,maxHealth:580},
+      {x:940,y:255,w:35,h:120,health:420,maxHealth:520},
+      {x:980,y:255,w:35,h:120,health:420,maxHealth:520},
+      {x:920,y:130,w:40,h:35,health:340,maxHealth:410,roof:true}
+    ], entities: [{type:'miniBarn',x:820}, {type:'tractor',x:520,facing:'right'}, {type:'ridingMower',x:680}] },
   { name: "Level 8 – Farm Fire", fireSpots: [{x:720,y:410,w:75,h:65,health:410,maxHealth:510},{x:800,y:395,w:75,h:65,health:430,maxHealth:530},{x:880,y:425,w:75,h:65,health:400,maxHealth:500},{x:950,y:410,w:75,h:65,health:460,maxHealth:570},{x:620,y:425,w:110,h:70,health:460,maxHealth:570}], entities: [{type:'largeRedBarn',x:1050},{type:'tractor',x:520,facing:'left'},{type:'hayBale',x:720},{type:'hayBale',x:800},{type:'hayBale',x:880},{type:'hayBale',x:950}] },
   { name: "Level 9 – Tall House with Tornado", fireSpots: [{x:780,y:240,w:60,h:90,health:520,maxHealth:650},{x:900,y:240,w:60,h:90,health:520,maxHealth:650},{x:740,y:140,w:240,h:50,health:820,maxHealth:1020},{x:840,y:410,w:50,h:110,health:480,maxHealth:600}], entities: [{type:'house',x:740,color:'#FFEE66'}, {type:'tornado',x:620}] },
-  { name: "Level 10 – Big Car Wreck", fireSpots: [{x:480,y:355,w:110,h:55,health:520,maxHealth:650},{x:510,y:320,w:70,h:45,health:460,maxHealth:580},{x:740,y:315,w:90,h:80,health:620,maxHealth:780},{x:840,y:285,w:260,h:105,health:850,maxHealth:1060},{x:980,y:355,w:130,h:55,health:550,maxHealth:690},{x:650,y:340,w:55,h:40,health:500,maxHealth:630}], entities: [{type:'sedan',x:420,yOffset:12},{type:'pickup',x:620,yOffset:8},{type:'semi',x:780}] }
+  { name: "Level 10 – Big Car Wreck", fireSpots: [
+      {x:480,y:355,w:110,h:55,health:520,maxHealth:650},
+      {x:510,y:320,w:70,h:45,health:460,maxHealth:580},
+      {x:740,y:315,w:90,h:80,health:620,maxHealth:780,semi:true},
+      {x:840,y:285,w:260,h:105,health:850,maxHealth:1060},
+      {x:980,y:355,w:130,h:55,health:550,maxHealth:690},
+      {x:650,y:340,w:55,h:40,health:500,maxHealth:630}
+    ], entities: [{type:'sedan',x:420,yOffset:12},{type:'pickup',x:620,yOffset:8},{type:'semi',x:780}] }
 ];
 
+// Input handling
 function isInTimeSelector(x, y) { return y > 8 && y < 82 && x > 950 && x < 1195; }
 function handleTimeSelection(x, y) {
   if (x > 980 && x < 1042) setTimeOfDay(0);
@@ -190,25 +214,27 @@ function resizeCanvas() {
 window.addEventListener('resize', resizeCanvas);
 resizeCanvas();
 function checkOrientation() {
-  landscapeMsg.style.display = (window.innerWidth < window.innerHeight) ? 'flex' : 'none';
+  document.getElementById('landscapeMessage').style.display = (window.innerWidth < window.innerHeight) ? 'flex' : 'none';
 }
 window.addEventListener('resize', checkOrientation);
 window.addEventListener('orientationchange', checkOrientation);
 checkOrientation();
 function setTimeOfDay(mode) { timeOfDay = mode; }
+
 function startGame(diff) {
   difficulty = diff;
   document.getElementById('titleScreen').style.display = 'none';
   loadLevel(1);
 }
+
 function loadLevel(lvl) {
   currentLevel = lvl;
   levelStartScore = score;
   const base = baseLevels[lvl-1];
   fireSpots = base.fireSpots.map(s => {
-    let mult = 2.8;                    // Easy baseline
-    if (difficulty === 2) mult = 5.0;   // Medium
-    if (difficulty === 3) mult = 9.0;   // Hard (increased health as requested)
+    let mult = 2.8;
+    if (difficulty === 2) mult = 5.0;
+    if (difficulty === 3) mult = 8.5;
     return { 
       ...s, 
       health: Math.floor(s.health * mult), 
@@ -218,16 +244,13 @@ function loadLevel(lvl) {
   });
   particles = [];
   gameState = 'playing';
-  levelCompleteScreen.style.display = 'none';
-  levelCompleteScreen.classList.remove('show');
+  document.getElementById('levelCompleteScreen').style.display = 'none';
+  document.getElementById('levelCompleteScreen').classList.remove('show');
 }
+
 function checkWin() {
-  if (gameState !== 'playing' || fireSpots.length === 0) return;
-  let allDead = true;
-  for (let i = 0; i < fireSpots.length; i++) {
-    if (fireSpots[i].health > 0) { allDead = false; break; }
-  }
-  if (allDead) {
+  if (gameState !== 'playing') return;
+  if (fireSpots.every(s => s.health <= 0)) {
     gameState = 'levelComplete';
     const isFinal = currentLevel === 10;
     document.getElementById('levelTitle').textContent = baseLevels[currentLevel-1].name + " COMPLETE!";
@@ -235,27 +258,28 @@ function checkWin() {
       "Thank you for playing!<br>Try a harder difficulty next time." :
       "Great Work, Kennard Fire Defender!<br>You saved the day!";
     document.getElementById('safetyTip').textContent = safetyTips[currentLevel-1];
-    normalButtons.style.display = isFinal ? 'none' : 'block';
-    finalButtons.style.display = isFinal ? 'block' : 'none';
-    levelCompleteScreen.style.display = 'flex';
-    setTimeout(() => levelCompleteScreen.classList.add('show'), 50);
+    document.getElementById('normalButtons').style.display = isFinal ? 'none' : 'block';
+    document.getElementById('finalButtons').style.display = isFinal ? 'block' : 'none';
+    document.getElementById('levelCompleteScreen').style.display = 'flex';
+    setTimeout(() => document.getElementById('levelCompleteScreen').classList.add('show'), 50);
   }
 }
+
 function nextLevel() {
-  levelCompleteScreen.style.display = 'none';
-  levelCompleteScreen.classList.remove('show');
+  document.getElementById('levelCompleteScreen').style.display = 'none';
+  document.getElementById('levelCompleteScreen').classList.remove('show');
   if (currentLevel < 10) loadLevel(currentLevel + 1);
   else { alert("You completed all 10 levels!"); location.reload(); }
 }
 function redoLevel() {
-  levelCompleteScreen.style.display = 'none';
-  levelCompleteScreen.classList.remove('show');
+  document.getElementById('levelCompleteScreen').style.display = 'none';
+  document.getElementById('levelCompleteScreen').classList.remove('show');
   score = levelStartScore;
   loadLevel(currentLevel);
 }
 function playGameAgain() {
-  levelCompleteScreen.style.display = 'none';
-  levelCompleteScreen.classList.remove('show');
+  document.getElementById('levelCompleteScreen').style.display = 'none';
+  document.getElementById('levelCompleteScreen').classList.remove('show');
   score = 0;
   document.getElementById('titleScreen').style.display = 'block';
   gameState = 'title';
@@ -264,16 +288,17 @@ function returnToFirePage() {
   window.location.href = 'https://kennardin.com/fire-department.html';
 }
 function showRestartConfirm() {
-  confirmDialog.style.display = 'flex';
+  document.getElementById('confirmDialog').style.display = 'flex';
 }
 function confirmRestartYes() {
-  confirmDialog.style.display = 'none';
+  document.getElementById('confirmDialog').style.display = 'none';
   location.reload();
 }
 function confirmRestartNo() {
-  confirmDialog.style.display = 'none';
+  document.getElementById('confirmDialog').style.display = 'none';
 }
 
+// Input handling
 function getPos(e) {
   const rect = canvas.getBoundingClientRect();
   let clientX = e.clientX || (e.touches && e.touches[0] ? e.touches[0].clientX : 500);
@@ -316,14 +341,14 @@ class Particle {
   }
   update() {
     this.x += this.vx; this.y += this.vy; this.life--;
-    if (this.type === 'water') this.vy += 0.12;
+    if (this.type === 'water') this.vy += 0.13;
     if (this.type === 'fire') { this.vy -= 0.22 + Math.random() * 0.25; this.vx += (Math.random() - 0.5) * 1.6; }
   }
   draw() {
-    ctx.globalAlpha = Math.max(0.12, this.life / 48);
+    ctx.globalAlpha = Math.max(0.15, this.life / 45);
     ctx.fillStyle = this.color;
     if (this.type === 'water') {
-      ctx.fillRect(this.x - this.size/2, this.y - this.size*0.8, this.size, this.size*1.8);
+      ctx.fillRect(this.x - 1.8, this.y - 3, 3.6, 7);
     } else {
       ctx.fillRect(this.x - this.size/2, this.y - this.size/2, this.size, this.size);
     }
@@ -332,7 +357,7 @@ class Particle {
 }
 
 function createFireParticles(x, y, intensity) {
-  for (let i = 0; i < intensity * 0.45; i++) {
+  for (let i = 0; i < intensity * 0.42; i++) {
     const vx = (Math.random() - 0.5) * 3.8;
     const vy = -5.2 - Math.random() * 7.8;
     let color = '#FFEE55';
@@ -368,36 +393,75 @@ function createWaterParticles() {
   const dy = tip.y - attachY;
   const len = Math.hypot(dx, dy) || 1;
   const stretchFactor = Math.min(tip.length / maxHoseLength, 1);
-  const coneSpread = 13 * (1 - stretchFactor * 0.94);
-  const waterSpeed = 7 + stretchFactor * 22;
-  const numStreams = stretchFactor > 0.65 ? 5 : 11;
+  const coneSpread = 12 * (1 - stretchFactor * 0.93);
+  const waterSpeed = 6.5 + stretchFactor * 21;
+  const numStreams = stretchFactor > 0.7 ? 4 : 10;
 
   for (let s = 0; s < numStreams; s++) {
-    const spread = coneSpread * (Math.random() - 0.5) * 0.75;
+    const spread = coneSpread * (Math.random() - 0.5) * 0.8;
     const perpX = -dy / len;
     const perpY = dx / len;
     const startX = tip.x + perpX * spread;
     const startY = tip.y + perpY * spread;
     const vx = (dx / len) * waterSpeed;
-    const vy = (dy / len) * waterSpeed + 4.5;
+    const vy = (dy / len) * waterSpeed + 4.2;
 
-    for (let i = 0; i < 9; i++) {
-      const progress = i / 8;
+    for (let i = 0; i < 7; i++) {
+      const progress = i / 6;
       particles.push(new Particle(
-        startX + vx * progress * 0.65,
-        startY + vy * progress * 0.65,
-        vx * 0.9,
-        vy * 0.9 + (Math.random() - 0.5) * 1.4,
+        startX + vx * progress * 0.6,
+        startY + vy * progress * 0.6,
+        vx * 0.85 + (Math.random()-0.5)*1.2,
+        vy * 0.85 + (Math.random()-0.5)*1.8,
         Math.random() > 0.5 ? '#A0E8FF' : '#40C0FF',
-        34 + Math.random() * 14,
-        4.2 + Math.random() * 2.8,
+        32 + Math.random() * 12,
+        2.8 + Math.random() * 1.6,
         'water'
       ));
     }
   }
 }
 
-// Draw functions (unchanged)
+// Total fire health gauge (top center)
+function drawTotalFireGauge() {
+  if (fireSpots.length === 0) return;
+  let totalCurrent = 0;
+  let totalMax = 0;
+  fireSpots.forEach(s => {
+    totalCurrent += Math.max(0, s.health);
+    totalMax += s.maxHealth;
+  });
+  const percent = totalMax > 0 ? totalCurrent / totalMax : 0;
+
+  const gaugeX = 480;
+  const gaugeY = 25;
+  const gaugeWidth = 240;
+  const gaugeHeight = 18;
+
+  // Background
+  ctx.fillStyle = '#333';
+  ctx.fillRect(gaugeX, gaugeY, gaugeWidth, gaugeHeight);
+
+  // Fire gauge (red to orange gradient)
+  const grad = ctx.createLinearGradient(gaugeX, gaugeY, gaugeX + gaugeWidth, gaugeY);
+  grad.addColorStop(0, '#FF2200');
+  grad.addColorStop(1, '#FFDD00');
+  ctx.fillStyle = grad;
+  ctx.fillRect(gaugeX, gaugeY, gaugeWidth * percent, gaugeHeight);
+
+  // Border
+  ctx.strokeStyle = '#FFF';
+  ctx.lineWidth = 2;
+  ctx.strokeRect(gaugeX, gaugeY, gaugeWidth, gaugeHeight);
+
+  // Label
+  ctx.fillStyle = '#FFF';
+  ctx.font = 'bold 14px Arial';
+  ctx.textAlign = 'center';
+  ctx.fillText('TOTAL FIRE', gaugeX + gaugeWidth/2, gaugeY - 6);
+}
+
+// Draw functions
 function drawBackground() {
   let sky1, sky2, sunColor, sunX, sunY, grassColor;
   if (timeOfDay === 0) { sky1 = '#7BC4FF'; sky2 = '#C0E4FF'; sunColor = '#FFDD00'; sunX = 300; sunY = 120; grassColor = '#3D8C40'; }
@@ -414,6 +478,7 @@ function drawBackground() {
     ctx.globalAlpha = 1;
   }
 }
+
 function drawSideFireTruck() {
   ctx.fillStyle = 'rgba(0,0,0,0.3)'; ctx.fillRect(truckX + 20, truckY + 42, 185, 16);
   ctx.fillStyle = '#111';
@@ -432,6 +497,31 @@ function drawSideFireTruck() {
   ctx.fillStyle = '#B22'; ctx.fillRect(truckX + 145, truckY - 45, 55, 38);
   ctx.fillStyle = '#00F'; ctx.fillRect(truckX + 25, truckY - 82, 12, 6);
 }
+
+function drawRidingLawnMower(x) {
+  const gy = 465;
+  ctx.fillStyle = '#228B22';
+  ctx.fillRect(x+25, gy-38, 115, 42);
+  ctx.fillStyle = '#1E5A1E';
+  ctx.fillRect(x+12, gy-12, 138, 28);
+  ctx.fillStyle = '#222';
+  ctx.fillRect(x+88, gy-58, 38, 24);
+  ctx.fillStyle = '#111';
+  ctx.fillRect(x+98, gy-68, 8, 14);
+  ctx.beginPath(); ctx.arc(x+102, gy-71, 13, 0, Math.PI*2); ctx.fill();
+  ctx.fillStyle = '#111';
+  ctx.beginPath(); ctx.arc(x+42, gy+12, 23, 0, Math.PI*2); ctx.fill();
+  ctx.fillStyle = '#DDD';
+  ctx.beginPath(); ctx.arc(x+42, gy+12, 13, 0, Math.PI*2); ctx.fill();
+  ctx.fillStyle = '#111';
+  ctx.beginPath(); ctx.arc(x+122, gy+8, 14, 0, Math.PI*2); ctx.fill();
+  ctx.fillStyle = '#DDD';
+  ctx.beginPath(); ctx.arc(x+122, gy+8, 8, 0, Math.PI*2); ctx.fill();
+  ctx.fillStyle = '#1E5A1E';
+  ctx.fillRect(x+28, gy-48, 55, 18);
+}
+
+// Other draw functions (unchanged)
 function drawShedWindow(x) { ctx.fillStyle = '#E8D5B8'; ctx.fillRect(x+30,255,190,225); ctx.strokeStyle='#222'; ctx.lineWidth=4; for(let i=0;i<9;i++){ctx.beginPath();ctx.moveTo(x+38,270+i*24);ctx.lineTo(x+210,270+i*24);ctx.stroke();} ctx.fillStyle='#8B2A00'; ctx.beginPath();ctx.moveTo(x+10,255);ctx.lineTo(x+125,185);ctx.lineTo(x+240,255);ctx.fill(); ctx.fillStyle='#3C2F1F';ctx.fillRect(x+82,340,48,140); ctx.fillStyle='#AACCFF';ctx.fillRect(x+155,275,52,52); ctx.strokeRect(x+155,275,52,52); }
 function drawSmallShed(x) { ctx.fillStyle = '#E8D5B8'; ctx.fillRect(x+30,255,160,225); ctx.strokeStyle='#222'; ctx.lineWidth=4; for(let i=0;i<8;i++){ctx.beginPath();ctx.moveTo(x+38,270+i*26);ctx.lineTo(x+180,270+i*26);ctx.stroke();} ctx.fillStyle='#8B2A00'; ctx.beginPath();ctx.moveTo(x+10,255);ctx.lineTo(x+110,195);ctx.lineTo(x+200,255);ctx.fill(); ctx.fillStyle='#3C2F1F';ctx.fillRect(x+72,340,42,140); }
 function drawSingleGarage(x) { ctx.fillStyle = '#E8D5B8'; ctx.fillRect(x+20,230,260,250); ctx.strokeStyle='#222'; ctx.lineWidth=4; for(let i=0;i<11;i++){ctx.beginPath();ctx.moveTo(x+30,245+i*22);ctx.lineTo(x+270,245+i*22);ctx.stroke();} ctx.fillStyle='#555';ctx.fillRect(x+91,255,118,225); ctx.fillStyle='#8B2A00'; ctx.beginPath();ctx.moveTo(x,230);ctx.lineTo(x+150,160);ctx.lineTo(x+300,230);ctx.fill(); }
@@ -492,6 +582,7 @@ function loop() {
     if (ent.type === 'treeWithSwing') drawTreeWithSwing(ent.x);
     if (ent.type === 'tornado') drawTornado(ent.x);
     if (ent.type === 'lawnMower') drawLawnMower(ent.x);
+    if (ent.type === 'ridingMower') drawRidingLawnMower(ent.x);
   });
 
   drawSideFireTruck();
@@ -508,34 +599,24 @@ function loop() {
   ctx.fillStyle = '#222'; ctx.fillRect(tip.x-10, tip.y-10, 20, 20);
   ctx.fillStyle = '#555'; ctx.fillRect(tip.x-6, tip.y-15, 12, 9);
 
-  // FIRE LOGIC WITH HEALTH-SCALED FLAMES + WATER BLOCKING
-  // Sort fireSpots left-to-right (front to back for truck on left)
   const sortedSpots = [...fireSpots].sort((a, b) => a.x - b.x);
 
   sortedSpots.forEach(spot => {
     if (spot.health <= 0) return;
-
-    // Fire grows slower now
     if (Math.random() < 0.018) spot.health = Math.min(spot.health + (spot.growthRate || 4.2), spot.maxHealth);
 
-    // Flame size now represents current health (shrinks as fire is extinguished)
     const healthPercent = spot.health / spot.maxHealth;
-    const intensity = Math.floor(healthPercent * 28 + 4);   // capped max particles (same as Easy)
-
+    const intensity = Math.floor(healthPercent * 28 + 4);
     createFireParticles(spot.x + spot.w/2, spot.y + spot.h/2, intensity);
 
-    // Water damage
-    for (let i = particles.length - 1; i >= 0; i--) {
+    for (let i = particles.length-1; i >= 0; i--) {
       const p = particles[i];
-      if (p.type === 'water' && 
-          p.x > spot.x && p.x < spot.x + spot.w && 
-          p.y > spot.y && p.y < spot.y + spot.h) {
-        spot.health -= 0.072;   // full damage to this front spot
+      if (p.type === 'water' && p.x > spot.x && p.x < spot.x + spot.w && p.y > spot.y && p.y < spot.y + spot.h) {
+        const damage = spot.roof ? 0.036 : 0.072;
+        spot.health -= damage;
         p.life = 8;
-        // Water is "absorbed" - we can optionally remove or weaken it, but for simplicity we just damage this spot
       }
     }
-
     if (spot.health <= 0) {
       createSmoke(spot.x + spot.w/2, spot.y + spot.h/2);
       score += 10;
@@ -544,11 +625,14 @@ function loop() {
 
   if (isSpraying) createWaterParticles();
 
-  for (let i = particles.length - 1; i >= 0; i--) {
+  for (let i = particles.length-1; i >= 0; i--) {
     const p = particles[i];
     p.update(); p.draw();
     if (p.life <= 0) particles.splice(i, 1);
   }
+
+  // Draw total fire health gauge
+  drawTotalFireGauge();
 
   ctx.fillStyle = '#FF0'; ctx.font = 'bold 22px Arial'; ctx.textAlign = 'right';
   ctx.fillText('KVFD - Kennard, IN',1180,580);
