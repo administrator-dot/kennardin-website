@@ -12,14 +12,25 @@
     overflow:hidden; 
     touch-action: none;
   }
+  #gameContainer {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #000;
+  }
   canvas { 
-    display:block; 
-    margin:0 auto; 
-    touch-action: none;
+    display: block;
+    max-width: 100%;
+    max-height: 100%;
+    image-rendering: crisp-edges;
   }
   #overlay {
     position: absolute; top: 0; left: 0; width: 100%; height: 100%;
     pointer-events: none; color: white; text-align: center;
+    z-index: 10;
   }
   button {
     pointer-events: auto; margin: 12px 15px; padding: 14px 32px; font-size: 22px;
@@ -30,7 +41,7 @@
   .difficulty-btn:hover { background: #F00; }
   .copyright {
     position: absolute; bottom: 12px; left: 20px; font-size: 13px; color:#888;
-    text-align: left; z-index: 10;
+    text-align: left; z-index: 20;
   }
   #landscapeMessage {
     position: absolute; top: 0; left: 0; width: 100%; height: 100%;
@@ -45,6 +56,10 @@
 <div id="landscapeMessage">
   Please rotate your device to <strong>Landscape</strong> mode<br>
   for the best experience
+</div>
+
+<div id="gameContainer">
+  <canvas id="game" width="1200" height="600"></canvas>
 </div>
 
 <div id="overlay">
@@ -71,8 +86,6 @@
   </div>
 </div>
 
-<canvas id="game" width="1200" height="600"></canvas>
-
 <div class="copyright">
   Free for public use.<br>
   Created by Jason Groce - Kennard, IN<br>
@@ -80,9 +93,10 @@
 </div>
 
 <script>
-// ============== COMPLETE WORKING VERSION ==============
+// ============== ADAPTIVE CANVAS + MOBILE READY ==============
 const canvas = document.getElementById('game');
 const ctx = canvas.getContext('2d');
+const container = document.getElementById('gameContainer');
 const landscapeMsg = document.getElementById('landscapeMessage');
 
 let score = 0;
@@ -109,7 +123,7 @@ const safetyTips = [
   "Never hide from fire — get low and go!",
   "Don't overload electrical outlets.",
   "Keep flammable items away from heat sources.",
-  "Remember to thank a firefighter when you see one!"
+  "Thank you!"
 ];
 
 const baseLevels = [
@@ -188,6 +202,36 @@ const baseLevels = [
   ], entities: [{type:'sedan',x:420,yOffset:12},{type:'pickup',x:620,yOffset:8},{type:'semi',x:780}] }
 ];
 
+// Adaptive canvas scaling
+function resizeCanvas() {
+  const aspect = 1200 / 600;
+  let w = window.innerWidth;
+  let h = window.innerHeight * 0.95; // leave a bit for UI
+
+  if (w / h > aspect) {
+    canvas.style.width = (h * aspect) + 'px';
+    canvas.style.height = h + 'px';
+  } else {
+    canvas.style.width = w + 'px';
+    canvas.style.height = (w / aspect) + 'px';
+  }
+}
+
+window.addEventListener('resize', resizeCanvas);
+resizeCanvas();
+
+// Landscape check
+function checkOrientation() {
+  if (window.innerWidth < window.innerHeight) {
+    landscapeMsg.style.display = 'flex';
+  } else {
+    landscapeMsg.style.display = 'none';
+  }
+}
+window.addEventListener('resize', checkOrientation);
+window.addEventListener('orientationchange', checkOrientation);
+checkOrientation();
+
 function setTimeOfDay(mode) { timeOfDay = mode; }
 
 function startGame(diff) {
@@ -251,13 +295,13 @@ function returnToFirePage() {
   window.location.href = 'https://kennardin.com/fire-department.html';
 }
 
-// Input handling
+// Input handling (mouse + touch)
 function getPos(e) {
   const rect = canvas.getBoundingClientRect();
   let clientX = e.clientX || (e.touches && e.touches[0] ? e.touches[0].clientX : 500);
   let clientY = e.clientY || (e.touches && e.touches[0] ? e.touches[0].clientY : 300);
-  mouseX = Math.max(80, Math.min(clientX - rect.left, canvas.width - 40));
-  mouseY = Math.max(120, Math.min(clientY - rect.top, canvas.height - 100));
+  mouseX = Math.max(80, Math.min(clientX - rect.left, 1200 - 40));
+  mouseY = Math.max(120, Math.min(clientY - rect.top, 600 - 100));
 }
 
 function handleStart(e) {
@@ -300,18 +344,6 @@ canvas.addEventListener('click', e => {
 });
 
 function setTimeOfDay(mode) { timeOfDay = mode; }
-
-// Landscape check
-function checkOrientation() {
-  if (window.innerWidth < window.innerHeight) {
-    landscapeMsg.style.display = 'flex';
-  } else {
-    landscapeMsg.style.display = 'none';
-  }
-}
-window.addEventListener('resize', checkOrientation);
-window.addEventListener('orientationchange', checkOrientation);
-checkOrientation();
 
 // Particle system
 class Particle {
@@ -356,7 +388,7 @@ function createSmoke(x, y) {
   }
 }
 
-// Draw functions
+// Draw functions (all included)
 function drawBackground() {
   let sky1, sky2, sunColor, sunX, sunY, grassColor;
   if (timeOfDay === 0) { sky1 = '#7BC4FF'; sky2 = '#C0E4FF'; sunColor = '#FFDD00'; sunX = 300; sunY = 120; grassColor = '#3D8C40'; }
