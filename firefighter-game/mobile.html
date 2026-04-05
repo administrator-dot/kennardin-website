@@ -96,8 +96,20 @@
 
 <div id="overlay">
   <div id="titleScreen">
-    <h1 style="font-size:55px; margin-top:25px; color:#FF0; letter-spacing:2px; text-shadow: 4px 4px 0 #000;">KENNARD FIRE DEFENDER</h1>
-    <p style="font-size:24px; margin:10px 0 25px; color:#FFDD88;">Choose Difficulty</p>
+    <!-- Dark backing for title to prevent overlap with top bar -->
+    <div style="position:relative; display:inline-block; margin-top:20px;">
+      <div style="position:absolute; top:-8px; left:-20px; right:-20px; bottom:-8px; background:rgba(0,0,0,0.85); border-radius:16px; z-index:-1;"></div>
+      <h1 style="font-size:52px; margin:0; color:#FF0; letter-spacing:3px; text-shadow: 
+        0 0 10px #FF0, 
+        0 0 20px #FF8800, 
+        0 0 30px #FF4400, 
+        3px 3px 0 #000, 
+        -2px -2px 0 #000; 
+        font-style: italic; 
+        font-weight: 900;
+        position:relative; z-index:2;">KENNARD FIRE DEFENDER</h1>
+    </div>
+    <p style="font-size:24px; margin:12px 0 28px; color:#FFDD88;">Choose Difficulty</p>
     <button class="difficulty-btn" onclick="startGame(1)">EASY</button>
     <button class="difficulty-btn" onclick="startGame(2)">MEDIUM</button>
     <button class="difficulty-btn" onclick="startGame(3)">HARD</button>
@@ -108,7 +120,7 @@
   <div>
     <h1 id="levelTitle"></h1>
     <p id="encourageText"></p>
-    <p id="safetyTip"></p>
+    <p id="safetyTip" style="font-size:19px; color:#FFEE88; margin-top:15px;"></p>
     
     <div class="buttons">
       <button id="nextLevelBtn" onclick="nextLevel()">NEXT LEVEL</button>
@@ -125,7 +137,7 @@
 </div>
 
 <script>
-// ============== COMPLETE FIXED VERSION - BACKGROUND RESTORED + PLAY AGAIN SIMPLIFIED ==============
+// ============== FINAL COMPLETE VERSION - TITLE BACKING + SAFETY TIPS RESTORED ==============
 
 const canvas = document.getElementById('game');
 const ctx = canvas.getContext('2d');
@@ -150,11 +162,16 @@ const nozzleAttachX = 168;
 const nozzleAttachY = -45;
 
 const safetyTips = [
-  "Never play with matches or lighters.", "If your clothes catch fire, stop, drop, and roll.",
-  "Have a family escape plan and practice it.", "Check smoke alarms every month.",
-  "Keep a fire extinguisher accessible and know how to use it.", "Stay low and crawl under smoke to escape.",
-  "Never hide from fire — get low and go!", "Don't overload electrical outlets.",
-  "Keep flammable items away from heat sources.", "Practice fire safety every day — it could save lives."
+  "Never play with matches or lighters.",
+  "If your clothes catch fire, stop, drop, and roll.",
+  "Have a family escape plan and practice it.",
+  "Check smoke alarms every month.",
+  "Keep a fire extinguisher accessible and know how to use it.",
+  "Stay low and crawl under smoke to escape.",
+  "Never hide from fire — get low and go!",
+  "Don't overload electrical outlets.",
+  "Keep flammable items away from heat sources.",
+  "Practice fire safety every day — it could save lives."
 ];
 
 const baseLevels = [
@@ -170,7 +187,7 @@ const baseLevels = [
   { name: "Level 10 – Big Car Wreck", fireSpots: [{x:480,y:355,w:110,h:55,health:470,maxHealth:590},{x:510,y:320,w:70,h:45,health:410,maxHealth:510},{x:740,y:315,w:90,h:80,health:560,maxHealth:700},{x:840,y:285,w:260,h:105,health:780,maxHealth:960},{x:980,y:355,w:130,h:55,health:500,maxHealth:620},{x:650,y:340,w:55,h:40,health:450,maxHealth:560}], entities: [{type:'sedan',x:420,yOffset:12},{type:'pickup',x:620,yOffset:8},{type:'semi',x:780}] }
 ];
 
-// Input
+// Input handling
 function isInTimeSelector(x, y) { return y > 8 && y < 82 && x > 950 && x < 1195; }
 function handleTimeSelection(x, y) {
   if (x > 980 && x < 1042) setTimeOfDay(0);
@@ -349,7 +366,7 @@ function createSmoke(x, y) {
   }
 }
 
-// Draw Functions - FULLY RESTORED
+// Draw Functions
 function drawBackground() {
   let sky1, sky2, sunColor, sunX, sunY, grassColor;
   if (timeOfDay === 0) { sky1 = '#7BC4FF'; sky2 = '#C0E4FF'; sunColor = '#FFDD00'; sunX = 300; sunY = 120; grassColor = '#3D8C40'; }
