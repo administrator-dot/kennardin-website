@@ -9,14 +9,13 @@
   #gameContainer { position: relative; width: 100vw; height: 100vh; display: flex; align-items: center; justify-content: center; background: #000; }
   canvas { display: block; max-width: 100%; max-height: 100%; image-rendering: crisp-edges; }
   #overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; color: white; text-align: center; z-index: 10; }
-  button { pointer-events: auto; margin: 8px 10px; padding: 10px 24px; font-size: 18px; background: #0066CC; color: white; border: none; border-radius: 8px; cursor: pointer; }
+  button { pointer-events: auto; margin: 10px 12px; padding: 12px 28px; font-size: 20px; background: #0066CC; color: white; border: none; border-radius: 8px; cursor: pointer; }
   button:hover { background: #0088FF; }
   .difficulty-btn { background:#C00; font-size: 24px; padding: 14px 36px; }
   .difficulty-btn:hover { background: #F00; }
   .copyright { position: absolute; bottom: 8px; left: 12px; font-size: 11px; color:#777; text-align: left; z-index: 20; line-height: 1.2; }
   #landscapeMessage { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); color: #FFDD00; font-size: 26px; line-height: 1.4; display: none; align-items: center; justify-content: center; text-align: center; z-index: 200; padding: 30px; }
 
-  /* Level complete menu - smaller and higher on mobile */
   #levelCompleteScreen > div {
     background:rgba(0,0,0,0.85); padding:20px 40px; border-radius:12px; max-width:640px; margin:0 auto; text-align:center;
   }
@@ -63,7 +62,7 @@
 </div>
 
 <script>
-// ============== WATER FROM HOSE TIP + DOWNWARD ANGLE ==============
+// ============== FINAL VERSION - FIXED BUTTONS + STRONGER DOWNWARD SPRAY ==============
 const canvas = document.getElementById('game');
 const ctx = canvas.getContext('2d');
 const landscapeMsg = document.getElementById('landscapeMessage');
@@ -183,7 +182,7 @@ function returnToFirePage() {
   window.location.href = 'https://kennardin.com/fire-department.html';
 }
 
-// Input
+// Input handling
 function getPos(e) {
   const rect = canvas.getBoundingClientRect();
   let clientX = e.clientX || (e.touches && e.touches[0] ? e.touches[0].clientX : 500);
@@ -207,11 +206,12 @@ canvas.addEventListener('touchmove', handleMove, { passive: false });
 canvas.addEventListener('touchend', handleEnd, { passive: false });
 canvas.addEventListener('touchcancel', handleEnd, { passive: false });
 
-// Day/Dusk/Night
-canvas.addEventListener('click', e => {
+// Day / Dusk / Night buttons (fixed for computer + mobile)
+canvas.addEventListener('click', function(e) {
   const rect = canvas.getBoundingClientRect();
   const clickX = (e.clientX || (e.changedTouches && e.changedTouches[0] ? e.changedTouches[0].clientX : 0) - rect.left) * (1200 / rect.width);
   const clickY = (e.clientY || (e.changedTouches && e.changedTouches[0] ? e.changedTouches[0].clientY : 0) - rect.top) * (600 / rect.height);
+
   if (clickY > 18 && clickY < 56) {
     if (clickX > 980 && clickX < 1042) setTimeOfDay(0);
     else if (clickX > 1048 && clickX < 1110) setTimeOfDay(1);
@@ -256,12 +256,14 @@ function createWaterParticles() {
     const tipY = mouseY * 0.88 + (truckY + nozzleAttachY) * 0.12;
     let dirX = (mouseX - (truckX + nozzleAttachX)) * 0.048;
     let dirY = (mouseY - (truckY + nozzleAttachY)) * 0.048;
-    dirY += 4.8;   // downward angle (2 o'clock feel)
+    
+    dirY += 5.5;   // Stronger downward angle (2:30 feel on both computer and mobile)
+
     particles.push(new Particle(
       tipX + (Math.random() - 0.5) * 5,
       tipY + (Math.random() - 0.5) * 5,
       dirX + (Math.random() - 0.5) * 4.8,
-      dirY + (Math.random() - 0.5) * 4.5 - 3,
+      dirY + (Math.random() - 0.5) * 4.8 - 3,
       '#33CCFF', 35, 4, 'water'
     ));
   }
@@ -273,7 +275,7 @@ function createSmoke(x, y) {
   }
 }
 
-// Draw functions
+// Draw functions (complete set)
 function drawBackground() {
   let sky1, sky2, sunColor, sunX, sunY, grassColor;
   if (timeOfDay === 0) { sky1 = '#7BC4FF'; sky2 = '#C0E4FF'; sunColor = '#FFDD00'; sunX = 300; sunY = 120; grassColor = '#3D8C40'; }
