@@ -13,23 +13,21 @@ canvas { display: block; max-width: 100%; max-height: 100%; image-rendering: cri
 
 button { 
   pointer-events: auto; 
-  margin: 8px 0; 
-  padding: 12px 28px; 
-  font-size: 17px; 
+  margin: 12px 8px; 
+  padding: 14px 32px; 
+  font-size: 18px; 
   color: white; 
   border: none; 
   border-radius: 8px; 
   cursor: pointer; 
-  width: 240px; 
-  box-shadow: 0 4px 8px rgba(0,0,0,0.4);
+  width: 220px; 
+  box-shadow: 0 4px 12px rgba(0,0,0,0.5);
 }
-button:hover { filter: brightness(1.15); }
+button:hover { filter: brightness(1.2); }
 .difficulty-btn, .secondary-btn, #nextLevelBtn, #nextLevelBtnFinal { background: #0066CC; }
-.difficulty-btn:hover, .secondary-btn:hover, #nextLevelBtn:hover, #nextLevelBtnFinal:hover { background: #0088FF; }
-#nextLevelBtn, #nextLevelBtnFinal { font-size: 19px; padding: 14px 34px; width: 260px; }
 
 .copyright { 
-  position: absolute; bottom: 6px; left: 10px; font-size: 9px; color:#777; 
+  position: absolute; bottom: 8px; left: 12px; font-size: 9px; color:#777; 
   text-align: left; z-index: 20; line-height: 1.1; 
   background: rgba(0,0,0,0.85); padding: 4px 8px; border-radius: 4px; 
 }
@@ -50,11 +48,11 @@ button:hover { filter: brightness(1.15); }
   background: rgba(0,0,0,0.92); 
   padding: 28px 32px; 
   border-radius: 16px; 
-  width: 340px;
+  width: 360px;
   text-align: center;
   box-shadow: 0 10px 30px rgba(0,0,0,0.8);
 }
-#levelCompleteScreen h1 { font-size: 26px; color: #0F0; margin: 0 0 12px 0; }
+#levelCompleteScreen h1 { font-size: 24px; color: #0F0; margin: 0 0 12px 0; }
 #levelCompleteScreen p { font-size: 15.5px; line-height: 1.4; margin: 8px 0; color: #ddd; }
 
 .buttons {
@@ -83,9 +81,9 @@ button:hover { filter: brightness(1.15); }
   to   { transform: scale(1) translateY(0); opacity: 1; }
 }
 
-@media (max-width: 820px) {
-  button { font-size: 15px; padding: 10px 24px; width: 210px; }
-  #nextLevelBtn, #nextLevelBtnFinal { font-size: 17px; width: 230px; }
+#confirmDialog { 
+  position:absolute; top:0; left:0; width:100%; height:100%; 
+  background:rgba(0,0,0,0.85); display:none; align-items:center; justify-content:center; z-index:50; 
 }
 </style>
 </head>
@@ -95,22 +93,21 @@ button:hover { filter: brightness(1.15); }
 <div id="gameContainer"> <canvas id="game" width="1200" height="600"></canvas></div>
 
 <div id="overlay">
-  <div id="titleScreen">
-    <div style="position:relative; display:inline-block; margin-top:20px;">
-      <div style="position:absolute; top:-10px; left:-25px; right:-25px; bottom:-10px; background:rgba(0,0,0,0.85); border-radius:16px; z-index:-1;"></div>
-      <h1 style="font-size:52px; margin:0; color:#FF0; letter-spacing:3px; text-shadow: 0 0 10px #FF0, 0 0 20px #FF8800, 0 0 30px #FF4400, 3px 3px 0 #000, -2px -2px 0 #000; font-style: italic; font-weight: 900; position:relative; z-index:2;">KENNARD FIRE DEFENDER</h1>
+  <div id="titleScreen" style="width:100%; height:100%; display:flex; flex-direction:column; align-items:center; justify-content:center; background:rgba(0,0,0,0.85);">
+    <h1 style="font-size:58px; margin:0 0 20px 0; color:#FF0; text-shadow: 0 0 20px #FF0, 0 0 40px #FF8800, 4px 4px 0 #000, -3px -3px 0 #000;">KENNARD FIRE DEFENDER</h1>
+    <p style="font-size:26px; margin:0 0 40px 0; color:#FFDD88;">Choose Your Rank</p>
+    <div>
+      <button class="difficulty-btn" onclick="startGame(1)">RECRUIT</button>
+      <button class="difficulty-btn" onclick="startGame(2)">MEMBER</button>
+      <button class="difficulty-btn" onclick="startGame(3)">CAPTAIN</button>
     </div>
-    <p style="font-size:24px; margin:12px 0 28px; color:#FFDD88;">Choose Your Rank</p>
-    <button class="difficulty-btn" onclick="startGame(1)">RECRUIT</button>
-    <button class="difficulty-btn" onclick="startGame(2)">MEMBER</button>
-    <button class="difficulty-btn" onclick="startGame(3)">CAPTAIN</button>
   </div>
 </div>
 
 <div id="levelCompleteScreen">
   <div>
     <h1 id="levelTitle"></h1>
-    <p id="encourageText"></p>
+    <p id="encourageText" style="font-size:18px; color:#0F0;"></p>
     <p id="safetyTip" style="font-size:15px; color:#FFEE88; margin-top:12px;"></p>
     
     <div class="buttons" id="normalButtons">
@@ -128,10 +125,10 @@ button:hover { filter: brightness(1.15); }
 </div>
 
 <div id="confirmDialog">
-  <div>
-    <p style="font-size:18px; margin-bottom:16px;">Are you sure you want to restart the entire game from the beginning?</p>
-    <button onclick="confirmRestartYes()" style="background:#C00; margin:8px; width:160px;">YES, RESTART</button>
-    <button onclick="confirmRestartNo()" style="background:#0066CC; margin:8px; width:160px;">CANCEL</button>
+  <div style="background:#222; padding:30px; border-radius:12px; text-align:center; max-width:380px;">
+    <p style="font-size:18px; margin-bottom:20px; color:#fff;">Are you sure you want to restart the entire game from the beginning?</p>
+    <button onclick="confirmRestartYes()" style="background:#C00; margin:8px; width:160px; padding:12px;">YES, RESTART</button>
+    <button onclick="confirmRestartNo()" style="background:#0066CC; margin:8px; width:160px; padding:12px;">CANCEL</button>
   </div>
 </div>
 
@@ -142,7 +139,7 @@ button:hover { filter: brightness(1.15); }
 </div>
 
 <script>
-// ============== COMPLETE WORKING GAME ==============
+// ============== COMPLETE KENNARD FIRE DEFENDER - FINAL FIXED VERSION ==============
 const canvas = document.getElementById('game');
 const ctx = canvas.getContext('2d');
 
@@ -173,16 +170,16 @@ const safetyTips = [
 ];
 
 const baseLevels = [
-  { name: "Level 1 – Small Shed Fire", fireSpots: [{x:865,y:295,w:55,h:55,health:320,maxHealth:400},{x:895,y:268,w:65,h:40,health:580,maxHealth:720},{x:932,y:362,w:42,h:95,health:270,maxHealth:340}], entities: [{type:'shedWindow',x:840}, {type:'ridingMower',x:680}] },
-  { name: "Level 2 – Car + Tree Crash", fireSpots: [{x:615,y:368,w:110,h:55,health:380,maxHealth:480,isVehicle:true},{x:645,y:332,w:70,h:45,health:350,maxHealth:440,isVehicle:true},{x:785,y:295,w:45,h:140,health:430,maxHealth:530},{x:805,y:272,w:35,h:80,health:300,maxHealth:380}], entities: [{type:'sedan',x:580,yOffset:12},{type:'tree',x:810}] },
-  { name: "Level 3 – Garage Fire", fireSpots: [{x:915,y:215,w:110,h:45,health:480,maxHealth:600,roof:true},{x:915,y:268,w:55,h:225,health:350,maxHealth:440},{x:970,y:268,w:55,h:225,health:350,maxHealth:440},{x:940,y:465,w:40,h:20,health:240,maxHealth:300}], entities: [{type:'singleGarage',x:820}] },
-  { name: "Level 4 – Small Shed + Tree with Tire Swing", fireSpots: [{x:865,y:295,w:55,h:55,health:360,maxHealth:450},{x:895,y:268,w:65,h:40,health:610,maxHealth:760},{x:932,y:362,w:42,h:95,health:320,maxHealth:400},{x:670,y:368,w:45,h:50,health:340,maxHealth:430},{x:695,y:338,w:35,h:40,health:290,maxHealth:370},{x:855,y:178,w:80,h:35,health:420,maxHealth:520,roof:true}], entities: [{type:'smallShed',x:820},{type:'treeWithSwing',x:620}] },
-  { name: "Level 5 – Small House + Sedan", fireSpots: [{x:915,y:275,w:50,h:70,health:380,maxHealth:480},{x:995,y:275,w:50,h:70,health:380,maxHealth:480},{x:865,y:185,w:190,h:60,health:690,maxHealth:850,roof:true},{x:945,y:405,w:45,h:100,health:350,maxHealth:440,isVehicle:true}], entities: [{type:'smallHouse',x:850,color:'#FFCC99'}, {type:'sedan',x:520,yOffset:8}] },
-  { name: "Level 6 – Tall House + Pickup + Burning Trees", fireSpots: [{x:895,y:255,w:60,h:90,health:410,maxHealth:510},{x:1015,y:255,w:60,h:90,health:410,maxHealth:510},{x:855,y:155,w:240,h:50,health:730,maxHealth:900,roof:true},{x:955,y:415,w:50,h:110,health:380,maxHealth:480,isVehicle:true},{x:675,y:295,w:45,h:120,health:370,maxHealth:470},{x:1145,y:295,w:45,h:120,health:370,maxHealth:470}], entities: [{type:'house',x:860,color:'#66CCFF'}, {type:'pickup',x:590,yOffset:10}, {type:'tree',x:680}, {type:'tree',x:1150}] },
-  { name: "Level 7 – Mini Barn", fireSpots: [{x:875,y:270,w:78,h:225,health:500,maxHealth:620}, {x:915,y:215,w:90,h:45,health:350,maxHealth:430,roof:true}, {x:615,y:430,w:110,h:70,health:460,maxHealth:570,isHay:true}, {x:775,y:270,w:45,h:225,health:480,maxHealth:580}, {x:1015,y:270,w:45,h:225,health:480,maxHealth:580}, {x:935,y:270,w:35,h:120,health:420,maxHealth:520}, {x:975,y:270,w:35,h:120,health:420,maxHealth:520}, {x:915,y:145,w:40,h:35,health:340,maxHealth:410,roof:true}], entities: [{type:'miniBarn',x:820}, {type:'tractor',x:520,facing:'right'}, {type:'ridingMower',x:680}] },
-  { name: "Level 8 – Farm Fire", fireSpots: [{x:715,y:425,w:75,h:65,health:410,maxHealth:510,isHay:true},{x:795,y:410,w:75,h:65,health:430,maxHealth:530,isHay:true},{x:875,y:440,w:75,h:65,health:400,maxHealth:500,isHay:true},{x:945,y:425,w:75,h:65,health:460,maxHealth:570,isHay:true},{x:615,y:440,w:110,h:70,health:460,maxHealth:570,isHay:true}], entities: [{type:'largeRedBarn',x:1050},{type:'tractor',x:520,facing:'left'},{type:'hayBale',x:720},{type:'hayBale',x:800},{type:'hayBale',x:880},{type:'hayBale',x:950}] },
-  { name: "Level 9 – Tall House with Tornado", fireSpots: [{x:775,y:255,w:60,h:90,health:520,maxHealth:650},{x:895,y:255,w:60,h:90,health:520,maxHealth:650},{x:735,y:155,w:240,h:50,health:820,maxHealth:1020,roof:true},{x:835,y:415,w:50,h:110,health:480,maxHealth:600}], entities: [{type:'house',x:740,color:'#FFEE66'}, {type:'tornado',x:620}] },
-  { name: "Level 10 – Big Car Wreck", fireSpots: [{x:475,y:370,w:110,h:55,health:520,maxHealth:650,isVehicle:true},{x:505,y:335,w:70,h:45,health:460,maxHealth:580,isVehicle:true},{x:735,y:330,w:90,h:80,health:620,maxHealth:780,isSemi:true},{x:835,y:300,w:260,h:105,health:850,maxHealth:1060,isSemi:true},{x:975,y:370,w:130,h:55,health:550,maxHealth:690,isVehicle:true},{x:645,y:355,w:55,h:40,health:500,maxHealth:630,isSemi:true}], entities: [{type:'sedan',x:420,yOffset:12},{type:'pickup',x:620,yOffset:8},{type:'semi',x:780}] }
+  { name: "Small Shed Fire", fireSpots: [{x:865,y:295,w:55,h:55,health:320,maxHealth:400},{x:895,y:268,w:65,h:40,health:580,maxHealth:720},{x:932,y:362,w:42,h:95,health:270,maxHealth:340}], entities: [{type:'shedWindow',x:840}, {type:'ridingMower',x:680}] },
+  { name: "Car + Tree Crash", fireSpots: [{x:615,y:368,w:110,h:55,health:380,maxHealth:480,isVehicle:true},{x:645,y:332,w:70,h:45,health:350,maxHealth:440,isVehicle:true},{x:785,y:295,w:45,h:140,health:430,maxHealth:530},{x:805,y:272,w:35,h:80,health:300,maxHealth:380}], entities: [{type:'sedan',x:580,yOffset:12},{type:'tree',x:810}] },
+  { name: "Garage Fire", fireSpots: [{x:915,y:215,w:110,h:45,health:480,maxHealth:600,roof:true},{x:915,y:268,w:55,h:225,health:350,maxHealth:440},{x:970,y:268,w:55,h:225,health:350,maxHealth:440},{x:940,y:465,w:40,h:20,health:240,maxHealth:300}], entities: [{type:'singleGarage',x:820}] },
+  { name: "Small Shed + Tree with Tire Swing", fireSpots: [{x:865,y:295,w:55,h:55,health:360,maxHealth:450},{x:895,y:268,w:65,h:40,health:610,maxHealth:760},{x:932,y:362,w:42,h:95,health:320,maxHealth:400},{x:670,y:368,w:45,h:50,health:340,maxHealth:430},{x:695,y:338,w:35,h:40,health:290,maxHealth:370},{x:855,y:178,w:80,h:35,health:420,maxHealth:520,roof:true}], entities: [{type:'smallShed',x:820},{type:'treeWithSwing',x:620}] },
+  { name: "Small House + Sedan", fireSpots: [{x:915,y:275,w:50,h:70,health:380,maxHealth:480},{x:995,y:275,w:50,h:70,health:380,maxHealth:480},{x:865,y:185,w:190,h:60,health:690,maxHealth:850,roof:true},{x:945,y:405,w:45,h:100,health:350,maxHealth:440,isVehicle:true}], entities: [{type:'smallHouse',x:850,color:'#FFCC99'}, {type:'sedan',x:520,yOffset:8}] },
+  { name: "Tall House + Pickup + Burning Trees", fireSpots: [{x:895,y:255,w:60,h:90,health:410,maxHealth:510},{x:1015,y:255,w:60,h:90,health:410,maxHealth:510},{x:855,y:155,w:240,h:50,health:730,maxHealth:900,roof:true},{x:955,y:415,w:50,h:110,health:380,maxHealth:480,isVehicle:true},{x:675,y:295,w:45,h:120,health:370,maxHealth:470},{x:1145,y:295,w:45,h:120,health:370,maxHealth:470}], entities: [{type:'house',x:860,color:'#66CCFF'}, {type:'pickup',x:520,yOffset:10}, {type:'tree',x:780}, {type:'tree',x:1150}] },
+  { name: "Mini Barn", fireSpots: [{x:875,y:270,w:78,h:225,health:500,maxHealth:620}, {x:915,y:215,w:90,h:45,health:350,maxHealth:430,roof:true}, {x:615,y:430,w:110,h:70,health:460,maxHealth:570,isHay:true}, {x:775,y:270,w:45,h:225,health:480,maxHealth:580}, {x:1015,y:270,w:45,h:225,health:480,maxHealth:580}, {x:935,y:270,w:35,h:120,health:420,maxHealth:520}, {x:975,y:270,w:35,h:120,health:420,maxHealth:520}, {x:915,y:145,w:40,h:35,health:340,maxHealth:410,roof:true}], entities: [{type:'miniBarn',x:820}, {type:'tractor',x:520,facing:'right'}, {type:'ridingMower',x:680}] },
+  { name: "Farm Fire", fireSpots: [{x:715,y:425,w:75,h:65,health:410,maxHealth:510,isHay:true},{x:795,y:410,w:75,h:65,health:430,maxHealth:530,isHay:true},{x:875,y:440,w:75,h:65,health:400,maxHealth:500,isHay:true},{x:945,y:425,w:75,h:65,health:460,maxHealth:570,isHay:true},{x:615,y:440,w:110,h:70,health:460,maxHealth:570,isHay:true}], entities: [{type:'largeRedBarn',x:1050},{type:'tractor',x:520,facing:'left'},{type:'hayBale',x:720},{type:'hayBale',x:800},{type:'hayBale',x:880},{type:'hayBale',x:950}] },
+  { name: "Tall House with Tornado", fireSpots: [{x:775,y:255,w:60,h:90,health:520,maxHealth:650},{x:895,y:255,w:60,h:90,health:520,maxHealth:650},{x:735,y:155,w:240,h:50,health:820,maxHealth:1020,roof:true},{x:835,y:415,w:50,h:110,health:480,maxHealth:600}], entities: [{type:'house',x:740,color:'#FFEE66'}, {type:'tornado',x:620}] },
+  { name: "Big Car Wreck", fireSpots: [{x:475,y:370,w:110,h:55,health:520,maxHealth:650,isVehicle:true},{x:505,y:335,w:70,h:45,health:460,maxHealth:580,isVehicle:true},{x:735,y:330,w:90,h:80,health:620,maxHealth:780,isSemi:true},{x:835,y:300,w:260,h:105,health:850,maxHealth:1060,isSemi:true},{x:975,y:370,w:130,h:55,health:550,maxHealth:690,isVehicle:true},{x:645,y:355,w:55,h:40,health:500,maxHealth:630,isSemi:true}], entities: [{type:'sedan',x:420,yOffset:12},{type:'pickup',x:620,yOffset:8},{type:'semi',x:780}] }
 ];
 
 function isInTimeSelector(x, y) { return y > 8 && y < 82 && x > 950 && x < 1195; }
@@ -205,9 +202,9 @@ function loadLevel(lvl) {
   levelStartScore = score;
   const base = baseLevels[lvl-1];
   fireSpots = base.fireSpots.map(s => {
-    let mult = 2.0;           // RECRUIT
-    if (difficulty === 2) mult = 6.0;   // MEMBER
-    if (difficulty === 3) mult = 12.0;  // CAPTAIN
+    let mult = 2.0;
+    if (difficulty === 2) mult = 6.0;
+    if (difficulty === 3) mult = 12.0;
     return { 
       ...s, 
       health: Math.floor(s.health * mult), 
@@ -229,7 +226,8 @@ function checkWin() {
   if (fireSpots.every(s => s.health <= 0)) {
     gameState = 'levelComplete';
     const isFinal = currentLevel === 10;
-    document.getElementById('levelTitle').textContent = baseLevels[currentLevel-1].name + " COMPLETE!";
+    const dispatchMsg = `Dispatch – ${baseLevels[currentLevel-1].name} Extinguished`;
+    document.getElementById('levelTitle').textContent = dispatchMsg;
     document.getElementById('encourageText').innerHTML = isFinal 
       ? "Thank you for playing!<br>Try a harder difficulty next time." 
       : "Great Work, Kennard Fire Defender!<br>You saved the day!";
@@ -280,7 +278,7 @@ function playGameAgain() {
   setTimeout(() => {
     screen.style.display = 'none';
     score = 0;
-    document.getElementById('titleScreen').style.display = 'block';
+    document.getElementById('titleScreen').style.display = 'flex';
     gameState = 'title';
   }, 400);
 }
@@ -443,19 +441,62 @@ function drawBackground() {
 }
 
 function drawSideFireTruck() {
-  ctx.fillStyle = 'rgba(0,0,0,0.3)'; ctx.fillRect(truckX + 20, truckY + 42, 185, 16);
-  ctx.fillStyle = '#111'; ctx.beginPath(); ctx.arc(truckX + 52, truckY + 38, 26, 0, Math.PI*2); ctx.fill();
-  ctx.beginPath(); ctx.arc(truckX + 135, truckY + 38, 26, 0, Math.PI*2); ctx.fill();
-  ctx.fillStyle = '#DDD'; ctx.beginPath(); ctx.arc(truckX + 52, truckY + 38, 13, 0, Math.PI*2); ctx.fill();
-  ctx.beginPath(); ctx.arc(truckX + 135, truckY + 38, 13, 0, Math.PI*2); ctx.fill();
   ctx.fillStyle = '#E22'; ctx.fillRect(truckX + 8, truckY - 48, 195, 82);
   ctx.fillStyle = '#C11'; ctx.fillRect(truckX + 18, truckY - 78, 72, 38);
   ctx.fillStyle = '#AACCFF'; ctx.fillRect(truckX + 26, truckY - 72, 28, 24); ctx.fillRect(truckX + 58, truckY - 72, 26, 24);
   ctx.fillStyle = '#FF0'; ctx.fillRect(truckX + 12, truckY - 18, 185, 14);
-  ctx.fillStyle = '#DD0'; ctx.fillRect(truckX + 85, truckY - 88, 118, 12);
-  ctx.fillStyle = '#BB0'; for (let i = 0; i < 7; i++) ctx.fillRect(truckX + 92 + i*16, truckY - 92, 6, 20);
-  ctx.fillStyle = '#B22'; ctx.fillRect(truckX + 145, truckY - 45, 55, 38);
+  ctx.fillStyle = '#000'; ctx.font = 'bold 22px Arial'; ctx.textAlign = 'center';
+  ctx.fillText('KENNARD', truckX + 125, truckY + 8);
+  ctx.fillStyle = '#111';
+  ctx.beginPath(); ctx.arc(truckX + 52, truckY + 38, 26, 0, Math.PI*2); ctx.fill();
+  ctx.beginPath(); ctx.arc(truckX + 135, truckY + 38, 26, 0, Math.PI*2); ctx.fill();
+  ctx.beginPath(); ctx.arc(truckX + 175, truckY + 38, 26, 0, Math.PI*2); ctx.fill();
+  ctx.fillStyle = '#DDD';
+  ctx.beginPath(); ctx.arc(truckX + 52, truckY + 38, 13, 0, Math.PI*2); ctx.fill();
+  ctx.beginPath(); ctx.arc(truckX + 135, truckY + 38, 13, 0, Math.PI*2); ctx.fill();
+  ctx.beginPath(); ctx.arc(truckX + 175, truckY + 38, 13, 0, Math.PI*2); ctx.fill();
   ctx.fillStyle = '#00F'; ctx.fillRect(truckX + 25, truckY - 82, 12, 6);
+}
+
+function drawSedan(x,yOffset=0) {
+  const gy = 480 + yOffset;
+  ctx.fillStyle = '#E22'; ctx.fillRect(x+25, gy-68, 165, 78);
+  ctx.fillStyle = '#0F3A6B'; ctx.fillRect(x+55, gy-105, 105, 48);
+  ctx.fillStyle = '#AACCFF'; ctx.fillRect(x+70, gy-95, 42, 35); ctx.fillRect(x+125, gy-95, 32, 35);
+  ctx.fillStyle = '#111';
+  ctx.beginPath(); ctx.arc(x+55, gy+10, 28, 0, Math.PI*2); ctx.fill();
+  ctx.beginPath(); ctx.arc(x+145, gy+10, 28, 0, Math.PI*2); ctx.fill();
+  ctx.fillStyle = '#DDD';
+  ctx.beginPath(); ctx.arc(x+55, gy+10, 15, 0, Math.PI*2); ctx.fill();
+  ctx.beginPath(); ctx.arc(x+145, gy+10, 15, 0, Math.PI*2); ctx.fill();
+}
+
+function drawPickup(x,yOffset=0) {
+  const gy = 480 + yOffset;
+  ctx.fillStyle = '#E22'; ctx.fillRect(x+35, gy-72, 145, 78);
+  ctx.fillRect(x+170, gy-48, 95, 54);
+  ctx.fillStyle = '#0F3A6B'; ctx.fillRect(x+55, gy-105, 85, 45);
+  ctx.fillStyle = '#AACCFF'; ctx.fillRect(x+70, gy-98, 35, 30);
+  ctx.fillStyle = '#111';
+  ctx.beginPath(); ctx.arc(x+65, gy+10, 28, 0, Math.PI*2); ctx.fill();
+  ctx.beginPath(); ctx.arc(x+215, gy+10, 28, 0, Math.PI*2); ctx.fill();
+  ctx.fillStyle = '#DDD';
+  ctx.beginPath(); ctx.arc(x+65, gy+10, 15, 0, Math.PI*2); ctx.fill();
+  ctx.beginPath(); ctx.arc(x+215, gy+10, 15, 0, Math.PI*2); ctx.fill();
+}
+
+function drawSemi(x) {
+  const gy = 480;
+  ctx.fillStyle = '#C00'; ctx.fillRect(x, gy-95, 135, 135);
+  ctx.fillStyle = '#DDD'; ctx.fillRect(x+125, gy-88, 390, 125);
+  ctx.fillStyle = '#111';
+  ctx.beginPath(); ctx.arc(x+55, gy+12, 32, 0, Math.PI*2); ctx.fill();
+  ctx.beginPath(); ctx.arc(x+280, gy+12, 38, 0, Math.PI*2); ctx.fill();
+  ctx.beginPath(); ctx.arc(x+340, gy+12, 38, 0, Math.PI*2); ctx.fill();
+  ctx.fillStyle = '#DDD';
+  ctx.beginPath(); ctx.arc(x+55, gy+12, 17, 0, Math.PI*2); ctx.fill();
+  ctx.beginPath(); ctx.arc(x+280, gy+12, 20, 0, Math.PI*2); ctx.fill();
+  ctx.beginPath(); ctx.arc(x+340, gy+12, 20, 0, Math.PI*2); ctx.fill();
 }
 
 function drawRidingLawnMower(x) {
@@ -561,56 +602,6 @@ function drawTractor(x,facing) {
   ctx.restore();
 }
 
-function drawSedan(x,yOffset=0) {
-  const gy = 480 + yOffset;
-  ctx.fillStyle = '#E22';
-  ctx.fillRect(x+20, gy-65, 170, 75);
-  ctx.fillStyle = '#0F3A6B';
-  ctx.fillRect(x+55, gy-105, 110, 50);
-  ctx.fillStyle = '#AACCFF';
-  ctx.fillRect(x+70, gy-95, 45, 35);
-  ctx.fillRect(x+125, gy-95, 35, 35);
-  ctx.fillStyle = '#111';
-  ctx.beginPath(); ctx.arc(x+55, gy+8, 28, 0, Math.PI*2); ctx.fill();
-  ctx.beginPath(); ctx.arc(x+145, gy+8, 28, 0, Math.PI*2); ctx.fill();
-  ctx.fillStyle = '#DDD';
-  ctx.beginPath(); ctx.arc(x+55, gy+8, 15, 0, Math.PI*2); ctx.fill();
-  ctx.beginPath(); ctx.arc(x+145, gy+8, 15, 0, Math.PI*2); ctx.fill();
-}
-
-function drawPickup(x,yOffset=0) {
-  const gy = 480 + yOffset;
-  ctx.fillStyle = '#E22';
-  ctx.fillRect(x+25, gy-70, 160, 80);
-  ctx.fillRect(x+170, gy-45, 110, 55);
-  ctx.fillStyle = '#0F3A6B';
-  ctx.fillRect(x+50, gy-105, 100, 45);
-  ctx.fillStyle = '#AACCFF';
-  ctx.fillRect(x+65, gy-95, 40, 30);
-  ctx.fillStyle = '#111';
-  ctx.beginPath(); ctx.arc(x+60, gy+8, 30, 0, Math.PI*2); ctx.fill();
-  ctx.beginPath(); ctx.arc(x+225, gy+8, 30, 0, Math.PI*2); ctx.fill();
-  ctx.fillStyle = '#DDD';
-  ctx.beginPath(); ctx.arc(x+60, gy+8, 16, 0, Math.PI*2); ctx.fill();
-  ctx.beginPath(); ctx.arc(x+225, gy+8, 16, 0, Math.PI*2); ctx.fill();
-}
-
-function drawSemi(x) {
-  const gy = 480;
-  ctx.fillStyle = '#C00';
-  ctx.fillRect(x, gy-95, 130, 130);
-  ctx.fillStyle = '#DDD';
-  ctx.fillRect(x+120, gy-85, 380, 120);
-  ctx.fillStyle = '#111';
-  ctx.beginPath(); ctx.arc(x+55, gy+12, 32, 0, Math.PI*2); ctx.fill();
-  ctx.beginPath(); ctx.arc(x+280, gy+12, 38, 0, Math.PI*2); ctx.fill();
-  ctx.beginPath(); ctx.arc(x+340, gy+12, 38, 0, Math.PI*2); ctx.fill();
-  ctx.fillStyle = '#DDD';
-  ctx.beginPath(); ctx.arc(x+55, gy+12, 17, 0, Math.PI*2); ctx.fill();
-  ctx.beginPath(); ctx.arc(x+280, gy+12, 20, 0, Math.PI*2); ctx.fill();
-  ctx.beginPath(); ctx.arc(x+340, gy+12, 20, 0, Math.PI*2); ctx.fill();
-}
-
 function drawTree(x) {
   ctx.fillStyle='#3C2F1F';ctx.fillRect(x+35,370,18,110);
   ctx.fillStyle='#1E8C2E';
@@ -631,38 +622,24 @@ function drawTreeWithSwing(x) {
   ctx.fillStyle='#555'; ctx.beginPath();ctx.arc(x+55,420,12,0,Math.PI*2);ctx.fill();
 }
 
-function drawLawnMower(x) {
-  ctx.fillStyle='#228B22';ctx.fillRect(x+30,410,95,55);
-  ctx.fillStyle='#111';ctx.fillRect(x+45,385,48,32);
-  ctx.fillStyle='#AACCFF';ctx.fillRect(x+52,392,32,20);
-  ctx.fillStyle='#111'; ctx.beginPath();ctx.arc(x+45,465,13,0,Math.PI*2);ctx.fill();
-  ctx.beginPath();ctx.arc(x+105,465,13,0,Math.PI*2);ctx.fill();
-}
-
 function drawTornado(x) {
   tornadoAngle += 0.085;
   const topTwist = Math.sin(tornadoAngle * 2.2) * 38;
   const midTwist = Math.sin(tornadoAngle * 1.8) * 28;
   const bottomTwist = Math.sin(tornadoAngle * 1.4) * 45;
-
   ctx.globalAlpha = 0.75;
-  ctx.strokeStyle = '#222222';
-  ctx.lineWidth = 48;
+  ctx.strokeStyle = '#222222'; ctx.lineWidth = 48;
   ctx.beginPath();
   ctx.moveTo(x - 22 + topTwist, 140);
   ctx.quadraticCurveTo(x + 18 + midTwist, 235, x - 12 + bottomTwist, 355);
   ctx.quadraticCurveTo(x + 35, 430, x + 15, 485);
   ctx.stroke();
-
-  ctx.strokeStyle = '#444444';
-  ctx.lineWidth = 22;
+  ctx.strokeStyle = '#444444'; ctx.lineWidth = 22;
   ctx.beginPath();
   ctx.moveTo(x - 18 + topTwist * 0.7, 145);
   ctx.quadraticCurveTo(x + 12 + midTwist * 0.8, 240, x - 8 + bottomTwist * 0.6, 360);
   ctx.stroke();
-
   ctx.globalAlpha = 1.0;
-
   ctx.fillStyle = '#555555';
   for (let i = 0; i < 9; i++) {
     const angle = tornadoAngle * 3 + i * 0.8;
@@ -740,7 +717,7 @@ function loop() {
       if (p.type === 'water' && p.x > spot.x && p.x < spot.x + spot.w && p.y > spot.y && p.y < spot.y + spot.h) {
         let damage = 0.072;
         if (spot.isHay) damage = 0.018;
-        else if (spot.isVehicle || spot.isSemi) damage = 0.016;
+        else if (spot.isVehicle || spot.isSemi) damage = 0.035;
         spot.health -= damage;
         p.life = 8;
       }
