@@ -133,44 +133,93 @@ function initSearch() {
   const results = document.getElementById("site-search-results");
   if (!input || !results) return;
 
-  fetch("search.json")
-    .then((response) => response.json())
+  function tokenize(value) {
+    return value
+      .toLowerCase()
+      .split(/[^a-z0-9]+/g)
+      .filter(Boolean);
+  }
+
+  function toSearchItems(items) {
+    return items.map((item) => ({
+      title: item.title || "",
+      url: item.url || "#",
+      headings: Array.isArray(item.headings) ? item.headings : [],
+      snippet: item.snippet || "",
+      content: (item.content || "").toLowerCase(),
+    }));
+  }
+
+  function scoreItem(item, queryTokens) {
+    const title = item.title.toLowerCase();
+    const headings = item.headings.join(" ").toLowerCase();
+    const content = item.content;
+    let score = 0;
+
+    for (const token of queryTokens) {
+      if (title.includes(token)) score += 7;
+      if (headings.includes(token)) score += 4;
+      if (content.includes(token)) score += 1;
+    }
+
+    return score;
+  }
+
+  function renderResults(matches) {
+    if (matches.length === 0) {
+      results.innerHTML = '<div class="p-2 text-muted">No results found.</div>';
+      return;
+    }
+
+    results.innerHTML = matches
+      .map((item) => {
+        const description = item.snippet ? `<small class="text-muted d-block">${item.snippet.slice(0, 120)}...</small>` : "";
+        return (
+          '<a href="' +
+          item.url +
+          '" class="d-block p-2 text-decoration-none border-bottom">' +
+          item.title +
+          description +
+          "</a>"
+        );
+      })
+      .join("");
+  }
+
+  async function loadIndex() {
+    try {
+      const fullIndexResponse = await fetch("search-index.json", { cache: "no-cache" });
+      if (!fullIndexResponse.ok) throw new Error("full index unavailable");
+      return toSearchItems(await fullIndexResponse.json());
+    } catch {
+      const fallbackResponse = await fetch("search.json", { cache: "no-cache" });
+      if (!fallbackResponse.ok) throw new Error("fallback index unavailable");
+      return toSearchItems(await fallbackResponse.json());
+    }
+  }
+
+  loadIndex()
     .then((items) => {
-      const normalized = items.map((item) => ({
-        title: item.title || "",
-        url: item.url || "#",
-        content: (item.content || "").toLowerCase(),
-      }));
+      const normalized = items;
 
       input.addEventListener("input", () => {
-        const query = input.value.trim().toLowerCase();
+        const query = input.value.trim();
+        const queryTokens = tokenize(query);
         results.innerHTML = "";
 
-        if (query.length < 2) {
+        if (query.length < 2 || queryTokens.length === 0) {
           results.style.display = "none";
           return;
         }
 
         const filtered = normalized
-          .filter((item) => item.title.toLowerCase().includes(query) || item.content.includes(query))
+          .map((item) => ({ item, score: scoreItem(item, queryTokens) }))
+          .filter((entry) => entry.score > 0)
+          .sort((a, b) => b.score - a.score)
+          .map((entry) => entry.item)
           .slice(0, 8);
 
-        if (filtered.length === 0) {
-          results.innerHTML = '<div class="p-2 text-muted">No results found.</div>';
-        } else {
-          const list = filtered
-            .map(
-              (item) =>
-                '<a href="' +
-                item.url +
-                '" class="d-block p-2 text-decoration-none border-bottom">' +
-                item.title +
-                "</a>"
-            )
-            .join("");
-          results.innerHTML = list;
-        }
-
+        renderResults(filtered);
         results.style.display = "block";
       });
 
