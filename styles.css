@@ -54,6 +54,126 @@ border-color: #CC0000 !important;
   text-decoration: underline;
 }
 
+.game-launch-card {
+  background: #fff;
+  border: 1px solid #e0e0e0;
+  align-items: center;
+}
+
+.game-launch-link {
+  display: inline-block;
+  position: relative;
+  text-decoration: none;
+  color: inherit;
+}
+
+.game-launch-link::before,
+.game-launch-link::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  width: 142%;
+  height: 78%;
+  border-radius: 50% 50% 45% 45%;
+  pointer-events: none;
+  transform: translateX(-50%);
+  z-index: 0;
+}
+
+.game-launch-link::before {
+  background:
+    radial-gradient(circle at 50% 95%, rgba(255, 230, 96, 0.95) 0 17%, rgba(255, 132, 29, 0.72) 38%, rgba(210, 34, 14, 0) 70%),
+    radial-gradient(circle at 25% 75%, rgba(255, 98, 22, 0.78) 0 24%, rgba(255, 98, 22, 0) 56%),
+    radial-gradient(circle at 75% 72%, rgba(255, 154, 27, 0.76) 0 22%, rgba(255, 154, 27, 0) 58%);
+  filter: blur(18px);
+  opacity: 0.82;
+  animation: launcherFlameGlow 1.8s ease-in-out infinite alternate;
+}
+
+.game-launch-link::after {
+  background:
+    radial-gradient(ellipse at 50% 100%, rgba(255, 244, 160, 0.95) 0 12%, rgba(255, 187, 54, 0.72) 30%, rgba(255, 83, 18, 0) 66%);
+  clip-path: polygon(50% 0, 61% 35%, 78% 12%, 69% 55%, 92% 38%, 74% 83%, 50% 100%, 27% 84%, 8% 38%, 31% 55%, 22% 12%, 39% 35%);
+  opacity: 0.7;
+  animation: launcherFlameFlicker 0.9s ease-in-out infinite alternate;
+}
+
+.game-launch-button {
+  position: relative;
+  display: block;
+  width: min(260px, 70vw);
+  height: auto;
+  border: 0;
+  border-radius: 0;
+  filter: drop-shadow(0 8px 16px rgba(0, 31, 63, 0.2));
+  transition: transform 0.2s ease, filter 0.2s ease;
+  z-index: 1;
+}
+
+.game-launch-link:hover .game-launch-button,
+.game-launch-link:focus .game-launch-button {
+  transform: translateY(-3px);
+  filter: drop-shadow(0 12px 20px rgba(0, 31, 63, 0.3));
+}
+
+.game-launch-link:focus {
+  outline: 3px solid #004d80;
+  outline-offset: 4px;
+}
+
+.game-launch-copy {
+  max-width: 34rem;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
+  line-height: 1.5;
+}
+
+.map-card-link {
+  display: block;
+  color: inherit;
+  text-decoration: none;
+}
+
+.map-card-frame {
+  width: 100%;
+  height: 260px;
+  border: 0;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 31, 63, 0.14);
+  pointer-events: none;
+}
+
+@keyframes launcherFlameGlow {
+  from {
+    transform: translateX(-50%) scale(0.94, 0.9);
+    opacity: 0.56;
+  }
+  to {
+    transform: translateX(-50%) scale(1.06, 1.05);
+    opacity: 0.82;
+  }
+}
+
+@keyframes launcherFlameFlicker {
+  from {
+    transform: translateX(-50%) translateY(8px) scale(0.92, 0.88) rotate(-2deg);
+    opacity: 0.42;
+  }
+  to {
+    transform: translateX(-50%) translateY(-4px) scale(1.05, 1.08) rotate(2deg);
+    opacity: 0.66;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .game-launch-link::before,
+  .game-launch-link::after {
+    animation: none;
+  }
+}
+
 @media (max-width: 992px) {
   .site-search-wrap {
     width: 100%;
