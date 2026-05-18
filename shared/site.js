@@ -61,6 +61,11 @@ const FALLBACK_HEADER = `
             <li class="nav-item"><a class="nav-link text-white" href="contact.html">Contact</a></li>
             <li class="nav-item"><a class="nav-link text-white" href="faq.html">FAQ</a></li>
             <li class="nav-item"><a class="nav-link text-white" href="bids-info.html">Bids & Info</a></li>
+            <li class="nav-item usa250-nav-item">
+              <a class="nav-link text-white usa250-nav-link" href="USA250th/index.html" aria-label="Open the 250th Founding Records Calendar">
+                <img src="USA250th/250th.webp" alt="250th Calendar">
+              </a>
+            </li>
           </ul>
         </div>
       </div>
@@ -70,6 +75,19 @@ const FALLBACK_HEADER = `
 `;
 
 const FALLBACK_FOOTER = '<footer>(c) 2026 Town of Kennard</footer>';
+
+function siteRoot() {
+  return document.body?.dataset.siteRoot || "";
+}
+
+function isLocalPath(value) {
+  return value && !value.startsWith("#") && !/^(?:[a-z]+:)?\/\//i.test(value) && !value.startsWith("mailto:") && !value.startsWith("tel:");
+}
+
+function withSiteRoot(value) {
+  if (!isLocalPath(value) || value.startsWith(siteRoot())) return value;
+  return siteRoot() + value;
+}
 
 async function loadFragment(path, fallbackMarkup) {
   // Browsers block fetch() for file:// pages, so use the inline fallback there.
@@ -83,16 +101,28 @@ async function loadFragment(path, fallbackMarkup) {
   }
 }
 
+function rootLocalLinks(host) {
+  host.querySelectorAll("a[href]").forEach((link) => {
+    link.setAttribute("href", withSiteRoot(link.getAttribute("href")));
+  });
+
+  host.querySelectorAll("img[src]").forEach((image) => {
+    image.setAttribute("src", withSiteRoot(image.getAttribute("src")));
+  });
+}
+
 async function injectSharedLayout() {
   const headerHost = document.getElementById("site-header");
   const footerHost = document.getElementById("site-footer");
 
   if (headerHost) {
-    headerHost.innerHTML = await loadFragment("shared/header.html", FALLBACK_HEADER);
+    headerHost.innerHTML = await loadFragment(withSiteRoot("shared/header.html"), FALLBACK_HEADER);
+    rootLocalLinks(headerHost);
   }
 
   if (footerHost) {
-    footerHost.innerHTML = await loadFragment("shared/footer.html", FALLBACK_FOOTER);
+    footerHost.innerHTML = await loadFragment(withSiteRoot("shared/footer.html"), FALLBACK_FOOTER);
+    rootLocalLinks(footerHost);
   }
 }
 
@@ -112,11 +142,11 @@ function setPageTitle() {
 }
 
 function setActiveNavLink() {
-  const currentPath = window.location.pathname.split("/").pop() || "index.html";
+  const currentPath = document.body.dataset.activeNav || window.location.pathname.split("/").pop() || "index.html";
   const navLinks = document.querySelectorAll(".navbar-nav a.nav-link, .navbar-nav a.dropdown-item");
 
   navLinks.forEach((link) => {
-    const href = link.getAttribute("href");
+    const href = link.getAttribute("href").replace(siteRoot(), "");
     if (href === currentPath) {
       link.classList.add("active");
       const dropdown = link.closest(".dropdown");
@@ -176,7 +206,7 @@ function initSearch() {
         const description = item.snippet ? `<small class="text-muted d-block">${item.snippet.slice(0, 120)}...</small>` : "";
         return (
           '<a href="' +
-          item.url +
+          withSiteRoot(item.url) +
           '" class="d-block p-2 text-decoration-none border-bottom">' +
           item.title +
           description +
@@ -188,11 +218,11 @@ function initSearch() {
 
   async function loadIndex() {
     try {
-      const fullIndexResponse = await fetch("search-index.json", { cache: "no-cache" });
+      const fullIndexResponse = await fetch(withSiteRoot("search-index.json"), { cache: "no-cache" });
       if (!fullIndexResponse.ok) throw new Error("full index unavailable");
       return toSearchItems(await fullIndexResponse.json());
     } catch {
-      const fallbackResponse = await fetch("search.json", { cache: "no-cache" });
+      const fallbackResponse = await fetch(withSiteRoot("search.json"), { cache: "no-cache" });
       if (!fallbackResponse.ok) throw new Error("fallback index unavailable");
       return toSearchItems(await fallbackResponse.json());
     }
