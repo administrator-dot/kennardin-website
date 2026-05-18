@@ -139,6 +139,11 @@ function setPageTitle() {
   } else {
     titleNode.textContent = pageTitle;
   }
+
+  if (document.body.dataset.hideHeaderTownName === "true") {
+    const townName = titleNode.parentElement?.querySelector("h3");
+    if (townName) townName.hidden = true;
+  }
 }
 
 function setActiveNavLink() {
