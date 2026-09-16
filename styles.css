@@ -11,7 +11,7 @@ footer { background: #f8f9fa; text-align: center; padding: 10px; margin-top: 40p
 .bid-heading { color: red; font-weight: bold; text-align: left; }
 .alert-info { background-color: #d1ecf1; border-color: #bee5eb; color: #0c5460; padding: 10px; border-radius: 5px; margin-bottom: 20px; text-align: left; }
 .navbar { background: linear-gradient(to right,#001f3f,#004d80) !important; }
-.nav-link { color: white !important; }
+.navbar .nav-link { color: white !important; }
 .navbar-toggler-icon { filter: invert(1); }
 
 .btn-danger {
