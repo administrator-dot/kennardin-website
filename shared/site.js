@@ -39,7 +39,8 @@ const FALLBACK_HEADER = `
                 <li><a class="dropdown-item" href="town-board.html">Town Board</a></li>
                 <li><a class="dropdown-item" href="minutes-agendas.html">Minutes & Agendas</a></li>
                 <li><a class="dropdown-item" href="town-ordinances.html">Town Ordinances</a></li>
-                <li><a class="dropdown-item" href="accessibility-civil-rights-plans.html">Title VI &amp; ADA Plans</a></li>
+                <li><a class="dropdown-item" href="title-vi.html">Title VI Implementation Plan</a></li>
+                <li><a class="dropdown-item" href="ada.html">ADA Transition Plan</a></li>
               </ul>
             </li>
             <li class="nav-item"><a class="nav-link text-white" href="town-utilities.html">Town Utilities</a></li>
