@@ -1,6 +1,6 @@
 # Kennardin Website
 
-This is the source code for www.kennardin.com, the official site for the Town of Kennard, Indiana.
+This is the source code for kennardin.gov, the official site for the Town of Kennard, Indiana.
 
 ## Getting Started
 - Hosted on GitHub Pages.
